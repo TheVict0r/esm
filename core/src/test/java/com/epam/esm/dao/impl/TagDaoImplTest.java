@@ -1,0 +1,98 @@
+package com.epam.esm.dao.impl;
+
+import com.epam.esm.TestConfig;
+import com.epam.esm.TestEntityProvider;
+import com.epam.esm.dao.TagDao;
+import com.epam.esm.dao.entity.Tag;
+import com.epam.esm.exception.ResourceNotFoundException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = TestConfig.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+class TagDaoImplTest {
+
+    @Autowired
+    TestEntityProvider entityProvider;
+    @Autowired
+    TagDao tagDao;
+
+    @BeforeEach
+    void setUp() {
+        Locale.setDefault(Locale.ENGLISH);
+    }
+
+    @Test
+    void readByIdShouldReturnOptionalOfTagEntity() {
+        long tagId = 1L;
+        Optional<Tag> tag1Expected = Optional.of(entityProvider.getTag1());
+        assertEquals(tag1Expected, tagDao.readById(tagId));
+    }
+
+    @Test
+    void readByNonexistentIdShouldReturnEmptyOptional() {
+        long nonexistentId = 100_500L;
+        Optional<Tag> tag1Expected = Optional.empty();
+        assertEquals(tag1Expected, tagDao.readById(nonexistentId));
+    }
+
+    @Test
+    void searchAllShouldReturnAllTagsAsList() {
+        List<Tag> tagListExpected = entityProvider.getAllTagsList();
+        assertEquals(tagListExpected, tagDao.searchAll());
+    }
+
+    @Test
+    void createShouldReturnTagWithId() {
+        Tag tagForCreation = new Tag("Tag for creation");
+        Tag tagCreatedExpected = new Tag(11L, "Tag for creation");
+        assertEquals(tagCreatedExpected, tagDao.create(tagForCreation));
+    }
+
+    @Test
+    void updateShouldReturnUpdatedTag() {
+        Tag tagForUpdate = new Tag(7L, "Tag updated");
+        Tag tagUpdatedExpected = new Tag(7L, "Tag updated");
+        assertEquals(tagUpdatedExpected, tagDao.update(tagForUpdate));
+    }
+
+    @Test
+    void updateByTagWithNonexistentIdShouldThrowResourceNotFoundException() {
+        Tag tagForUpdate = new Tag(100_500L, "Tag updated");
+        String errorMessageExpected = "Failed to find resource with ID (100,500) in the datasource.";
+        Exception exception = assertThrows(ResourceNotFoundException.class,
+                () -> tagDao.update(tagForUpdate)
+        );
+        assertEquals(errorMessageExpected, exception.getLocalizedMessage());
+    }
+
+    @Test
+    void deleteByIdShouldReturnId() {
+        long tagId = 6L;
+        assertEquals(tagId, tagDao.deleteById(tagId));
+    }
+
+    @Test
+    void deleteByIdShouldThrowResourceNotFoundException() {
+        long nonexistentId = 100_500L;
+        String errorMessageExpected = "Failed to find resource with ID (100,500) in the datasource.";
+        Exception exception = assertThrows(ResourceNotFoundException.class,
+                () -> tagDao.deleteById(nonexistentId)
+        );
+        assertEquals(errorMessageExpected, exception.getLocalizedMessage());
+    }
+
+}

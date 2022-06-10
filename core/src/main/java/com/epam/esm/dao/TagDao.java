@@ -1,0 +1,62 @@
+package com.epam.esm.dao;
+
+import com.epam.esm.dao.entity.Tag;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Set;
+
+/**
+ * Data access operations with the {@code Tag}
+ */
+
+@Repository
+public interface TagDao extends BasicDao<Tag> {
+
+    /**
+     * Reads all existing {@code Tags} from the datasource.
+     *
+     * @return - the list containing all {@code Tags} existing in the datasource
+     */
+    List<Tag> searchAll();
+
+    /**
+     * Retrieves the set with all {@code Tags} associated with {@code Сertificate} from the datasource.
+     *
+     * @param certificateID the <b>ID</b> of the {@code Сertificate}
+     * @return the set with all {@code Tags} related to the {@code Сertificate}
+     */
+    Set<Tag> retrieveTagsByCertificateId(long certificateID);
+
+    /**
+     * Checks is {@code Tag} presented in the datasource.
+     *
+     * @param tag the {@code Tag} need to be checked
+     * @return {@code true} if {@code Tag} presented in the datasource, {@code false} if not
+     */
+    boolean isTagExists(Tag tag);
+
+    /**
+     * Finds {@code Tag's} <b>ID</b> for {@code Tag} that do not contain <b>ID</b> data.
+     *
+     * @param tag - the {@code Tag} that does not contain <b>ID</b> data
+     * @return - {@code Tag's} <b>ID</b>
+     */
+    long findIdByTag(Tag tag);
+
+    /**
+     * Saves to the datasource the link between {@code Certificate ID} and appropriate {@code Tag ID}.
+     *
+     * @param certificateId {@code Certificate ID}
+     * @param tagId         {@code Tag ID}
+     */
+    void saveTagToCertificate(long certificateId, long tagId);
+
+    /**
+     * Deletes in the datasource  links between the {@code Certificate} and all its {@code Tags}.
+     *
+     * @param certificateId - {@code Certificate ID}
+     */
+    void deleteAllTagsFromCertificate(long certificateId);
+
+}
