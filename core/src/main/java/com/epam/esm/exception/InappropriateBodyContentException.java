@@ -11,9 +11,4 @@ public class InappropriateBodyContentException extends AbstractLocalizedCustomEx
         super(MESSAGE_KEY, new Object[]{id});
     }
 
-    @Override
-    public int getCustomCode() {
-        return CustomErrorCode.CODE_400;
-    }
-
 }

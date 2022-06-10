@@ -11,9 +11,4 @@ public class ResourceNotFoundException extends AbstractLocalizedCustomException 
         super(MESSAGE_KEY, new Object[]{id});
     }
 
-    @Override
-    public int getCustomCode() {
-        return CustomErrorCode.CODE_404;
-    }
-
 }

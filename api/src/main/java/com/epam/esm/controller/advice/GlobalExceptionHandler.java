@@ -1,14 +1,13 @@
 package com.epam.esm.controller.advice;
 
-import com.epam.esm.exception.CustomErrorCode;
-import com.epam.esm.exception.CustomException;
+import com.epam.esm.exception.AbstractLocalizedCustomException;
 import com.epam.esm.exception.InappropriateBodyContentException;
 import com.epam.esm.exception.InvalidRequestSortParamValueException;
 import com.epam.esm.exception.MessageLocaleHandler;
 import com.epam.esm.exception.MismatchedIdValuesException;
 import com.epam.esm.exception.NonexistentLocaleException;
+import com.epam.esm.exception.ResourceNotCreatedException;
 import com.epam.esm.exception.ResourceNotFoundException;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
@@ -23,7 +22,9 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.text.MessageFormat;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -31,6 +32,22 @@ import java.util.Set;
  */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    private static Map<Class, Integer> allCustomErrorCodes = new HashMap<>();
+
+    static {
+        allCustomErrorCodes.put(InappropriateBodyContentException.class, 40001);
+        allCustomErrorCodes.put(InvalidRequestSortParamValueException.class, 40002);
+        allCustomErrorCodes.put(MismatchedIdValuesException.class, 40003);
+        allCustomErrorCodes.put(MethodArgumentTypeMismatchException.class, 40004);
+        allCustomErrorCodes.put(ConstraintViolationException.class, 40005);
+        allCustomErrorCodes.put(MethodArgumentNotValidException.class, 40006);
+        allCustomErrorCodes.put(DuplicateKeyException.class, 40007);
+        allCustomErrorCodes.put(HttpMessageNotReadableException.class, 40008);
+        allCustomErrorCodes.put(NonexistentLocaleException.class, 40401);
+        allCustomErrorCodes.put(ResourceNotFoundException.class, 40402);
+        allCustomErrorCodes.put(ResourceNotCreatedException.class, 50001);
+    }
 
     /**
      * Handles the situation, when there is no appropriate entity in the datasource.
@@ -63,7 +80,7 @@ public class GlobalExceptionHandler {
             MismatchedIdValuesException.class,
             NonexistentLocaleException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public IncorrectData handleException(CustomException exception) {
+    public IncorrectData handleException(AbstractLocalizedCustomException exception) {
         return new IncorrectData(exception);
     }
 
@@ -79,7 +96,7 @@ public class GlobalExceptionHandler {
         String errorMessage = MessageFormat.format(
                 MessageLocaleHandler.getLocalisedMessage("message.method_argument_type_mismatch"),
                 exception.getValue(), exception.getRequiredType());
-        return new IncorrectData(CustomErrorCode.CODE_400, errorMessage);
+        return new IncorrectData(exception, errorMessage);
     }
 
     /**
@@ -92,7 +109,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public IncorrectData handleException(ConstraintViolationException exception) {
         String errorMessage = getErrorMessageForConstraintViolationException(exception);
-        return new IncorrectData(CustomErrorCode.CODE_400, errorMessage);
+        return new IncorrectData(exception, errorMessage);
     }
 
     /**
@@ -105,7 +122,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public IncorrectData handleException(MethodArgumentNotValidException exception) {
         String errorMessage = getErrorMessageForMethodArgumentNotValidException(exception);
-        return new IncorrectData(CustomErrorCode.CODE_400, errorMessage);
+        return new IncorrectData(exception, errorMessage);
     }
 
     /**
@@ -122,7 +139,7 @@ public class GlobalExceptionHandler {
         String uniqueKey = originalMessageSplit[3];
         String errorMessage = MessageFormat.format(
                 MessageLocaleHandler.getLocalisedMessage("message.duplicate_key"), entry, uniqueKey);
-        return new IncorrectData(CustomErrorCode.CODE_400, errorMessage);
+        return new IncorrectData(exception, errorMessage);
     }
 
     /**
@@ -135,7 +152,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public IncorrectData handleException(HttpMessageNotReadableException exception) {
         String errorMessage = MessageLocaleHandler.getLocalisedMessage("message.http_message_not_readable_exception");
-        return new IncorrectData(CustomErrorCode.CODE_400, errorMessage);
+        return new IncorrectData(exception, errorMessage);
     }
 
     private String getErrorMessageForConstraintViolationException(ConstraintViolationException exception) {
@@ -167,11 +184,11 @@ public class GlobalExceptionHandler {
         return builder.toString();
     }
 
+
     /**
      * Inner class-container for storing the data used during the process of handling the exceptions.
      */
     @Data
-    @AllArgsConstructor
     class IncorrectData {
 
         /**
@@ -184,9 +201,14 @@ public class GlobalExceptionHandler {
          */
         private String errorMessage;
 
-        IncorrectData(CustomException exception) {
+        IncorrectData(AbstractLocalizedCustomException exception) {
+            this.errorCode = allCustomErrorCodes.get(exception.getClass());
             this.errorMessage = exception.getLocalizedMessage();
-            this.errorCode = exception.getCustomCode();
+        }
+
+        IncorrectData(Exception exception, String errorMessage) {
+            this.errorCode = allCustomErrorCodes.get(exception.getClass());
+            this.errorMessage = errorMessage;
         }
 
     }

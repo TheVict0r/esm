@@ -11,9 +11,4 @@ public class InvalidRequestSortParamValueException extends AbstractLocalizedCust
         super(MESSAGE_KEY, new Object[]{sort, validParameters});
     }
 
-    @Override
-    public int getCustomCode() {
-        return CustomErrorCode.CODE_400;
-    }
-
 }

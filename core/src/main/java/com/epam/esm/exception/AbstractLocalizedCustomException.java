@@ -2,7 +2,7 @@ package com.epam.esm.exception;
 
 import java.text.MessageFormat;
 
-public abstract class AbstractLocalizedCustomException extends RuntimeException implements CustomException {
+public abstract class AbstractLocalizedCustomException extends RuntimeException {
 
     private String messageKey;
     private Object[] params;
@@ -17,5 +17,6 @@ public abstract class AbstractLocalizedCustomException extends RuntimeException 
         String pattern = MessageLocaleHandler.getLocalisedMessage(messageKey);
         return MessageFormat.format(pattern, params);
     }
+
 
 }

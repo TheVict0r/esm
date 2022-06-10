@@ -11,9 +11,4 @@ public class MismatchedIdValuesException extends AbstractLocalizedCustomExceptio
         super(MESSAGE_KEY, new Object[]{pathId, bodyId});
     }
 
-    @Override
-    public int getCustomCode() {
-        return CustomErrorCode.CODE_400;
-    }
-
 }

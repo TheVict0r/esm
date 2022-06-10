@@ -11,9 +11,4 @@ public class ResourceNotCreatedException extends AbstractLocalizedCustomExceptio
         super(MESSAGE_KEY, new Object[]{resource});
     }
 
-    @Override
-    public int getCustomCode() {
-        return CustomErrorCode.CODE_500;
-    }
-
 }

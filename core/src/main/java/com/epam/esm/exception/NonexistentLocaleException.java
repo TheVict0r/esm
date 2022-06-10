@@ -11,9 +11,4 @@ public class NonexistentLocaleException extends AbstractLocalizedCustomException
         super(MESSAGE_KEY, new Object[]{language});
     }
 
-    @Override
-    public int getCustomCode() {
-        return CustomErrorCode.CODE_404;
-    }
-
 }
