@@ -100,6 +100,7 @@ public class GlobalExceptionHandler {
         String errorMessage = getLocalizedMessage(constraintViolationException, request);
         return new IncorrectData(constraintViolationException, errorMessage);
     }
+
     /**
      * Prevents from being sent the data for beans that does not match validation criteria.
      *
@@ -165,7 +166,7 @@ public class GlobalExceptionHandler {
         return MessageFormat.format(pattern, params);
     }
 
-    private String getLocalizedMessage(String messageKey, HttpServletRequest request, Object ... params) {
+    private String getLocalizedMessage(String messageKey, HttpServletRequest request, Object... params) {
         Locale locale = getLocale(request);
         String pattern = getLocalisedMessageFromBundle(messageKey, locale);
         return MessageFormat.format(pattern, params);
