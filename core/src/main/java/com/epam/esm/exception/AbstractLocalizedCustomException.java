@@ -1,7 +1,8 @@
 package com.epam.esm.exception;
 
-import java.text.MessageFormat;
+import lombok.Data;
 
+@Data
 public abstract class AbstractLocalizedCustomException extends RuntimeException {
 
     private String messageKey;
@@ -11,12 +12,5 @@ public abstract class AbstractLocalizedCustomException extends RuntimeException 
         this.messageKey = messageKey;
         this.params = params;
     }
-
-    @Override
-    public String getLocalizedMessage() {
-        String pattern = MessageLocaleHandler.getLocalisedMessage(messageKey);
-        return MessageFormat.format(pattern, params);
-    }
-
 
 }

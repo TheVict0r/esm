@@ -14,7 +14,7 @@ import java.util.Locale;
  */
 @Log4j2
 @RestController
-@RequestMapping(value = "/languages")
+@RequestMapping(value = "/locales")
 public class LanguageController {
 
     public static final String EN = "en";
@@ -23,13 +23,13 @@ public class LanguageController {
     /**
      * Switch default locale with the accordance to the request.
      *
-     * @param language string representation of the language to be switched to
+     * @param defaultLocale string representation of the default locale to be switched to
      * @return a confirmation message about the result of switching attempt
      */
-    @GetMapping(path = "/{language}")
-    public String switchLanguage(@PathVariable("language") String language) {
-        log.info("Switching locale to {}", language);
-        switch (language) {
+    @GetMapping(path = "/{locale}")
+    public String switchLanguage(@PathVariable("locale") String defaultLocale) {
+        log.info("Switching locale to {}", defaultLocale);
+        switch (defaultLocale) {
             case "en":
                 Locale.setDefault(Locale.ENGLISH);
                 return EN;
@@ -38,7 +38,7 @@ public class LanguageController {
                 return RU;
             default:
                 Locale.setDefault(Locale.ENGLISH);
-                throw new NonexistentLocaleException(language);
+                throw new NonexistentLocaleException(defaultLocale);
         }
     }
 
