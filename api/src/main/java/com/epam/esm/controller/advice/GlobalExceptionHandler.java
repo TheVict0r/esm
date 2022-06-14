@@ -36,7 +36,6 @@ import java.util.Set;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-
     /**
      * Handles the situation, when there is no appropriate entity in the datasource.
      *
@@ -46,8 +45,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public IncorrectData handleException(ResourceNotFoundException resourceNotFoundException, HttpServletRequest request) {
-        Locale locale = getLocale(request);
-        String localizedMessage = getLocalizedMessage(resourceNotFoundException, locale);
+        String localizedMessage = getLocalizedMessage(resourceNotFoundException, request);
         return new IncorrectData(resourceNotFoundException, localizedMessage);
     }
 
@@ -72,8 +70,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public IncorrectData handleException(AbstractLocalizedCustomException abstractLocalizedCustomException,
                                          HttpServletRequest request) {
-        Locale locale = getLocale(request);
-        String localizedMessage = getLocalizedMessage(abstractLocalizedCustomException, locale);
+        String localizedMessage = getLocalizedMessage(abstractLocalizedCustomException, request);
         return new IncorrectData(abstractLocalizedCustomException, localizedMessage);
     }
 
@@ -87,8 +84,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public IncorrectData handleException(MethodArgumentTypeMismatchException exception, HttpServletRequest request) {
         String messageKey = "message.method_argument_type_mismatch";
-        Locale locale = getLocale(request);
-        String localizedMessage = getLocalizedMessage(messageKey, locale, exception.getValue(), exception.getRequiredType());
+        String localizedMessage = getLocalizedMessage(messageKey, request, exception.getValue(), exception.getRequiredType());
         return new IncorrectData(exception, localizedMessage);
     }
 
@@ -140,7 +136,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public IncorrectData handleException(HttpMessageNotReadableException httpMessageNotReadableException, HttpServletRequest request) {
         String messageKey = "message.http_message_not_readable_exception";
-        String errorMessage = getLocalisedMessage(messageKey, getLocale(request));
+        String errorMessage = getLocalisedMessageFromBundle(messageKey, getLocale(request));
         return new IncorrectData(httpMessageNotReadableException, errorMessage);
     }
 
@@ -156,34 +152,36 @@ public class GlobalExceptionHandler {
         return locale;
     }
 
-    public static String getLocalisedMessage(String messageKey, Locale locale) {
+    public static String getLocalisedMessageFromBundle(String messageKey, Locale locale) {
         String baseName = "messages";
         return ResourceBundle.getBundle(baseName, locale).getString(messageKey);
     }
 
-    private String getLocalizedMessage(AbstractLocalizedCustomException exception, Locale locale) {
+    private String getLocalizedMessage(AbstractLocalizedCustomException exception, HttpServletRequest request) {
         String messageKey = exception.getMessageKey();
+        Locale locale = getLocale(request);
         Object[] params = exception.getParams();
-        String pattern = getLocalisedMessage(messageKey, locale);
+        String pattern = getLocalisedMessageFromBundle(messageKey, locale);
         return MessageFormat.format(pattern, params);
     }
 
-    private String getLocalizedMessage(String messageKey, Locale locale, Object ... params) {
-        String pattern = getLocalisedMessage(messageKey, locale);
+    private String getLocalizedMessage(String messageKey, HttpServletRequest request, Object ... params) {
+        Locale locale = getLocale(request);
+        String pattern = getLocalisedMessageFromBundle(messageKey, locale);
         return MessageFormat.format(pattern, params);
     }
 
     private String getLocalizedMessage(ConstraintViolationException exception, HttpServletRequest request) {
         String messageKey = "message.validation.intro";
         Locale locale = getLocale(request);
-        StringBuilder builder = new StringBuilder(getLocalizedMessage(messageKey, locale));
+        StringBuilder builder = new StringBuilder(getLocalisedMessageFromBundle(messageKey, locale));
         Set<ConstraintViolation<?>> constraintViolations = exception.getConstraintViolations();
         constraintViolations.forEach(violation -> {
             builder
                     .append("(")
                     .append(violation.getInvalidValue())
                     .append(") - ")
-                    .append(getLocalisedMessage(violation.getMessage(), locale));
+                    .append(getLocalisedMessageFromBundle(violation.getMessage(), locale));
         });
         return builder.toString();
     }
@@ -191,7 +189,7 @@ public class GlobalExceptionHandler {
     private String getLocalizedMessage(MethodArgumentNotValidException exception, HttpServletRequest request) {
         String messageKey = "message.validation.intro";
         Locale locale = getLocale(request);
-        StringBuilder builder = new StringBuilder(getLocalizedMessage(messageKey, locale));
+        StringBuilder builder = new StringBuilder(getLocalisedMessageFromBundle(messageKey, locale));
         List<FieldError> fieldErrors = exception.getFieldErrors();
         fieldErrors.forEach(error -> {
                     builder
@@ -199,7 +197,7 @@ public class GlobalExceptionHandler {
                             .append(" = '")
                             .append(error.getRejectedValue())
                             .append("' - ")
-                            .append(getLocalisedMessage(error.getDefaultMessage(), locale))
+                            .append(getLocalisedMessageFromBundle(error.getDefaultMessage(), locale))
                             .append(" | ");
                 }
         );
@@ -208,11 +206,10 @@ public class GlobalExceptionHandler {
 
     private String getLocalizedMessage(DuplicateKeyException exception, HttpServletRequest request) {
         String messageKey = "message.duplicate_key";
-        Locale locale = getLocale(request);
         String[] originalMessageSplit = exception.getMessage().split("'");
         String entry = originalMessageSplit[1];
         String uniqueKey = originalMessageSplit[3];
-        return getLocalizedMessage(messageKey, locale, entry, uniqueKey);
+        return getLocalizedMessage(messageKey, request, entry, uniqueKey);
     }
 
     /**
