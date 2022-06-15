@@ -4,8 +4,8 @@ import com.epam.esm.TestConfig;
 import com.epam.esm.TestEntityProvider;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dao.entity.Tag;
+import com.epam.esm.exception.AbstractLocalizedCustomException;
 import com.epam.esm.exception.ResourceNotFoundException;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,11 +28,6 @@ class TagDaoImplTest {
     TestEntityProvider entityProvider;
     @Autowired
     TagDao tagDao;
-
-    @BeforeEach
-    void setUp() {
-        Locale.setDefault(Locale.ENGLISH);
-    }
 
     @Test
     void readByIdShouldReturnOptionalOfTagEntity() {
@@ -72,11 +66,13 @@ class TagDaoImplTest {
     @Test
     void updateByTagWithNonexistentIdShouldThrowResourceNotFoundException() {
         Tag tagForUpdate = new Tag(100_500L, "Tag updated");
-        String errorMessageExpected = "Failed to find resource with ID (100,500) in the datasource.";
-        Exception exception = assertThrows(ResourceNotFoundException.class,
+        String errorMessageKeyExpected = "message.resource_not_found";
+        long paramExpected = 100_500L;
+        AbstractLocalizedCustomException exception = assertThrows(ResourceNotFoundException.class,
                 () -> tagDao.update(tagForUpdate)
         );
-        assertEquals(errorMessageExpected, exception.getLocalizedMessage());
+        assertEquals(errorMessageKeyExpected, exception.getMessageKey());
+        assertEquals(paramExpected, exception.getParams()[0]);
     }
 
     @Test
@@ -88,11 +84,13 @@ class TagDaoImplTest {
     @Test
     void deleteByIdShouldThrowResourceNotFoundException() {
         long nonexistentId = 100_500L;
-        String errorMessageExpected = "Failed to find resource with ID (100,500) in the datasource.";
-        Exception exception = assertThrows(ResourceNotFoundException.class,
+        String errorMessageKeyExpected = "message.resource_not_found";
+        long paramExpected = 100_500L;
+        AbstractLocalizedCustomException exception = assertThrows(ResourceNotFoundException.class,
                 () -> tagDao.deleteById(nonexistentId)
         );
-        assertEquals(errorMessageExpected, exception.getLocalizedMessage());
+        assertEquals(errorMessageKeyExpected, exception.getMessageKey());
+        assertEquals(paramExpected, exception.getParams()[0]);
     }
 
 }

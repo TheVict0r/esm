@@ -7,6 +7,7 @@ import com.epam.esm.dao.TagDao;
 import com.epam.esm.dao.entity.Certificate;
 import com.epam.esm.dao.entity.Tag;
 import com.epam.esm.dto.CertificateDto;
+import com.epam.esm.exception.AbstractLocalizedCustomException;
 import com.epam.esm.exception.InappropriateBodyContentException;
 import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.mapper.impl.CertificateMapperImpl;
@@ -79,13 +80,15 @@ class CertificateServiceImplTest {
 
     @Test
     void findByIdShouldThrowResourceNotFoundException() {
-        long nonExistedCertificateId = 999;
+        long nonExistedCertificateId = 999L;
+        long paramExpected = 999L;
         when(certificateDao.readById(nonExistedCertificateId)).thenReturn(Optional.empty());
-        String exceptionMessageExpected = "Failed to find resource with ID (" + nonExistedCertificateId + ") in the datasource.";
-        Throwable exception = assertThrows(
+        String exceptionMessageKeyExpected = "message.resource_not_found";
+        AbstractLocalizedCustomException exception = assertThrows(
                 ResourceNotFoundException.class,
                 () -> certificateService.findById(nonExistedCertificateId));
-        assertEquals(exceptionMessageExpected, exception.getLocalizedMessage());
+        assertEquals(exceptionMessageKeyExpected, exception.getMessageKey());
+        assertEquals(paramExpected, exception.getParams()[0]);
         verify(certificateDao).readById(nonExistedCertificateId);
     }
 
@@ -181,11 +184,13 @@ class CertificateServiceImplTest {
     @Test
     void createShouldThrowInappropriateBodyContentException() {
         CertificateDto certificateWithIdForCreationDto = entityProvider.getCertificateWithIdForCreationDto();
-        String exceptionMessageExpected = "When creating a new resource, you should not specify the ID. Current input data has resource ID (99).";
-        Throwable exception = assertThrows(
+        String exceptionKeyExpected = "message.inappropriate_body_content";
+        long paramExpected = 99L;
+        AbstractLocalizedCustomException exception = assertThrows(
                 InappropriateBodyContentException.class,
                 () -> certificateService.create(certificateWithIdForCreationDto));
-        assertEquals(exceptionMessageExpected, exception.getLocalizedMessage());
+        assertEquals(exceptionKeyExpected, exception.getMessageKey());
+        assertEquals(paramExpected, exception.getParams()[0]);
     }
 
     @Test

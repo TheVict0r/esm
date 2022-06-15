@@ -1,6 +1,7 @@
 package com.epam.esm.service.validation.impl;
 
 import com.epam.esm.TestConfig;
+import com.epam.esm.exception.AbstractLocalizedCustomException;
 import com.epam.esm.exception.MismatchedIdValuesException;
 import com.epam.esm.service.validation.InputDataValidator;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,12 +34,15 @@ class InputDataValidatorImplTest {
     void pathAndBodyIdsCheckThrowsMismatchedIdValuesExceptionWhenIdsMismatch() {
         Long pathId = 10L;
         Long bodyId = 20L;
-        String errorMessageExpected = "Mismatched IDs. ID in URL is (" + pathId +
-                "), ID in request body is (" + bodyId + ").";
-        Exception exception = assertThrows(MismatchedIdValuesException.class,
+        String errorMessageKeyExpected = "message.mismatched_id_values";
+        long param0Expected = 10L;
+        long param1Expected = 20L;
+        AbstractLocalizedCustomException exception = assertThrows(MismatchedIdValuesException.class,
                 () -> dataValidator.pathAndBodyIdsCheck(pathId, bodyId)
         );
-        assertEquals(errorMessageExpected, exception.getLocalizedMessage());
+        assertEquals(errorMessageKeyExpected, exception.getMessageKey());
+        assertEquals(param0Expected, exception.getParams()[0]);
+        assertEquals(param1Expected, exception.getParams()[1]);
     }
 
 }

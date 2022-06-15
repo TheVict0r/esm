@@ -1,15 +1,13 @@
 package com.epam.esm.dao.search;
 
 import com.epam.esm.TestConfig;
+import com.epam.esm.exception.AbstractLocalizedCustomException;
 import com.epam.esm.exception.InvalidRequestSortParamValueException;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -45,13 +43,6 @@ class SortFactoryImplTest {
     public static String someNewResponse = "Some response";
 
     private final String invalidSortRequest = "Some_Wrong_Request";
-    private final String invalidSortRequestExceptionMessage =
-            "Incorrect sort request parameter (Some_Wrong_Request). Actual possible parameters are: NAME_ASC, DATE_ASC, NAME_DESC, DATE_DESC";
-
-    @BeforeEach
-    public void setUp() {
-        Locale.setDefault(Locale.ENGLISH);
-    }
 
     @Test
     void provideDateAscSortQueryFragmentForDateAscRequest1() {
@@ -115,12 +106,17 @@ class SortFactoryImplTest {
 
     @Test
     void provideSortQueryFragmentAfterInvalidRequestThrowsInvalidRequestSortParamValueException() {
-        Throwable exception = assertThrows(
+        String errorMessageKeyExpected = "message.invalid_request_param_value_exception";
+        String param0Expected = "Some_Wrong_Request";
+        String param1Expected = "NAME_ASC, DATE_ASC, NAME_DESC, DATE_DESC";
+        AbstractLocalizedCustomException exception = assertThrows(
                 InvalidRequestSortParamValueException.class,
                 () -> {
                     sortFactory.provideSortQueryFragment(invalidSortRequest);
                 });
-        assertEquals(invalidSortRequestExceptionMessage, exception.getLocalizedMessage());
+        assertEquals(errorMessageKeyExpected, exception.getMessageKey());
+        assertEquals(param0Expected, exception.getParams()[0]);
+        assertEquals(param1Expected, exception.getParams()[1]);
     }
 
     @Test

@@ -5,6 +5,7 @@ import com.epam.esm.TestEntityProvider;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dao.entity.Tag;
 import com.epam.esm.dto.TagDto;
+import com.epam.esm.exception.AbstractLocalizedCustomException;
 import com.epam.esm.exception.InappropriateBodyContentException;
 import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.mapper.impl.TagMapperImpl;
@@ -22,7 +23,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -49,7 +49,6 @@ class TagServiceImplTest {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        Locale.setDefault(Locale.ENGLISH);
     }
 
     @Autowired
@@ -70,11 +69,13 @@ class TagServiceImplTest {
     @Test
     void readByIdShouldReturnResourceNotFoundException() {
         Long nonExistentId = 1_000_000L;
-        String errorMessageExpected = "Failed to find resource with ID (1,000,000) in the datasource.";
+        String errorMessageKeyExpected = "message.resource_not_found";
+        long paramExpected = 1_000_000L;
         when(tagDao.readById(nonExistentId)).thenReturn(Optional.empty());
-        Throwable exception = assertThrows(ResourceNotFoundException.class,
+        AbstractLocalizedCustomException exception = assertThrows(ResourceNotFoundException.class,
                 () -> tagService.findById(nonExistentId));
-        assertEquals(errorMessageExpected, exception.getLocalizedMessage());
+        assertEquals(errorMessageKeyExpected, exception.getMessageKey());
+        assertEquals(paramExpected, exception.getParams()[0]);
     }
 
     @Test
@@ -128,11 +129,12 @@ class TagServiceImplTest {
     void createReturnInappropriateBodyContentException() {
         TagDto tagForCreationDto = entityProvider.getTagForCreationDto();
         tagForCreationDto.setId(999L);
-        String errorMessageExpected =
-                "When creating a new resource, you should not specify the ID. Current input data has resource ID (999).";
-        Exception exception = assertThrows(InappropriateBodyContentException.class,
+        String errorMessageKeyExpected = "message.inappropriate_body_content";
+        long paramExpected = 999L;
+        AbstractLocalizedCustomException exception = assertThrows(InappropriateBodyContentException.class,
                 () -> tagService.create(tagForCreationDto));
-        assertEquals(errorMessageExpected, exception.getLocalizedMessage());
+        assertEquals(errorMessageKeyExpected, exception.getMessageKey());
+        assertEquals(paramExpected, exception.getParams()[0]);
     }
 
     @Test

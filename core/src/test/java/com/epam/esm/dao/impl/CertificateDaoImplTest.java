@@ -4,8 +4,8 @@ import com.epam.esm.TestConfig;
 import com.epam.esm.TestEntityProvider;
 import com.epam.esm.dao.CertificateDao;
 import com.epam.esm.dao.entity.Certificate;
+import com.epam.esm.exception.AbstractLocalizedCustomException;
 import com.epam.esm.exception.ResourceNotFoundException;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,11 +29,6 @@ class CertificateDaoImplTest {
     TestEntityProvider entityProvider;
     @Autowired
     CertificateDao certificateDao;
-
-    @BeforeEach
-    void setUp() {
-        Locale.setDefault(Locale.ENGLISH);
-    }
 
     @Test
     void readByIdShouldReturnCertificateEntity() {
@@ -114,11 +108,13 @@ class CertificateDaoImplTest {
     @Test
     void replaceShouldThrowResourceNotFoundException() {
         Certificate certificateForReplacement = entityProvider.getCertificateWithWrongIdForReplacementInDao();
-        String errorMessageExpected = "Failed to find resource with ID (1,000,000) in the datasource.";
-        Exception exception = assertThrows(ResourceNotFoundException.class,
+        String errorMessageKeyExpected = "message.resource_not_found";
+        long paramExpected = 1_000_000L;
+        AbstractLocalizedCustomException exception = assertThrows(ResourceNotFoundException.class,
                 () -> certificateDao.update(certificateForReplacement)
         );
-        assertEquals(errorMessageExpected, exception.getLocalizedMessage());
+        assertEquals(errorMessageKeyExpected, exception.getMessageKey());
+        assertEquals(paramExpected, exception.getParams()[0]);
     }
 
     @Test
@@ -132,11 +128,13 @@ class CertificateDaoImplTest {
     @Test
     void deleteByIdShouldThrowResourceNotFoundException() {
         long nonexistentId = 1_000_000;
-        String errorMessageExpected = "Failed to find resource with ID (1,000,000) in the datasource.";
-        Exception exception = assertThrows(ResourceNotFoundException.class,
+        String errorMessageKeyExpected = "message.resource_not_found";
+        long paramExpected = 1_000_000L;
+        AbstractLocalizedCustomException exception = assertThrows(ResourceNotFoundException.class,
                 () -> certificateDao.deleteById(nonexistentId)
         );
-        assertEquals(errorMessageExpected, exception.getLocalizedMessage());
+        assertEquals(errorMessageKeyExpected, exception.getMessageKey());
+        assertEquals(paramExpected, exception.getParams()[0]);
     }
 
 }
