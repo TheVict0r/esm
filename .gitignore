@@ -21,6 +21,14 @@ target/
 
 logs/
 
+#Gradle files
+.gradle/
+api/build/
+buildSrc/
+core/build/
+gradle/
+
+
 # Package Files #
 *.jar
 *.war

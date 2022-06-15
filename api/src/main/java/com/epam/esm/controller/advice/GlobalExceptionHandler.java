@@ -8,7 +8,6 @@ import com.epam.esm.exception.NonexistentLocaleException;
 import com.epam.esm.exception.ResourceNotCreatedException;
 import com.epam.esm.exception.ResourceNotFoundException;
 import lombok.Data;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -18,6 +17,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.yaml.snakeyaml.constructor.DuplicateKeyException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
