@@ -18,6 +18,14 @@ repositories {
     mavenCentral()
 }
 
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
+}
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -32,9 +40,11 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     // https://mvnrepository.com/artifact/org.modelmapper/modelmapper
     implementation 'org.modelmapper:modelmapper:3.1.0'
-
+    // https://mvnrepository.com/artifact/org.junit.platform/junit-platform-suite-engine
+    testImplementation 'org.junit.platform:junit-platform-suite-engine:1.8.2'
 }
 
 tasks.named('test') {
     useJUnitPlatform()
 }
+
