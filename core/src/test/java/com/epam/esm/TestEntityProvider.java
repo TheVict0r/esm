@@ -1,9 +1,10 @@
 package com.epam.esm;
 
-import com.epam.esm.dto.CertificateDto;
-import com.epam.esm.dto.TagDto;
 import com.epam.esm.dao.entity.Certificate;
 import com.epam.esm.dao.entity.Tag;
+import com.epam.esm.dto.CertificateDto;
+import com.epam.esm.dto.TagDto;
+
 import lombok.Getter;
 import org.springframework.stereotype.Component;
 
@@ -616,5 +617,6 @@ public class TestEntityProvider {
     private List<CertificateDto> allCertificatesDtoList = new ArrayList<>(List.of(
             new CertificateDto[]{certificate1dto, certificate2dto, certificate3dto, certificate4dto, certificate5dto,
                     certificate6dto, certificate7dto, certificate8dto, certificate9dto}));
+
 
 }
