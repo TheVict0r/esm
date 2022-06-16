@@ -119,10 +119,4 @@ class SortFactoryImplTest {
         assertEquals(param1Expected, exception.getParams()[1]);
     }
 
-    @Test
-    void addNewSortQueryFragment() {
-        sortFactory.addNewSortQueryFragment(someNewRequest, someNewResponse);
-        assertEquals(someNewResponse, sortFactory.provideSortQueryFragment(someNewRequest));
-    }
-
 }

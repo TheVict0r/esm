@@ -32,8 +32,8 @@ class CertificateDaoImplTest {
 
     @Test
     void readByIdShouldReturnCertificateEntity() {
-        long certificateId = 1L;
-        Optional<Certificate> certificateExpected = Optional.of(entityProvider.getCertificate1());
+        long certificateId = 4L;
+        Optional<Certificate> certificateExpected = Optional.of(entityProvider.getCertificate4());
         assertEquals(certificateExpected, certificateDao.readById(certificateId));
     }
 

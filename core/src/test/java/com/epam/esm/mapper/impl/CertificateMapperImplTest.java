@@ -31,15 +31,15 @@ class CertificateMapperImplTest {
 
     @Test
     void convertToEntityShouldReturnEntity() {
-        CertificateDto certificateDto = entityProvider.getCertificate1dto();
-        Certificate expectedCertificate = entityProvider.getCertificate1();
+        CertificateDto certificateDto = entityProvider.getCertificate5dto();
+        Certificate expectedCertificate = entityProvider.getCertificate5();
         assertEquals(expectedCertificate, certificateMapper.convertToEntity(certificateDto));
     }
 
     @Test
     void convertToDtoShouldReturnDto() {
-        Certificate certificate = entityProvider.getCertificate1();
-        CertificateDto expectedCertificateDto = entityProvider.getCertificate1dto();
+        Certificate certificate = entityProvider.getCertificate2();
+        CertificateDto expectedCertificateDto = entityProvider.getCertificate2dto();
         assertEquals(expectedCertificateDto, certificateMapper.convertToDto(certificate));
     }
 

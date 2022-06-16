@@ -2,6 +2,7 @@ plugins {
     id 'org.springframework.boot' version '2.7.0'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
+//    id "com.diffplug.spotless" version "5.17.1"
 }
 
 group = 'com.epam'
@@ -25,6 +26,14 @@ bootJar {
 jar {
     enabled = true
 }
+
+//spotless {
+//    java {
+//        removeUnusedImports()
+//        importOrder()
+//        googleJavaFormat()
+//    }
+//}
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'

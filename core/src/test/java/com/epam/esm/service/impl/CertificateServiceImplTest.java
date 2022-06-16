@@ -21,14 +21,12 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 
@@ -41,7 +39,6 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith({SpringExtension.class, MockitoExtension.class})
 @ContextConfiguration(classes = {TestConfig.class})
-@ActiveProfiles("test")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class CertificateServiceImplTest {
 
@@ -63,14 +60,13 @@ class CertificateServiceImplTest {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        Locale.setDefault(Locale.ENGLISH);
     }
 
     @Test
     void findByIdShouldReturnCertificateDto() {
-        CertificateDto certificateDtoExpected = entityProvider.getCertificate1dto();
+        CertificateDto certificateDtoExpected = entityProvider.getCertificate3dto();
         long certificateDtoId = certificateDtoExpected.getId();
-        Certificate certificate = entityProvider.getCertificate1();
+        Certificate certificate = entityProvider.getCertificate3();
         when(certificateDao.readById(certificateDtoId)).thenReturn(Optional.of(certificate));
         when(certificateMapper.convertToDto(certificate)).thenReturn(certificateDtoExpected);
         assertEquals(certificateDtoExpected, certificateService.findById(certificateDtoId));
