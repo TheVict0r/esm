@@ -9,73 +9,72 @@ import com.epam.esm.mapper.impl.TagMapperImpl;
 import com.epam.esm.service.TagService;
 import com.epam.esm.service.validation.BasicInfo;
 import com.epam.esm.service.validation.InputDataValidator;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import javax.validation.constraints.Positive;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import javax.validation.constraints.Positive;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Log4j2
 @Service
 public class TagServiceImpl implements TagService {
 
-    private TagDao tagDao;
-    private TagMapperImpl tagMapper;
-    private InputDataValidator validator;
+  private TagDao tagDao;
+  private TagMapperImpl tagMapper;
+  private InputDataValidator validator;
 
-    @Autowired
-    public TagServiceImpl(TagDao tagDao, TagMapperImpl tagMapper, InputDataValidator validator) {
-        this.tagDao = tagDao;
-        this.tagMapper = tagMapper;
-        this.validator = validator;
+  @Autowired
+  public TagServiceImpl(TagDao tagDao, TagMapperImpl tagMapper, InputDataValidator validator) {
+    this.tagDao = tagDao;
+    this.tagMapper = tagMapper;
+    this.validator = validator;
+  }
+
+  @Override
+  public TagDto findById(
+      @Positive(message = "message.validation.id.min", groups = BasicInfo.class) Long id) {
+    log.debug("Reading the Tag by ID {}", id);
+    Optional<Tag> tagOptional = tagDao.readById(id);
+    if (tagOptional.isEmpty()) {
+      log.error("There is no tag with ID '{}' in the database", id);
+      throw new ResourceNotFoundException(id);
     }
+    return tagMapper.convertToDto(tagOptional.get());
+  }
 
-    @Override
-    public TagDto findById(@Positive(message = "message.validation.id.min", groups = BasicInfo.class) Long id) {
-        log.debug("Reading the Tag by ID {}", id);
-        Optional<Tag> tagOptional = tagDao.readById(id);
-        if (tagOptional.isEmpty()) {
-            log.error("There is no tag with ID '{}' in the database", id);
-            throw new ResourceNotFoundException(id);
-        }
-        return tagMapper.convertToDto(tagOptional.get());
+  @Override
+  public List<TagDto> searchAll() {
+    log.debug("Reading all Tags");
+    List<Tag> allTags = tagDao.searchAll();
+    return allTags.stream().map(tag -> tagMapper.convertToDto(tag)).collect(Collectors.toList());
+  }
+
+  @Override
+  public TagDto create(TagDto tagDto) {
+    log.debug("Creating the Tag {}", tagDto);
+    if (tagDto.getId() != null) {
+      log.error(
+          "When creating a new Tag, you should not specify the ID. Current input data has ID value '{}'.",
+          tagDto.getId());
+      throw new InappropriateBodyContentException(tagDto.getId());
     }
+    Tag tagCreated = tagDao.create(tagMapper.convertToEntity(tagDto));
+    return tagMapper.convertToDto(tagCreated);
+  }
 
-    @Override
-    public List<TagDto> searchAll() {
-        log.debug("Reading all Tags");
-        List<Tag> allTags = tagDao.searchAll();
-        return allTags.stream()
-                .map(tag -> tagMapper.convertToDto(tag))
-                .collect(Collectors.toList());
-    }
+  @Override
+  public TagDto updateById(Long id, TagDto tagDto) {
+    log.debug("Updating the Tag by ID {}, the new Tag is {}", id, tagDto);
+    validator.pathAndBodyIdsCheck(id, tagDto.getId());
+    tagDao.update(tagMapper.convertToEntity(tagDto));
+    return tagDto;
+  }
 
-    @Override
-    public TagDto create(TagDto tagDto) {
-        log.debug("Creating the Tag {}", tagDto);
-        if (tagDto.getId() != null) {
-            log.error("When creating a new Tag, you should not specify the ID. Current input data has ID value '{}'.", tagDto.getId());
-            throw new InappropriateBodyContentException(tagDto.getId());
-        }
-        Tag tagCreated = tagDao.create(tagMapper.convertToEntity(tagDto));
-        return tagMapper.convertToDto(tagCreated);
-    }
-
-    @Override
-    public TagDto updateById(Long id, TagDto tagDto) {
-        log.debug("Updating the Tag by ID {}, the new Tag is {}", id, tagDto);
-        validator.pathAndBodyIdsCheck(id, tagDto.getId());
-        tagDao.update(tagMapper.convertToEntity(tagDto));
-        return tagDto;
-    }
-
-    @Override
-    public long deleteById(Long id) {
-        log.debug("Deleting the Tag by ID {}", id);
-        return tagDao.deleteById(id);
-    }
-
+  @Override
+  public long deleteById(Long id) {
+    log.debug("Deleting the Tag by ID {}", id);
+    return tagDao.deleteById(id);
+  }
 }
