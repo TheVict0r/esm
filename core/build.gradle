@@ -1,22 +1,15 @@
-plugins {
-    id 'org.springframework.boot' version '2.7.0'
-    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-    id 'java'
-//    id "com.diffplug.spotless" version "5.17.1"
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'mysql:mysql-connector-java'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'org.modelmapper:modelmapper:3.1.0'
+    testImplementation 'org.junit.platform:junit-platform-suite-engine:1.8.2'
 }
 
-group = 'com.epam'
-version = '1.0-SNAPSHOT'
-sourceCompatibility = '17'
-
-configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
-    }
-}
-
-repositories {
-    mavenCentral()
+tasks.named('test') {
+    useJUnitPlatform()
 }
 
 bootJar {
@@ -26,35 +19,3 @@ bootJar {
 jar {
     enabled = true
 }
-
-//spotless {
-//    java {
-//        removeUnusedImports()
-//        importOrder()
-//        googleJavaFormat()
-//    }
-//}
-
-dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-hateoas'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-    testCompileOnly 'org.projectlombok:lombok'
-    testAnnotationProcessor'org.projectlombok:lombok'
-    runtimeOnly 'com.h2database:h2'
-    runtimeOnly 'mysql:mysql-connector-java'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    // https://mvnrepository.com/artifact/org.modelmapper/modelmapper
-    implementation 'org.modelmapper:modelmapper:3.1.0'
-    // https://mvnrepository.com/artifact/org.junit.platform/junit-platform-suite-engine
-    testImplementation 'org.junit.platform:junit-platform-suite-engine:1.8.2'
-}
-
-tasks.named('test') {
-    useJUnitPlatform()
-}
-

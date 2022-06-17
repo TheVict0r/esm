@@ -27,7 +27,7 @@ api/build/
 buildSrc/
 core/build/
 gradle/
-
+build/
 
 # Package Files #
 *.jar

@@ -36,6 +36,9 @@ import java.util.Set;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+
+
+
     /**
      * Handles the situation, when there is no appropriate entity in the datasource.
      *
