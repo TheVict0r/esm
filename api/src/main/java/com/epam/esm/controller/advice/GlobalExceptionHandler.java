@@ -7,6 +7,8 @@ import com.epam.esm.exception.MismatchedIdValuesException;
 import com.epam.esm.exception.NonexistentLocaleException;
 import com.epam.esm.exception.ResourceNotCreatedException;
 import com.epam.esm.exception.ResourceNotFoundException;
+
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
@@ -128,15 +130,15 @@ public class GlobalExceptionHandler {
    * Prevents from sending to the datasource the value that duplicates existing entry in the unique
    * field.
    *
-   * @param duplicateKeyException the instance of DuplicateKeyException
+   * @param sqlIntegrityConstraintViolationException the instance of SQLIntegrityConstraintViolationException
    * @return IncorrectData object containing original error message and custom error code
    */
-  @ExceptionHandler(DuplicateKeyException.class)
+  @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public IncorrectData handleException(
-      DuplicateKeyException duplicateKeyException, HttpServletRequest request) {
-    String errorMessage = getLocalizedMessage(duplicateKeyException, request);
-    return new IncorrectData(duplicateKeyException, errorMessage);
+          SQLIntegrityConstraintViolationException sqlIntegrityConstraintViolationException, HttpServletRequest request) {
+    String errorMessage = getLocalizedMessage(sqlIntegrityConstraintViolationException, request);
+    return new IncorrectData(sqlIntegrityConstraintViolationException, errorMessage);
   }
 
   /**
@@ -222,7 +224,7 @@ public class GlobalExceptionHandler {
     return builder.toString();
   }
 
-  private String getLocalizedMessage(DuplicateKeyException exception, HttpServletRequest request) {
+  private String getLocalizedMessage(SQLIntegrityConstraintViolationException exception, HttpServletRequest request) {
     String messageKey = "message.duplicate_key";
     String[] originalMessageSplit = exception.getMessage().split("'");
     String entry = originalMessageSplit[1];
@@ -252,7 +254,7 @@ public class GlobalExceptionHandler {
       allCustomErrorCodes.put(MethodArgumentTypeMismatchException.class, 40004);
       allCustomErrorCodes.put(ConstraintViolationException.class, 40005);
       allCustomErrorCodes.put(MethodArgumentNotValidException.class, 40006);
-      allCustomErrorCodes.put(DuplicateKeyException.class, 40007);
+      allCustomErrorCodes.put(SQLIntegrityConstraintViolationException.class, 40007);
       allCustomErrorCodes.put(HttpMessageNotReadableException.class, 40008);
       allCustomErrorCodes.put(NonexistentLocaleException.class, 40401);
       allCustomErrorCodes.put(ResourceNotFoundException.class, 40402);
