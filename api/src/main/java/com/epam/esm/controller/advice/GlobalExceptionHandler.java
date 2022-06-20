@@ -7,7 +7,6 @@ import com.epam.esm.exception.MismatchedIdValuesException;
 import com.epam.esm.exception.NonexistentLocaleException;
 import com.epam.esm.exception.ResourceNotCreatedException;
 import com.epam.esm.exception.ResourceNotFoundException;
-
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.text.MessageFormat;
 import java.util.HashMap;
@@ -29,7 +28,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import org.yaml.snakeyaml.constructor.DuplicateKeyException;
 
 /** A class for handling all exceptions that occur. */
 @RestControllerAdvice
@@ -47,6 +45,15 @@ public class GlobalExceptionHandler {
       ResourceNotFoundException resourceNotFoundException, HttpServletRequest request) {
     String localizedMessage = getLocalizedMessage(resourceNotFoundException, request);
     return new IncorrectData(resourceNotFoundException, localizedMessage);
+  }
+
+  //todo написать javadoc и errorMessage возникает при удалении несуществующего объекта
+  //может и ещё где
+  @ExceptionHandler(IllegalArgumentException.class)
+  @ResponseStatus(HttpStatus.NOT_FOUND)
+  public IncorrectData handleException(
+          IllegalArgumentException illegalArgumentException, HttpServletRequest request) {
+    return new IncorrectData(illegalArgumentException, "IllegalArgumentException");
   }
 
   /**
@@ -130,13 +137,15 @@ public class GlobalExceptionHandler {
    * Prevents from sending to the datasource the value that duplicates existing entry in the unique
    * field.
    *
-   * @param sqlIntegrityConstraintViolationException the instance of SQLIntegrityConstraintViolationException
+   * @param sqlIntegrityConstraintViolationException the instance of
+   *     SQLIntegrityConstraintViolationException
    * @return IncorrectData object containing original error message and custom error code
    */
   @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public IncorrectData handleException(
-          SQLIntegrityConstraintViolationException sqlIntegrityConstraintViolationException, HttpServletRequest request) {
+      SQLIntegrityConstraintViolationException sqlIntegrityConstraintViolationException,
+      HttpServletRequest request) {
     String errorMessage = getLocalizedMessage(sqlIntegrityConstraintViolationException, request);
     return new IncorrectData(sqlIntegrityConstraintViolationException, errorMessage);
   }
@@ -224,7 +233,8 @@ public class GlobalExceptionHandler {
     return builder.toString();
   }
 
-  private String getLocalizedMessage(SQLIntegrityConstraintViolationException exception, HttpServletRequest request) {
+  private String getLocalizedMessage(
+      SQLIntegrityConstraintViolationException exception, HttpServletRequest request) {
     String messageKey = "message.duplicate_key";
     String[] originalMessageSplit = exception.getMessage().split("'");
     String entry = originalMessageSplit[1];
@@ -259,6 +269,7 @@ public class GlobalExceptionHandler {
       allCustomErrorCodes.put(NonexistentLocaleException.class, 40401);
       allCustomErrorCodes.put(ResourceNotFoundException.class, 40402);
       allCustomErrorCodes.put(ResourceNotCreatedException.class, 50001);
+      allCustomErrorCodes.put(IllegalArgumentException.class, 40403);
     }
 
     IncorrectData(Exception exception, String errorMessage) {

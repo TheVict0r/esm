@@ -1,5 +1,6 @@
 package com.epam.esm.dao.impl;
 
+import com.epam.esm.dao.HibernateSessionFactoryUtil;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dao.entity.Tag;
 import com.epam.esm.exception.ResourceNotCreatedException;
@@ -11,8 +12,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import lombok.extern.log4j.Log4j2;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.KeyHolder;
@@ -40,6 +47,9 @@ public class TagDaoImpl implements TagDao {
   private final JdbcTemplate jdbcTemplate;
   private final KeyHolder keyHolder;
 
+  @PersistenceContext private EntityManager entityManager;
+
+
   @Autowired
   public TagDaoImpl(JdbcTemplate jdbcTemplate, KeyHolder keyHolder) {
     this.jdbcTemplate = jdbcTemplate;
@@ -49,25 +59,27 @@ public class TagDaoImpl implements TagDao {
   @Override
   public Optional<Tag> readById(long id) {
     log.debug("Reading the Tag by ID - {}.", id);
-    return jdbcTemplate
-        .query(
-            READ_TAG_BY_ID,
-            new Object[] {id},
-            new int[] {Types.VARCHAR},
-            new BeanPropertyRowMapper<>(Tag.class))
-        .stream()
-        .findAny();
+    Session session  = HibernateSessionFactoryUtil.getSessionFactory().getCurrentSession();
+    session.beginTransaction();
+    Tag tag = session.get(Tag.class, id);
+    session.getTransaction().commit();
+    return Optional.ofNullable(tag);
   }
 
   @Override
   public List<Tag> searchAll() {
     log.debug("Reading all Tags.");
-    return jdbcTemplate.query(READ_ALL_TAGS, new BeanPropertyRowMapper<>(Tag.class));
+    Session session  = HibernateSessionFactoryUtil.getSessionFactory().getCurrentSession();
+    session.beginTransaction();
+    List<Tag> allTags = session.createQuery("From Tag").getResultList();
+    session.getTransaction().commit();
+    return allTags;
   }
 
   @Override
   public Tag create(Tag tag) {
     log.debug("Creating the Tag - {}.", tag);
+
     int rowsAffected =
         jdbcTemplate.update(
             connection -> {
@@ -99,10 +111,15 @@ public class TagDaoImpl implements TagDao {
   @Override
   public long deleteById(long id) {
     log.debug("Deleting the Tag by ID - {}.", id);
-    int rowsAffected = jdbcTemplate.update(DELETE_TAG_BY_ID, id);
-    if (rowsAffected != 1) {
-      throw new ResourceNotFoundException(id);
-    }
+    Session session  = HibernateSessionFactoryUtil.getSessionFactory().getCurrentSession();
+    session.beginTransaction();
+    session.delete(session.get(Tag.class, id));
+    session.getTransaction().commit();
+    //todo throws IllegalArgumentException если удаляем несуществующий ID
+//    int rowsAffected = jdbcTemplate.update(DELETE_TAG_BY_ID, id);
+//    if (rowsAffected != 1) {
+//      throw new ResourceNotFoundException(id);
+//    }
     return id;
   }
 
