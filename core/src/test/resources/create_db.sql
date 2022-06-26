@@ -13,14 +13,14 @@ CREATE TABLE IF NOT EXISTS tag (
 
 
 CREATE TABLE IF NOT EXISTS gift_certificate_tag (
-    gift_certeficate_id INT NOT NULL,
+    gift_certificate_id INT NOT NULL,
     tag_id INT NOT NULL,
-    CONSTRAINT fk_gift_certeficate_tag_gift_certeficate
-    FOREIGN KEY (gift_certeficate_id)
+    CONSTRAINT fk_gift_certificate_tag_gift_certificate
+    FOREIGN KEY (gift_certificate_id)
     REFERENCES gift_certificate (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
-    CONSTRAINT fk_gift_certeficate_tag_tag1
+    CONSTRAINT fk_gift_certificate_tag_tag1
     FOREIGN KEY (tag_id)
     REFERENCES tag (id)
     ON DELETE CASCADE

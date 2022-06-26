@@ -11,6 +11,8 @@ import java.sql.Types;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.log4j.Log4j2;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -34,25 +36,30 @@ public class CertificateDaoImpl implements CertificateDao {
   private final KeyHolder keyHolder;
   private final SearchProvider searchProvider;
 
+  private final SessionFactory sessionFactory;
+
   @Autowired
   public CertificateDaoImpl(
-      JdbcTemplate jdbcTemplate, KeyHolder keyHolder, SearchProvider searchProvider) {
+      JdbcTemplate jdbcTemplate,
+      KeyHolder keyHolder,
+      SearchProvider searchProvider,
+      SessionFactory sessionFactory) {
     this.jdbcTemplate = jdbcTemplate;
     this.keyHolder = keyHolder;
     this.searchProvider = searchProvider;
+    this.sessionFactory = sessionFactory;
   }
 
   @Override
   public Optional<Certificate> readById(long id) {
     log.debug("Reading Certificate by ID - {}", id);
-    return jdbcTemplate
-        .query(
-            READ_CERTIFICATE_BY_ID,
-            new Object[] {id},
-            new int[] {Types.VARCHAR},
-            new BeanPropertyRowMapper<>(Certificate.class))
-        .stream()
-        .findAny();
+    Session session = sessionFactory.openSession();
+    session.beginTransaction();
+    Certificate certificate = session.get(Certificate.class, id);
+    certificate.getTags().stream().findFirst();
+    session.getTransaction().commit();
+    session.close();
+    return Optional.ofNullable(certificate);
   }
 
   @Override

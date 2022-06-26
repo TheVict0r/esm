@@ -50,7 +50,6 @@ public class CertificateServiceImpl implements CertificateService {
     Optional<Certificate> certificateOptional = certificateDao.readById(id);
     if (certificateOptional.isPresent()) {
       certificate = certificateOptional.get();
-      certificate.setTags(tagDao.retrieveTagsByCertificateId(id));
     } else {
       String errorMessage =
           String.format("Failed to find Certificate with id '%s' in the datasource.", id);

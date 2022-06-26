@@ -57,6 +57,7 @@ public class Certificate implements Serializable {
 
   @ManyToMany(
       cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+  // cascade = {CascadeType.ALL})
   @JoinTable(
       name = "gift_certificate_tag",
       joinColumns = @JoinColumn(name = "gift_certificate_id"),

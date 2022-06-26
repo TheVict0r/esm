@@ -20,7 +20,6 @@ import org.hibernate.resource.transaction.spi.TransactionStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -29,11 +28,11 @@ public class TagDaoImpl implements TagDao {
 
   public static final String READ_TAG_BY_NAME = "SELECT * FROM tag WHERE name = ?";
   public static final String READ_TAGS_BY_CERTIFICATE_ID =
-      "SELECT * FROM tag JOIN gift_certificate_tag ON tag.id = gift_certificate_tag.tag_id WHERE gift_certeficate_id = ?";
+      "SELECT * FROM tag JOIN gift_certificate_tag ON tag.id = gift_certificate_tag.tag_id WHERE gift_certificate_id = ?";
   private static final String SAVE_TAG_TO_CERTIFICATE =
-      "INSERT INTO gift_certificate_tag (gift_certeficate_id, tag_id) VALUES (?, ?)";
+      "INSERT INTO gift_certificate_tag (gift_certificate_id, tag_id) VALUES (?, ?)";
   private static final String DELETE_TAGS_FROM_CERTIFICATE =
-      "DELETE FROM gift_certificate_tag WHERE gift_certeficate_id = ?";
+      "DELETE FROM gift_certificate_tag WHERE gift_certificate_id = ?";
 
   public static final int ILLEGAL_TAG_ID = -1;
 
