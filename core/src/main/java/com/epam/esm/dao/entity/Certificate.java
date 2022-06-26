@@ -3,6 +3,7 @@ package com.epam.esm.dao.entity;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -29,7 +30,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 public class Certificate implements Serializable {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
 
   @Column(name = "name")
@@ -54,7 +55,8 @@ public class Certificate implements Serializable {
   // todo read about it
   private LocalDateTime lastUpdateDate;
 
-  @ManyToMany
+  @ManyToMany(
+      cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
   @JoinTable(
       name = "gift_certificate_tag",
       joinColumns = @JoinColumn(name = "gift_certificate_id"),

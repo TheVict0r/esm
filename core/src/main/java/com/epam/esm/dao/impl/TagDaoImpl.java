@@ -1,25 +1,23 @@
 package com.epam.esm.dao.impl;
 
-import com.epam.esm.dao.HibernateSessionFactoryUtil;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dao.entity.Tag;
-import com.epam.esm.exception.ResourceNotCreatedException;
+import com.epam.esm.exception.DuplicateEntryException;
 import com.epam.esm.exception.ResourceNotFoundException;
-import java.sql.PreparedStatement;
-import java.sql.Statement;
 import java.sql.Types;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import lombok.extern.log4j.Log4j2;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
+import org.hibernate.exception.ConstraintViolationException;
+import org.hibernate.resource.transaction.spi.TransactionStatus;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.KeyHolder;
@@ -29,12 +27,7 @@ import org.springframework.stereotype.Repository;
 @Log4j2
 public class TagDaoImpl implements TagDao {
 
-  public static final String CREATE_NEW_TAG = "INSERT INTO tag (name) VALUES (?)";
-  public static final String READ_TAG_BY_ID = "SELECT * FROM tag WHERE id = ?";
   public static final String READ_TAG_BY_NAME = "SELECT * FROM tag WHERE name = ?";
-  public static final String READ_ALL_TAGS = "SELECT * FROM tag";
-  public static final String UPDATE_TAG_BY_ID = "UPDATE tag SET name = ? WHERE id = ?";
-  public static final String DELETE_TAG_BY_ID = "DELETE FROM tag WHERE id = ?";
   public static final String READ_TAGS_BY_CERTIFICATE_ID =
       "SELECT * FROM tag JOIN gift_certificate_tag ON tag.id = gift_certificate_tag.tag_id WHERE gift_certeficate_id = ?";
   private static final String SAVE_TAG_TO_CERTIFICATE =
@@ -45,81 +38,110 @@ public class TagDaoImpl implements TagDao {
   public static final int ILLEGAL_TAG_ID = -1;
 
   private final JdbcTemplate jdbcTemplate;
-  private final KeyHolder keyHolder;
 
-  @PersistenceContext private EntityManager entityManager;
-
+  private final SessionFactory sessionFactory;
 
   @Autowired
-  public TagDaoImpl(JdbcTemplate jdbcTemplate, KeyHolder keyHolder) {
+  public TagDaoImpl(JdbcTemplate jdbcTemplate, SessionFactory sessionFactory) {
     this.jdbcTemplate = jdbcTemplate;
-    this.keyHolder = keyHolder;
+    this.sessionFactory = sessionFactory;
   }
 
   @Override
   public Optional<Tag> readById(long id) {
     log.debug("Reading the Tag by ID - {}.", id);
-    Session session  = HibernateSessionFactoryUtil.getSessionFactory().getCurrentSession();
+    Session session = sessionFactory.openSession();
     session.beginTransaction();
     Tag tag = session.get(Tag.class, id);
     session.getTransaction().commit();
+    session.close();
     return Optional.ofNullable(tag);
   }
 
   @Override
   public List<Tag> searchAll() {
     log.debug("Reading all Tags.");
-    Session session  = HibernateSessionFactoryUtil.getSessionFactory().getCurrentSession();
+    Session session = sessionFactory.openSession();
     session.beginTransaction();
-    List<Tag> allTags = session.createQuery("From Tag").getResultList();
+    CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+    CriteriaQuery<Tag> criteriaQuery = criteriaBuilder.createQuery(Tag.class);
+    Root<Tag> root = criteriaQuery.from(Tag.class);
+    criteriaQuery.select(root);
+    List<Tag> allTags = session.createQuery(criteriaQuery).getResultList();
+    //    /*===============HQL=======================*/
+    //    List<Tag> allTags = session.createQuery("from Tag").getResultList();
+    //
     session.getTransaction().commit();
+    session.close();
     return allTags;
   }
 
   @Override
   public Tag create(Tag tag) {
     log.debug("Creating the Tag - {}.", tag);
-
-    int rowsAffected =
-        jdbcTemplate.update(
-            connection -> {
-              PreparedStatement ps =
-                  connection.prepareStatement(CREATE_NEW_TAG, Statement.RETURN_GENERATED_KEYS);
-              ps.setString(1, tag.getName());
-              return ps;
-            },
-            keyHolder);
-    if (rowsAffected != 1) {
-      log.error("Tag '{}' was not created.", tag);
-      throw new ResourceNotCreatedException(tag);
+    Session session = sessionFactory.openSession();
+    try {
+      session.beginTransaction();
+      session.save(tag);
+      session.getTransaction().commit();
+    } catch (ConstraintViolationException e) {
+      if (session.getTransaction().getStatus() == TransactionStatus.ACTIVE
+          || session.getTransaction().getStatus() == TransactionStatus.MARKED_ROLLBACK) {
+        session.getTransaction().rollback();
+      }
+      throw new DuplicateEntryException(e.getSQLException().getMessage());
+    } finally {
+      session.close();
     }
-    tag.setId(keyHolder.getKey().longValue());
     return tag;
   }
 
   @Override
-  public Tag update(Tag tag) {
-    log.debug("Updating the Tag - {}.", tag);
-    long id = tag.getId();
-    int rowsAffected = jdbcTemplate.update(UPDATE_TAG_BY_ID, tag.getName(), id);
-    if (rowsAffected != 1) {
-      throw new ResourceNotFoundException(id);
+  public Tag update(Tag tagUpdate) {
+    log.debug("Updating the Tag - {}.", tagUpdate);
+    Session session = sessionFactory.openSession();
+    Tag tagInDatasource;
+    try {
+      session.beginTransaction();
+      tagInDatasource = session.get(Tag.class, tagUpdate.getId());
+
+      if (tagInDatasource == null) {
+        log.error("There is no tag with ID '{}' in the database", tagUpdate.getId());
+        throw new ResourceNotFoundException(tagUpdate.getId());
+      }
+
+      if (!(tagUpdate.getName().equals(tagInDatasource.getName()))) {
+        tagInDatasource.setName(tagUpdate.getName());
+        session.getTransaction().commit();
+      }
+    } catch (ConstraintViolationException e) {
+      if (session.getTransaction().getStatus() == TransactionStatus.ACTIVE
+          || session.getTransaction().getStatus() == TransactionStatus.MARKED_ROLLBACK) {
+        session.getTransaction().rollback();
+      }
+      throw new DuplicateEntryException(e.getSQLException().getMessage());
+    } finally {
+      session.close();
     }
-    return tag;
+
+    return tagInDatasource;
   }
 
   @Override
   public long deleteById(long id) {
     log.debug("Deleting the Tag by ID - {}.", id);
-    Session session  = HibernateSessionFactoryUtil.getSessionFactory().getCurrentSession();
+    Session session = sessionFactory.openSession();
     session.beginTransaction();
-    session.delete(session.get(Tag.class, id));
+    Tag tag = session.get(Tag.class, id);
+
+    if (tag == null) {
+      log.error("There is no tag with ID '{}' in the database", id);
+      throw new ResourceNotFoundException(id);
+    } else {
+      session.delete(tag);
+    }
     session.getTransaction().commit();
-    //todo throws IllegalArgumentException если удаляем несуществующий ID
-//    int rowsAffected = jdbcTemplate.update(DELETE_TAG_BY_ID, id);
-//    if (rowsAffected != 1) {
-//      throw new ResourceNotFoundException(id);
-//    }
+    session.close();
     return id;
   }
 
