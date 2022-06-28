@@ -10,9 +10,9 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.List;
 import java.util.Optional;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import lombok.extern.log4j.Log4j2;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -25,10 +25,10 @@ public class CertificateDaoImpl implements CertificateDao {
 
   public static final String READ_CERTIFICATE_BY_ID = "SELECT * FROM gift_certificate WHERE id = ?";
   public static final String CREATE_NEW_CERTIFICATE =
-      "INSERT INTO gift_certificate (name, description, price, duration, createDate, lastUpdateDate) VALUES (?, ?, ?, ?, ?, ?)";
+      "INSERT INTO gift_certificate (name, description, price, duration, create_date, last_update_date) VALUES (?, ?, ?, ?, ?, ?)";
   public static final String DELETE_CERTIFICATE_BY_ID = "DELETE FROM gift_certificate WHERE id = ?";
   public static final String UPDATE_CERTIFICATE_BY_ID =
-      "UPDATE gift_certificate SET name = ?, description = ?, price = ?, duration = ?, lastUpdateDate = ? WHERE id = ?";
+      "UPDATE gift_certificate SET name = ?, description = ?, price = ?, duration = ?, last_update_date = ? WHERE id = ?";
   public static final String READ_CERTIFICATES_BY_TAG_ID =
       "SELECT * FROM gift_certificate JOIN gift_certificate_tag ON gift_certificate.id = gift_certificate_tag.tag_id WHERE tag_id = ?";
 
@@ -36,31 +36,31 @@ public class CertificateDaoImpl implements CertificateDao {
   private final KeyHolder keyHolder;
   private final SearchProvider searchProvider;
 
-  private final SessionFactory sessionFactory;
+  @PersistenceContext private EntityManager entityManager;
 
   @Autowired
   public CertificateDaoImpl(
-      JdbcTemplate jdbcTemplate,
-      KeyHolder keyHolder,
-      SearchProvider searchProvider,
-      SessionFactory sessionFactory) {
+      JdbcTemplate jdbcTemplate, KeyHolder keyHolder, SearchProvider searchProvider) {
     this.jdbcTemplate = jdbcTemplate;
     this.keyHolder = keyHolder;
     this.searchProvider = searchProvider;
-    this.sessionFactory = sessionFactory;
   }
 
   @Override
   public Optional<Certificate> readById(long id) {
     log.debug("Reading Certificate by ID - {}", id);
-    Session session = sessionFactory.openSession();
-    session.beginTransaction();
-    Certificate certificate = session.get(Certificate.class, id);
-    certificate.getTags().stream().findFirst();
-    session.getTransaction().commit();
-    session.close();
-    return Optional.ofNullable(certificate);
+    return Optional.ofNullable(entityManager.find(Certificate.class, id));
   }
+
+  //
+  //    Session session = sessionFactory.openSession();
+  //    session.beginTransaction();
+  //    Certificate certificate = session.get(Certificate.class, id);
+  //    certificate.getTags().stream().findFirst();
+  //    session.getTransaction().commit();
+  //    session.close();
+  //    return Optional.ofNullable(certificate);
+  //  }
 
   @Override
   public List<Certificate> search(String tagName, String name, String description, String sort) {

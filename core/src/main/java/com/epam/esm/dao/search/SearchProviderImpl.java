@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 public class SearchProviderImpl implements SearchProvider {
 
   public static final String BASIC_QUERY =
-      "SELECT gift_certificate.id, gift_certificate.name, description, price, duration, createDate, lastUpdateDate FROM gift_certificate";
+      "SELECT gift_certificate.id, gift_certificate.name, description, price, duration, create_date, last_update_date FROM gift_certificate";
   public static final String WHERE_TAG_NAME =
       " JOIN gift_certificate_tag ON gift_certificate.id = gift_certificate_tag.gift_certificate_id JOIN tag ON gift_certificate_tag.tag_id = tag.id WHERE tag.name = ?";
   public static final String AND_CERTIFICATE_NAME = " AND gift_certificate.name = ?";

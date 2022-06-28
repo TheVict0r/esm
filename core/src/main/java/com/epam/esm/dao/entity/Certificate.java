@@ -17,8 +17,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
 /** Major entity class for creating {@code Gift Certificate} objects. */
 @Data
@@ -45,19 +43,14 @@ public class Certificate implements Serializable {
   @Column(name = "duration")
   private int duration;
 
-  @Column(name = "createDate")
-  @CreatedDate
-  // todo read about it
+  @Column(name = "create_date")
   private LocalDateTime createDate;
 
-  @Column(name = "lastUpdateDate")
-  @LastModifiedDate
-  // todo read about it
+  @Column(name = "last_update_date")
   private LocalDateTime lastUpdateDate;
 
   @ManyToMany(
       cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
-  // cascade = {CascadeType.ALL})
   @JoinTable(
       name = "gift_certificate_tag",
       joinColumns = @JoinColumn(name = "gift_certificate_id"),
