@@ -3,17 +3,10 @@ package com.epam.esm.config;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 
 /** Basic class for module CORE configuration */
 @Configuration
 public class CoreConfig {
-
-  @Bean
-  public KeyHolder keyHolder() {
-    return new GeneratedKeyHolder();
-  }
 
   @Bean
   public ModelMapper modelMapper() {

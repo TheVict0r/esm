@@ -3,21 +3,18 @@ package com.epam.esm.dao.impl;
 import com.epam.esm.dao.CertificateDao;
 import com.epam.esm.dao.entity.Certificate;
 import com.epam.esm.dao.search.SearchProvider;
-import com.epam.esm.exception.ResourceNotCreatedException;
-import com.epam.esm.exception.ResourceNotFoundException;
-import java.sql.PreparedStatement;
-import java.sql.Statement;
 import java.sql.Types;
 import java.util.List;
 import java.util.Optional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @Log4j2
@@ -32,35 +29,21 @@ public class CertificateDaoImpl implements CertificateDao {
   public static final String READ_CERTIFICATES_BY_TAG_ID =
       "SELECT * FROM gift_certificate JOIN gift_certificate_tag ON gift_certificate.id = gift_certificate_tag.tag_id WHERE tag_id = ?";
 
-  private final JdbcTemplate jdbcTemplate;
-  private final KeyHolder keyHolder;
   private final SearchProvider searchProvider;
 
   @PersistenceContext private EntityManager entityManager;
 
   @Autowired
-  public CertificateDaoImpl(
-      JdbcTemplate jdbcTemplate, KeyHolder keyHolder, SearchProvider searchProvider) {
-    this.jdbcTemplate = jdbcTemplate;
-    this.keyHolder = keyHolder;
+  public CertificateDaoImpl(SearchProvider searchProvider) {
     this.searchProvider = searchProvider;
   }
 
   @Override
+  @Transactional
   public Optional<Certificate> readById(long id) {
     log.debug("Reading Certificate by ID - {}", id);
     return Optional.ofNullable(entityManager.find(Certificate.class, id));
   }
-
-  //
-  //    Session session = sessionFactory.openSession();
-  //    session.beginTransaction();
-  //    Certificate certificate = session.get(Certificate.class, id);
-  //    certificate.getTags().stream().findFirst();
-  //    session.getTransaction().commit();
-  //    session.close();
-  //    return Optional.ofNullable(certificate);
-  //  }
 
   @Override
   public List<Certificate> search(String tagName, String name, String description, String sort) {
@@ -70,73 +53,50 @@ public class CertificateDaoImpl implements CertificateDao {
         name,
         description,
         sort);
-    String query = searchProvider.provideQuery(tagName, name, description, sort);
-    String[] args = searchProvider.provideArgs(tagName, name, description);
-    return jdbcTemplate.query(query, args, new BeanPropertyRowMapper<>(Certificate.class));
+
+    // search by Certificate name
+    //        TypedQuery<Certificate> query = entityManager.createQuery("from Certificate where
+    // name=:nameProvided", Certificate.class);
+    //        return query.setParameter("nameProvided", name).getResultList();
+
+    // show all certificates
+    return entityManager.createQuery("from Certificate").getResultList();
+
+    // old version with JDBC template
+    //    String query = searchProvider.provideQuery(tagName, name, description, sort);
+    //    String[] args = searchProvider.provideArgs(tagName, name, description);
+    // return jdbcTemplate.query(query, args, new BeanPropertyRowMapper<>(Certificate.class));
+
   }
 
   @Override
+  @Transactional
   public Certificate create(Certificate certificate) {
     log.debug("Creating Certificate - {}", certificate);
-    int rowsAffected =
-        jdbcTemplate.update(
-            connection -> {
-              PreparedStatement ps =
-                  connection.prepareStatement(
-                      CREATE_NEW_CERTIFICATE, Statement.RETURN_GENERATED_KEYS);
-              ps.setString(1, certificate.getName());
-              ps.setString(2, certificate.getDescription());
-              ps.setInt(3, certificate.getPrice());
-              ps.setInt(4, certificate.getDuration());
-              ps.setObject(5, certificate.getCreateDate());
-              ps.setObject(6, certificate.getLastUpdateDate());
-              return ps;
-            },
-            keyHolder);
-    if (rowsAffected != 1) {
-      log.error("Certificate '{}' was not created.", certificate);
-      throw new ResourceNotCreatedException(certificate);
-    }
-    certificate.setId(keyHolder.getKey().longValue());
+    entityManager.persist(certificate);
     return certificate;
   }
 
   @Override
-  public Certificate update(Certificate certificate) {
-    log.debug("Replacing Certificate, the new Certificate data - {}", certificate);
-    long id = certificate.getId();
-    int rowsAffected =
-        jdbcTemplate.update(
-            UPDATE_CERTIFICATE_BY_ID,
-            certificate.getName(),
-            certificate.getDescription(),
-            certificate.getPrice(),
-            certificate.getDuration(),
-            certificate.getLastUpdateDate(),
-            id);
-    if (rowsAffected != 1) {
-      throw new ResourceNotFoundException(id);
-    }
-    return certificate;
+  @Transactional
+  public Certificate update(Certificate certificateUpdate) {
+    log.debug("Replacing Certificate, the new Certificate data - {}", certificateUpdate);
+    entityManager.merge(certificateUpdate);
+    return certificateUpdate;
   }
 
   @Override
-  public long deleteById(long id) {
-    log.debug("Deleting Certificate with ID - {}", id);
-    int rowsAffected = jdbcTemplate.update(DELETE_CERTIFICATE_BY_ID, id);
-    if (rowsAffected != 1) {
-      throw new ResourceNotFoundException(id);
-    }
-    return id;
+  public long delete(Certificate certificate) {
+    log.debug("Deleting Certificate - {}", certificate);
+    entityManager.remove(certificate);
+    return certificate.getId();
   }
 
   @Override
   public List<Certificate> retrieveCertificatesByTagId(long tagId) {
     log.debug("Retrieving the List of Certificates by Tag's ID - {}", tagId);
-    return jdbcTemplate.query(
-        READ_CERTIFICATES_BY_TAG_ID,
-        new Object[] {tagId},
-        new int[] {Types.VARCHAR},
-        new BeanPropertyRowMapper<>(Certificate.class));
+    return entityManager.createNativeQuery("SELECT * FROM gift_certificate JOIN gift_certificate_tag ON gift_certificate.id = gift_certificate_tag.gift_certificate_id WHERE gift_certificate_tag.tag_id = :id", Certificate.class)
+            .setParameter("id", tagId).getResultList();
   }
+
 }

@@ -36,12 +36,7 @@ public class TagServiceImpl implements TagService {
   public TagDto findById(
       @Positive(message = "message.validation.id.min", groups = BasicInfo.class) Long id) {
     log.debug("Reading the Tag by ID {}", id);
-    Optional<Tag> tagOptional = tagDao.readById(id);
-    if (tagOptional.isEmpty()) {
-      log.error("There is no tag with ID '{}' in the database", id);
-      throw new ResourceNotFoundException(id);
-    }
-    return tagMapper.convertToDto(tagOptional.get());
+    return tagMapper.convertToDto(safeRetrieveTagById(id));
   }
 
   @Override
@@ -68,6 +63,9 @@ public class TagServiceImpl implements TagService {
   public TagDto updateById(Long id, TagDto tagDto) {
     log.debug("Updating the Tag by ID {}, the new Tag is {}", id, tagDto);
     validator.pathAndBodyIdsCheck(id, tagDto.getId());
+
+    safeRetrieveTagById(id);
+
     tagDao.update(tagMapper.convertToEntity(tagDto));
     return tagDto;
   }
@@ -75,6 +73,17 @@ public class TagServiceImpl implements TagService {
   @Override
   public long deleteById(Long id) {
     log.debug("Deleting the Tag by ID {}", id);
-    return tagDao.deleteById(id);
+    tagDao.delete(safeRetrieveTagById(id));
+    return id;
   }
+
+  private Tag safeRetrieveTagById(Long id) {
+    Optional<Tag> tagOptional = tagDao.readById(id);
+    return tagOptional.orElseThrow(
+        () -> {
+          log.error("There is no tag with ID '{}' in the database", id);
+          return new ResourceNotFoundException(id);
+        });
+  }
+
 }

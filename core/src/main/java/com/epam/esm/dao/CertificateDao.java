@@ -2,7 +2,10 @@ package com.epam.esm.dao;
 
 import com.epam.esm.dao.entity.Certificate;
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 /** Data access operations with the {@code Certificate}. */
 @Repository
@@ -25,7 +28,9 @@ public interface CertificateDao extends BasicDao<Certificate> {
    * Retrieves all {@code Certificates} which contain the {@code Tag}.
    *
    * @param tagId <b>ID</b> of the {@code Tag}
-   * @return all {@code Certificates} which contain the {@code Tag}
+   * @return List with all {@code Certificates} which contain the {@code Tag}
    */
   List<Certificate> retrieveCertificatesByTagId(long tagId);
+
+
 }

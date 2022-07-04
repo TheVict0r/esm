@@ -36,7 +36,7 @@ public interface BasicDao<E> {
   /**
    * Deletes entity by its <b>ID</b> from the datasource.
    *
-   * @param id <b>ID</b> of deleted entity
+   * @param entity entity to be deleted
    */
-  long deleteById(long id);
+  long delete(E entity);
 }

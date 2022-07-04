@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
+import java.time.LocalDateTime;
 import java.util.List;
 import javax.validation.constraints.Min;
 import lombok.extern.log4j.Log4j2;
@@ -106,6 +107,10 @@ public class CertificateController {
   public CertificateDto replaceById(
       @Min(value = 1, message = "message.validation.id.min") @PathVariable("id") Long id,
       @RequestBody @Validated(BasicInfo.class) CertificateDto certificateDto) {
+
+    // todo move logic to service layer
+    certificateDto.setCreateDate(LocalDateTime.now());
+
     return certificateService.updateById(id, certificateDto);
   }
 

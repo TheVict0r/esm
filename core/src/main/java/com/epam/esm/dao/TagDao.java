@@ -49,10 +49,4 @@ public interface TagDao extends BasicDao<Tag> {
    */
   void saveTagToCertificate(long certificateId, long tagId);
 
-  /**
-   * Deletes in the datasource links between the {@code Certificate} and all its {@code Tags}.
-   *
-   * @param certificateId - {@code Certificate ID}
-   */
-  void deleteAllTagsFromCertificate(long certificateId);
 }
