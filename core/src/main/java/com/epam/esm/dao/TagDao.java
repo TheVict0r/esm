@@ -41,12 +41,4 @@ public interface TagDao extends BasicDao<Tag> {
    */
   long findIdByTag(Tag tag);
 
-  /**
-   * Saves to the datasource the link between {@code Certificate ID} and appropriate {@code Tag ID}.
-   *
-   * @param certificateId {@code Certificate ID}
-   * @param tagId {@code Tag ID}
-   */
-  void saveTagToCertificate(long certificateId, long tagId);
-
 }

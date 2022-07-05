@@ -112,10 +112,19 @@ public class CertificateServiceImpl implements CertificateService {
         certificateForUpdate.setTags(tagsWithId);
 
         Certificate certificateUpdated = certificateDao.update(certificateForUpdate);
-
         deleteOrphanTags(certificateFromDatasourceTags);
 
         return certificateMapper.convertToDto(certificateUpdated);
+    }
+
+    @Override
+    public long deleteById(Long id) {
+        log.debug("Deleting the Certificate with ID {}", id);
+        Certificate certificate = safeRetrieveCertificateById(id);
+        Set<Tag> certificateTags = Set.copyOf(certificate.getTags());
+        certificateDao.delete(certificate);
+        deleteOrphanTags(certificateTags);
+        return id;
     }
 
     private void deleteOrphanTags(Set<Tag> tagSet) {
@@ -129,25 +138,6 @@ public class CertificateServiceImpl implements CertificateService {
 
     }
 
-    @Override
-    public long deleteById(Long id) {
-        log.debug("Deleting the Certificate with ID {}", id);
-        Certificate certificate = safeRetrieveCertificateById(id);
-        certificateDao.delete(certificate);
-
-        Set<Tag> certificateTags = tagDao.retrieveTagsByCertificateId(id);
-        certificateTags.forEach(
-                tag -> {
-                    long tagId = tag.getId();
-                    List<Certificate> certificatesWithCurrentTag =
-                            certificateDao.retrieveCertificatesByTagId(tagId);
-                    if (certificatesWithCurrentTag.isEmpty()) {
-                        tagService.deleteById(tag.getId());
-                    }
-                });
-        return id;
-    }
-
     private Set<Tag> saveCurrentCertificateTags(Certificate certificate, Long certificateId) {
         log.debug("Saving tags from the Certificate {} with ID {}", certificate, certificateId);
         Set<Tag> tags = certificate.getTags();
@@ -157,7 +147,7 @@ public class CertificateServiceImpl implements CertificateService {
                     if (tagDao.isTagExists(tag)) {
                         tagId = tagDao.findIdByTag(tag);
                     } else {
-                       tagId = tagDao.create(tag).getId();
+                        tagId = tagDao.create(tag).getId();
                     }
                     tag.setId(tagId);
                 });
@@ -172,6 +162,5 @@ public class CertificateServiceImpl implements CertificateService {
                     return new ResourceNotFoundException(id);
                 });
     }
-
 
 }

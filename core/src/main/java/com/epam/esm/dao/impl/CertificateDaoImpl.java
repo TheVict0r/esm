@@ -20,15 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Log4j2
 public class CertificateDaoImpl implements CertificateDao {
 
-  public static final String READ_CERTIFICATE_BY_ID = "SELECT * FROM gift_certificate WHERE id = ?";
-  public static final String CREATE_NEW_CERTIFICATE =
-      "INSERT INTO gift_certificate (name, description, price, duration, create_date, last_update_date) VALUES (?, ?, ?, ?, ?, ?)";
-  public static final String DELETE_CERTIFICATE_BY_ID = "DELETE FROM gift_certificate WHERE id = ?";
-  public static final String UPDATE_CERTIFICATE_BY_ID =
-      "UPDATE gift_certificate SET name = ?, description = ?, price = ?, duration = ?, last_update_date = ? WHERE id = ?";
-  public static final String READ_CERTIFICATES_BY_TAG_ID =
-      "SELECT * FROM gift_certificate JOIN gift_certificate_tag ON gift_certificate.id = gift_certificate_tag.tag_id WHERE tag_id = ?";
-
   private final SearchProvider searchProvider;
 
   @PersistenceContext private EntityManager entityManager;
