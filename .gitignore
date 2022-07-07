@@ -7,7 +7,8 @@
 # Database logins
 db_dev.properties
 db_prod.properties
-
+application-dev.properties
+application-prod.properties
 
 # BlueJ files
 *.ctxt
