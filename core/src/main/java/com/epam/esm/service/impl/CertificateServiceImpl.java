@@ -66,11 +66,11 @@ public class CertificateServiceImpl implements CertificateService {
         List<Certificate> searchResult = certificateDao.search(tagName, name, description, sort);
 
         return searchResult.stream()
-                .map(
-                        certificate -> {
-                            certificate.setTags(tagDao.retrieveTagsByCertificateId(certificate.getId()));
-                            return certificate;
-                        })
+//                .map(
+//                        certificate -> {
+//                            certificate.setTags(tagDao.retrieveTagsByCertificateId(certificate.getId()));
+//                            return certificate;
+//                        })
                 .map(certificate -> certificateMapper.convertToDto(certificate))
                 .collect(Collectors.toList());
     }

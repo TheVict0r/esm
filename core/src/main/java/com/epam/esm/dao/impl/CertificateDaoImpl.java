@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,13 +46,30 @@ public class CertificateDaoImpl implements CertificateDao {
         description,
         sort);
 
-    // search by Certificate name
-    //        TypedQuery<Certificate> query = entityManager.createQuery("from Certificate where
-    // name=:nameProvided", Certificate.class);
-    //        return query.setParameter("nameProvided", name).getResultList();
 
-    // show all certificates
-    return entityManager.createQuery("from Certificate").getResultList();
+    // show ALL certificates
+   // return entityManager.createQuery("Select c from Certificate c join c.tags t ").getResultList();
+
+
+    return entityManager.createQuery("SELECT DISTINCT c FROM Certificate c JOIN c.tags t ORDER BY c.createDate DESC").getResultList();
+ //   return entityManager.createQuery("SELECT DISTINCT c FROM Certificate c JOIN FETCH c.tags t ORDER BY c.createDate DESC").getResultList();
+
+
+
+//    //search by Certificate name
+//    TypedQuery<Certificate> query = entityManager.createQuery("Select c from Certificate c join c.tags t where c.name=:nameProvided", Certificate.class);
+//    return query.setParameter("nameProvided", name).getResultList();
+
+
+ //   //search by Certificate description
+//    TypedQuery<Certificate> query = entityManager.createQuery("Select c from Certificate c join c.tags t where c.description=:descriptionProvided", Certificate.class);
+//    return query.setParameter("descriptionProvided", description).getResultList();
+
+//    //search by TagName
+//    TypedQuery<Certificate> query = entityManager.createQuery("Select c from Certificate c join c.tags t where t.name=:tagNameProvided", Certificate.class);
+//    return query.setParameter("tagNameProvided", tagName).getResultList();
+
+
 
     // old version with JDBC template
     //    String query = searchProvider.provideQuery(tagName, name, description, sort);

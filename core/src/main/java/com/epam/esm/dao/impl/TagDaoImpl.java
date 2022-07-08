@@ -81,13 +81,6 @@ public class TagDaoImpl implements TagDao {
             return new ResourceNotFoundException(certificateId);
         });
         return certificate.getTags();
-//    List<Tag> tagList =
-//        jdbcTemplate.query(
-//            READ_TAGS_BY_CERTIFICATE_ID,
-//            new Object[] {certificateId},
-//            new int[] {Types.VARCHAR},
-//            new BeanPropertyRowMapper<>(Tag.class));
-//    return new HashSet<>(tagList);
     }
 
     @Override
