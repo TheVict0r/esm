@@ -1,24 +1,34 @@
 package com.epam.esm.dao.search;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.epam.esm.dao.entity.Certificate;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
 @Component
 @Log4j2
 public class SearchProviderImpl implements SearchProvider {
 
-  public static final String BASIC_QUERY =
-      "SELECT gift_certificate.id, gift_certificate.name, description, price, duration, create_date, last_update_date FROM gift_certificate";
-  public static final String WHERE_TAG_NAME =
-      " JOIN gift_certificate_tag ON gift_certificate.id = gift_certificate_tag.gift_certificate_id JOIN tag ON gift_certificate_tag.tag_id = tag.id WHERE tag.name = ?";
-  public static final String AND_CERTIFICATE_NAME = " AND gift_certificate.name = ?";
-  public static final String WHERE_CERTIFICATE_NAME = " WHERE gift_certificate.name = ?";
-  public static final String AND_DESCRIPTION = " AND description = ?";
-  public static final String WHERE_DESCRIPTION = " WHERE description = ?";
+  public static final String BASIC_QUERY = "SELECT DISTINCT c FROM Certificate c";
+  public static final String WHERE_TAG_NAME = " JOIN c.tags t WHERE t.name=:tagNameProvided";
+  public static final String AND_CERTIFICATE_NAME = " AND c.name=:certificateNameProvided";
+  public static final String WHERE_CERTIFICATE_NAME = " WHERE c.name=:certificateNameProvided";
+  public static final String AND_DESCRIPTION = " AND c.description=:descriptionProvided";
+  public static final String WHERE_DESCRIPTION = " WHERE c.description=:descriptionProvided";
+  public static final String TAG_NAME = "tagNameProvided";
+  public static final String CERTIFICATE_NAME = "certificateNameProvided";
+  public static final String DESCRIPTION = "descriptionProvided";
   private SortFactory sortFactory;
+
+  @PersistenceContext
+  private EntityManager entityManager;
 
   @Autowired
   public SearchProviderImpl(SortFactory sortFactory) {
@@ -26,7 +36,7 @@ public class SearchProviderImpl implements SearchProvider {
   }
 
   @Override
-  public String provideQuery(String tagName, String name, String description, String sort) {
+  public TypedQuery<Certificate> provideQuery(String tagName, String name, String description, String sort) {
     log.debug(
         "Providing query string for prepared statement. Tag name - {}, Certificate name - {}, Certificate description - {}, Sort - {}",
         tagName,
@@ -60,26 +70,30 @@ public class SearchProviderImpl implements SearchProvider {
       builder.append(sortFactory.provideSortQueryFragment(sort));
     }
 
-    return builder.toString();
+    return setParametersToQuery(tagName, name, description, builder.toString());
   }
 
-  @Override
-  public String[] provideArgs(String tagName, String name, String description) {
+  private TypedQuery<Certificate> setParametersToQuery(String tagName, String name, String description, String queryString) {
     log.debug(
-        "Providing arguments for prepared statement. Tag name - {}, Certificate name - {}, Certificate description - {}",
+        "Setting params to query - {}. Tag name - {}, Certificate name - {}, Certificate description - {}",
+        queryString,
         tagName,
         name,
         description);
-    List<String> argsList = new ArrayList<>();
+
+    TypedQuery<Certificate> query = entityManager.createQuery(queryString, Certificate.class);
+
     if (tagName != null) {
-      argsList.add(tagName);
+      query.setParameter(TAG_NAME, tagName);
     }
     if (name != null) {
-      argsList.add(name);
+      query.setParameter(CERTIFICATE_NAME, name);
     }
     if (description != null) {
-      argsList.add(description);
+      query.setParameter(DESCRIPTION, description);
     }
-    return argsList.toArray(new String[0]);
+
+    return query;
   }
+
 }

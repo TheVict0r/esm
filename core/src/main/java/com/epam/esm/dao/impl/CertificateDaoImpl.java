@@ -7,6 +7,7 @@ import java.sql.Types;
 import java.util.List;
 import java.util.Optional;
 import javax.persistence.EntityManager;
+import javax.persistence.Parameter;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
@@ -46,36 +47,8 @@ public class CertificateDaoImpl implements CertificateDao {
         description,
         sort);
 
-
-    // show ALL certificates
-   // return entityManager.createQuery("Select c from Certificate c join c.tags t ").getResultList();
-
-
-    return entityManager.createQuery("SELECT DISTINCT c FROM Certificate c JOIN c.tags t ORDER BY c.createDate DESC").getResultList();
- //   return entityManager.createQuery("SELECT DISTINCT c FROM Certificate c JOIN FETCH c.tags t ORDER BY c.createDate DESC").getResultList();
-
-
-
-//    //search by Certificate name
-//    TypedQuery<Certificate> query = entityManager.createQuery("Select c from Certificate c join c.tags t where c.name=:nameProvided", Certificate.class);
-//    return query.setParameter("nameProvided", name).getResultList();
-
-
- //   //search by Certificate description
-//    TypedQuery<Certificate> query = entityManager.createQuery("Select c from Certificate c join c.tags t where c.description=:descriptionProvided", Certificate.class);
-//    return query.setParameter("descriptionProvided", description).getResultList();
-
-//    //search by TagName
-//    TypedQuery<Certificate> query = entityManager.createQuery("Select c from Certificate c join c.tags t where t.name=:tagNameProvided", Certificate.class);
-//    return query.setParameter("tagNameProvided", tagName).getResultList();
-
-
-
-    // old version with JDBC template
-    //    String query = searchProvider.provideQuery(tagName, name, description, sort);
-    //    String[] args = searchProvider.provideArgs(tagName, name, description);
-    // return jdbcTemplate.query(query, args, new BeanPropertyRowMapper<>(Certificate.class));
-
+    TypedQuery<Certificate> query = searchProvider.provideQuery(tagName, name, description, sort);
+    return query.getResultList();
   }
 
   @Override
@@ -104,7 +77,7 @@ public class CertificateDaoImpl implements CertificateDao {
   @Override
   public List<Certificate> retrieveCertificatesByTagId(long tagId) {
     log.debug("Retrieving the List of Certificates by Tag's ID - {}", tagId);
-    return entityManager.createNativeQuery("SELECT * FROM gift_certificate JOIN gift_certificate_tag ON gift_certificate.id = gift_certificate_tag.gift_certificate_id WHERE gift_certificate_tag.tag_id = :id", Certificate.class)
+    return entityManager.createQuery("SELECT c FROM Certificate c JOIN c.tags t  WHERE t.id = :id", Certificate.class)
             .setParameter("id", tagId).getResultList();
   }
 

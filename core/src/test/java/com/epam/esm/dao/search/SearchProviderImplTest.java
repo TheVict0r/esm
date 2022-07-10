@@ -97,49 +97,49 @@ class SearchProviderImplTest {
   void provideArgsWithAllArgsShouldReturnValidStringArray() {
     assertArrayEquals(
         new String[] {tagName, certificateName, description},
-        searchProvider.provideArgs(tagName, certificateName, description));
+        searchProvider.setParametersToQuery(tagName, certificateName, description));
   }
 
   @Test
   void provideArgsWithCertificateNameAndDescriptionArgsShouldReturnValidStringArray() {
     assertArrayEquals(
         new String[] {certificateName, description},
-        searchProvider.provideArgs(null, certificateName, description));
+        searchProvider.setParametersToQuery(null, certificateName, description));
   }
 
   @Test
   void provideArgsTagNameAndDescriptionShouldReturnValidStringArray() {
     assertArrayEquals(
         new String[] {tagName, description},
-        searchProvider.provideArgs(tagName, null, description));
+        searchProvider.setParametersToQuery(tagName, null, description));
   }
 
   @Test
   void provideArgsWithTagNameAndCertificateNameShouldReturnValidStringArray() {
     assertArrayEquals(
         new String[] {tagName, certificateName},
-        searchProvider.provideArgs(tagName, certificateName, null));
+        searchProvider.setParametersToQuery(tagName, certificateName, null));
   }
 
   @Test
   void provideArgsWithDescriptionShouldReturnValidStringArray() {
     assertArrayEquals(
-        new String[] {description}, searchProvider.provideArgs(null, null, description));
+        new String[] {description}, searchProvider.setParametersToQuery(null, null, description));
   }
 
   @Test
   void provideArgsWithTagNameShouldReturnValidStringArray() {
-    assertArrayEquals(new String[] {tagName}, searchProvider.provideArgs(tagName, null, null));
+    assertArrayEquals(new String[] {tagName}, searchProvider.setParametersToQuery(tagName, null, null));
   }
 
   @Test
   void provideArgsWithCertificateNameShouldReturnValidStringArray() {
     assertArrayEquals(
-        new String[] {certificateName}, searchProvider.provideArgs(null, certificateName, null));
+        new String[] {certificateName}, searchProvider.setParametersToQuery(null, certificateName, null));
   }
 
   @Test
   void provideArgsWithAllNullArgsShouldReturnValidStringArray() {
-    assertArrayEquals(new String[] {}, searchProvider.provideArgs(null, null, null));
+    assertArrayEquals(new String[] {}, searchProvider.setParametersToQuery(null, null, null));
   }
 }

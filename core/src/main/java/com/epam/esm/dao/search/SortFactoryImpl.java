@@ -16,10 +16,10 @@ class SortFactoryImpl implements SortFactory {
   private static final Map<String, String> sortQueryFragments = new HashMap<>();
 
   static {
-    sortQueryFragments.put("DATE_ASC", " ORDER BY createDate ASC");
-    sortQueryFragments.put("DATE_DESC", " ORDER BY createDate DESC");
-    sortQueryFragments.put("NAME_ASC", " ORDER BY gift_certificate.name ASC");
-    sortQueryFragments.put("NAME_DESC", " ORDER BY gift_certificate.name DESC");
+    sortQueryFragments.put("DATE_ASC", " ORDER BY c.createDate ASC");
+    sortQueryFragments.put("DATE_DESC", " ORDER BY c.createDate DESC");
+    sortQueryFragments.put("NAME_ASC", " ORDER BY c.name ASC");
+    sortQueryFragments.put("NAME_DESC", " ORDER BY c.name DESC");
   }
 
   @Override
