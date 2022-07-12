@@ -43,7 +43,7 @@ public class TagServiceImpl implements TagService {
   public List<TagDto> searchAll(int page, int size) {
     log.debug("Reading all Tags. Page № - {}, size - {}", page, size);
     List<Tag> allTags = tagDao.searchAll(page, size);
-    return allTags.stream().map(tag -> tagMapper.convertToDto(tag)).collect(Collectors.toList());
+    return allTags.stream().map(tag -> tagMapper.convertToDto(tag)).toList();
   }
 
   @Override
@@ -63,9 +63,7 @@ public class TagServiceImpl implements TagService {
   public TagDto updateById(Long id, TagDto tagDto) {
     log.debug("Updating the Tag by ID {}, the new Tag is {}", id, tagDto);
     validator.pathAndBodyIdsCheck(id, tagDto.getId());
-
     safeRetrieveTagById(id);
-
     tagDao.update(tagMapper.convertToEntity(tagDto));
     return tagDto;
   }

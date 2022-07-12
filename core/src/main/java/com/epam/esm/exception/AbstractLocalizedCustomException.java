@@ -2,6 +2,10 @@ package com.epam.esm.exception;
 
 import lombok.Data;
 
+/**
+ * Basic abstract class for custom exceptions.
+ *
+ */
 @Data
 public abstract class AbstractLocalizedCustomException extends RuntimeException {
 

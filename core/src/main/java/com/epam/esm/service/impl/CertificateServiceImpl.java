@@ -69,7 +69,7 @@ public class CertificateServiceImpl implements CertificateService {
 
     return searchResult.stream()
         .map(certificate -> certificateMapper.convertToDto(certificate))
-        .collect(Collectors.toList());
+        .toList();
   }
 
   @Override
