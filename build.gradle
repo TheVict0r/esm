@@ -50,7 +50,6 @@ subprojects {
 
 }
 
-
 bootJar {
     enabled = false
 }

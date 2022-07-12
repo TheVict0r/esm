@@ -31,5 +31,4 @@ public class TagMapperImpl implements EntityDtoMapper<Tag, TagDto> {
     log.debug("Converting Tag - {} to DTO", entity);
     return mapper.map(entity, TagDto.class);
   }
-
 }
