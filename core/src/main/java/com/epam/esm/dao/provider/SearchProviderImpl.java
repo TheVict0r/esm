@@ -1,16 +1,12 @@
-package com.epam.esm.dao.search;
-
-import java.util.HashMap;
-import java.util.Map;
+package com.epam.esm.dao.provider;
 
 import com.epam.esm.dao.entity.Certificate;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 @Component
 @Log4j2
@@ -25,18 +21,18 @@ public class SearchProviderImpl implements SearchProvider {
   public static final String TAG_NAME = "tagNameProvided";
   public static final String CERTIFICATE_NAME = "certificateNameProvided";
   public static final String DESCRIPTION = "descriptionProvided";
-  private SortFactory sortFactory;
+  private SortFactoryProvider sortFactoryProvider;
 
-  @PersistenceContext
-  private EntityManager entityManager;
+  @PersistenceContext private EntityManager entityManager;
 
   @Autowired
-  public SearchProviderImpl(SortFactory sortFactory) {
-    this.sortFactory = sortFactory;
+  public SearchProviderImpl(SortFactoryProvider sortFactoryProvider) {
+    this.sortFactoryProvider = sortFactoryProvider;
   }
 
   @Override
-  public TypedQuery<Certificate> provideQuery(String tagName, String name, String description, String sort) {
+  public TypedQuery<Certificate> provideQuery(
+      String tagName, String name, String description, String sort) {
     log.debug(
         "Providing query string for prepared statement. Tag name - {}, Certificate name - {}, Certificate description - {}, Sort - {}",
         tagName,
@@ -67,13 +63,14 @@ public class SearchProviderImpl implements SearchProvider {
     }
 
     if (sort != null) {
-      builder.append(sortFactory.provideSortQueryFragment(sort));
+      builder.append(sortFactoryProvider.provideSortQueryFragment(sort));
     }
 
     return setParametersToQuery(tagName, name, description, builder.toString());
   }
 
-  private TypedQuery<Certificate> setParametersToQuery(String tagName, String name, String description, String queryString) {
+  private TypedQuery<Certificate> setParametersToQuery(
+      String tagName, String name, String description, String queryString) {
     log.debug(
         "Setting params to query - {}. Tag name - {}, Certificate name - {}, Certificate description - {}",
         queryString,
@@ -95,5 +92,4 @@ public class SearchProviderImpl implements SearchProvider {
 
     return query;
   }
-
 }

@@ -8,8 +8,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
-import java.time.LocalDateTime;
 import java.util.List;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,14 +72,23 @@ public class CertificateController {
       @RequestParam(value = "tagName", required = false) String tagName,
       @RequestParam(value = "name", required = false) String name,
       @RequestParam(value = "description", required = false) String description,
-      @RequestParam(value = "sort", required = false) String sort) {
+      @RequestParam(value = "sort", required = false) String sort,
+      @Min(value = 1, message = "message.validation.page.min")
+          @RequestParam(value = "page", defaultValue = "1")
+          int page,
+      @Min(value = 1, message = "message.validation.page.size")
+          @Max(value = 50, message = "message.validation.page.size")
+          @RequestParam(value = "size", defaultValue = "10")
+          int size) {
     log.info(
-        "Searching Certificate. Tag name - {}, Certificate name - {}, Certificate description - {}, sort - {}",
+        "Searching Certificate. Tag name - {}, Certificate name - {}, Certificate description - {}, sort - {}, page № - {}, size - {}",
         tagName,
         name,
         description,
-        sort);
-    return certificateService.search(tagName, name, description, sort);
+        sort,
+        page,
+        size);
+    return certificateService.search(tagName, name, description, sort, page, size);
   }
 
   /**
@@ -107,15 +116,11 @@ public class CertificateController {
   public CertificateDto replaceById(
       @Min(value = 1, message = "message.validation.id.min") @PathVariable("id") Long id,
       @RequestBody @Validated(BasicInfo.class) CertificateDto certificateDto) {
-
-    // todo move logic to service layer
-    certificateDto.setCreateDate(LocalDateTime.now());
-
-    return certificateService.updateById(id, certificateDto);
+    return certificateService.replaceById(id, certificateDto);
   }
 
   /**
-   * Updates the {@code Certificate} by its <b>ID</b> in the datasource.
+   * Updates the fields of {@code Certificate} by its <b>ID</b> in the datasource.
    *
    * @param id {@code Certificate's} <b>ID</b>
    * @param patch JsonPatch with the new data for the existing {@code Certificate}

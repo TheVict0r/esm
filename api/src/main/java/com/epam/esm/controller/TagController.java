@@ -4,6 +4,7 @@ import com.epam.esm.dto.TagDto;
 import com.epam.esm.service.TagService;
 import com.epam.esm.service.validation.BasicInfo;
 import java.util.List;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -53,9 +55,16 @@ public class TagController {
    *     and returned by the corresponding service level method.
    */
   @GetMapping
-  public List<TagDto> searchAll() {
-    log.info("Reading all Tags");
-    return tagService.searchAll();
+  public List<TagDto> searchAll(
+      @Min(value = 1, message = "message.validation.page.min")
+          @RequestParam(value = "page", defaultValue = "1")
+          int page,
+      @Min(value = 1, message = "message.validation.page.size")
+          @Max(value = 50, message = "message.validation.page.size")
+          @RequestParam(value = "size", defaultValue = "10")
+          int size) {
+    log.info("Reading all Tags. Page № - {}, size - {}", page, size);
+    return tagService.searchAll(page, size);
   }
 
   /**

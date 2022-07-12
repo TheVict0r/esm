@@ -1,4 +1,4 @@
-package com.epam.esm.dao.search;
+package com.epam.esm.dao.provider;
 
 import com.epam.esm.exception.InvalidRequestSortParamValueException;
 import java.util.HashMap;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 @NoArgsConstructor
 @Log4j2
-class SortFactoryImpl implements SortFactory {
+class SortFactoryProviderImpl implements SortFactoryProvider {
 
   private static final Map<String, String> sortQueryFragments = new HashMap<>();
 

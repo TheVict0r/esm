@@ -2,83 +2,57 @@ package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.CertificateDao;
 import com.epam.esm.dao.entity.Certificate;
-import com.epam.esm.dao.search.SearchProvider;
-import java.sql.Types;
+import com.epam.esm.dao.provider.PaginationProvider;
+import com.epam.esm.dao.provider.SearchProvider;
 import java.util.List;
-import java.util.Optional;
 import javax.persistence.EntityManager;
-import javax.persistence.Parameter;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @Log4j2
-public class CertificateDaoImpl implements CertificateDao {
+public class CertificateDaoImpl extends AbstractBasicDaoImpl<Certificate>
+    implements CertificateDao {
 
+  public static final String SELECT_CERTIFICATES_BY_TAG_ID =
+      "SELECT c FROM Certificate c JOIN c.tags t  WHERE t.id = :id";
   private final SearchProvider searchProvider;
-
+  private final PaginationProvider paginationProvider;
   @PersistenceContext private EntityManager entityManager;
 
   @Autowired
-  public CertificateDaoImpl(SearchProvider searchProvider) {
+  public CertificateDaoImpl(SearchProvider searchProvider, PaginationProvider paginationProvider) {
     this.searchProvider = searchProvider;
+    this.paginationProvider = paginationProvider;
+    this.setParams(Certificate.class);
   }
 
   @Override
-  @Transactional
-  public Optional<Certificate> readById(long id) {
-    log.debug("Reading Certificate by ID - {}", id);
-    return Optional.ofNullable(entityManager.find(Certificate.class, id));
-  }
-
-  @Override
-  public List<Certificate> search(String tagName, String name, String description, String sort) {
+  public List<Certificate> search(
+      String tagName, String name, String description, String sort, int page, int size) {
     log.debug(
-        "Searching Certificate. Tag name - {}, Certificate name - {}, Certificate description - {}, sort - {}",
+        "Searching Certificate. Tag name - {}, Certificate name - {}, Certificate description - {}, sort - {}, page № - {}, size - {}",
         tagName,
         name,
         description,
-        sort);
+        sort,
+        page,
+        size);
 
     TypedQuery<Certificate> query = searchProvider.provideQuery(tagName, name, description, sort);
+    paginationProvider.providePagination(query, page, size);
     return query.getResultList();
-  }
-
-  @Override
-  @Transactional
-  public Certificate create(Certificate certificate) {
-    log.debug("Creating Certificate - {}", certificate);
-    entityManager.persist(certificate);
-    return certificate;
-  }
-
-  @Override
-  @Transactional
-  public Certificate update(Certificate certificateUpdate) {
-    log.debug("Replacing Certificate, the new Certificate data - {}", certificateUpdate);
-    entityManager.merge(certificateUpdate);
-    return certificateUpdate;
-  }
-
-  @Override
-  public long delete(Certificate certificate) {
-    log.debug("Deleting Certificate - {}", certificate);
-    entityManager.remove(certificate);
-    return certificate.getId();
   }
 
   @Override
   public List<Certificate> retrieveCertificatesByTagId(long tagId) {
     log.debug("Retrieving the List of Certificates by Tag's ID - {}", tagId);
-    return entityManager.createQuery("SELECT c FROM Certificate c JOIN c.tags t  WHERE t.id = :id", Certificate.class)
-            .setParameter("id", tagId).getResultList();
+    return entityManager
+        .createQuery(SELECT_CERTIFICATES_BY_TAG_ID, Certificate.class)
+        .setParameter("id", tagId)
+        .getResultList();
   }
-
 }

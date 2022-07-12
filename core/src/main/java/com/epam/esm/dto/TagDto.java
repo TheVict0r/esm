@@ -2,6 +2,7 @@ package com.epam.esm.dto;
 
 import com.epam.esm.service.validation.BasicInfo;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -18,8 +19,10 @@ public class TagDto {
 
   @NotBlank(message = "message.validation.tag.name.not_blank", groups = BasicInfo.class)
   @Size(min = 3, max = 30, message = "message.validation.tag.name.size", groups = BasicInfo.class)
-  // @Pattern(regexp = "([A-z]+)([0-9\\s]*)", message = "message.validation.tag.name.pattern",
-  // groups = BasicInfo.class)
+  @Pattern(
+      regexp = "^[a-zA-Z0-9\\s-]*$",
+      message = "message.validation.tag.name.pattern",
+      groups = BasicInfo.class)
   private String name;
 
   public TagDto(String name) {

@@ -11,8 +11,10 @@ public interface TagService extends BasicService<TagDto> {
   /**
    * Provides all existing {@code TagDto} objects.
    *
+   * @param page page number (used for pagination)
+   * @param size amount of {@code Tags} per page
    * @return the list containing all {@code TagsDto} objects converted from all {@code Tags}
    *     existing in the datasource
    */
-  List<TagDto> searchAll();
+  List<TagDto> searchAll(int page, int size);
 }

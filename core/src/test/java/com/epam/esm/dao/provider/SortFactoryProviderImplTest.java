@@ -1,4 +1,4 @@
-package com.epam.esm.dao.search;
+package com.epam.esm.dao.provider;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -14,9 +14,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {TestConfig.class})
-class SortFactoryImplTest {
+class SortFactoryProviderImplTest {
 
-  @Autowired SortFactory sortFactory;
+  @Autowired SortFactoryProvider sortFactoryProvider;
 
   private final String dateAscRequest1 = "DATE_ASC";
   private final String dateAscRequest2 = "date_asc";
@@ -45,62 +45,71 @@ class SortFactoryImplTest {
 
   @Test
   void provideDateAscSortQueryFragmentForDateAscRequest1() {
-    assertEquals(dateAscResponseExpected, sortFactory.provideSortQueryFragment(dateAscRequest1));
+    assertEquals(
+        dateAscResponseExpected, sortFactoryProvider.provideSortQueryFragment(dateAscRequest1));
   }
 
   @Test
   void provideDateAscSortQueryFragmentForDateAscRequest2() {
-    assertEquals(dateAscResponseExpected, sortFactory.provideSortQueryFragment(dateAscRequest2));
+    assertEquals(
+        dateAscResponseExpected, sortFactoryProvider.provideSortQueryFragment(dateAscRequest2));
   }
 
   @Test
   void provideDateAscSortQueryFragmentForDateAscRequest3() {
-    assertEquals(dateAscResponseExpected, sortFactory.provideSortQueryFragment(dateAscRequest3));
+    assertEquals(
+        dateAscResponseExpected, sortFactoryProvider.provideSortQueryFragment(dateAscRequest3));
   }
 
   @Test
   void provideDateDescSortQueryFragmentForDateDescRequest1() {
-    assertEquals(dateDescResponseExpected, sortFactory.provideSortQueryFragment(dateDescRequest1));
+    assertEquals(
+        dateDescResponseExpected, sortFactoryProvider.provideSortQueryFragment(dateDescRequest1));
   }
 
   @Test
   void provideDateDescSortQueryFragmentForDateDescRequest2() {
-    assertEquals(dateDescResponseExpected, sortFactory.provideSortQueryFragment(dateDescRequest2));
+    assertEquals(
+        dateDescResponseExpected, sortFactoryProvider.provideSortQueryFragment(dateDescRequest2));
   }
 
   @Test
   void provideDateDescSortQueryFragmentForDateDescRequest3() {
-    assertEquals(dateDescResponseExpected, sortFactory.provideSortQueryFragment(dateDescRequest3));
+    assertEquals(
+        dateDescResponseExpected, sortFactoryProvider.provideSortQueryFragment(dateDescRequest3));
   }
 
   @Test
   void provideNameAscSortQueryFragmentForNameAscRequest1() {
-    assertEquals(nameAscResponseExpected, sortFactory.provideSortQueryFragment(nameAscRequest1));
+    assertEquals(
+        nameAscResponseExpected, sortFactoryProvider.provideSortQueryFragment(nameAscRequest1));
   }
 
   @Test
   void provideNameAscSortQueryFragmentForNameAscRequest2() {
-    assertEquals(nameAscResponseExpected, sortFactory.provideSortQueryFragment(nameAscRequest2));
+    assertEquals(
+        nameAscResponseExpected, sortFactoryProvider.provideSortQueryFragment(nameAscRequest2));
   }
 
   @Test
   void provideNameAscSortQueryFragmentForNameAscRequest3() {
-    assertEquals(nameAscResponseExpected, sortFactory.provideSortQueryFragment(nameAscRequest3));
+    assertEquals(
+        nameAscResponseExpected, sortFactoryProvider.provideSortQueryFragment(nameAscRequest3));
   }
 
   @Test
   void provideNameDescSortQueryFragmentForNameDescRequest1() {
-    assertEquals(nameDescResponse, sortFactory.provideSortQueryFragment(nameDescRequest1));
+    assertEquals(nameDescResponse, sortFactoryProvider.provideSortQueryFragment(nameDescRequest1));
   }
 
   @Test
   void provideNameDescSortQueryFragmentForNameDescRequest2() {
-    assertEquals(nameDescResponse, sortFactory.provideSortQueryFragment(nameDescRequest2));
+    assertEquals(nameDescResponse, sortFactoryProvider.provideSortQueryFragment(nameDescRequest2));
   }
 
   @Test
   void provideNameDescSortQueryFragmentForNameDescRequest3Test() {
-    assertEquals(nameDescResponse, sortFactory.provideSortQueryFragment(nameDescRequest3));
+    assertEquals(nameDescResponse, sortFactoryProvider.provideSortQueryFragment(nameDescRequest3));
   }
 
   @Test
@@ -112,7 +121,7 @@ class SortFactoryImplTest {
         assertThrows(
             InvalidRequestSortParamValueException.class,
             () -> {
-              sortFactory.provideSortQueryFragment(invalidSortRequest);
+              sortFactoryProvider.provideSortQueryFragment(invalidSortRequest);
             });
     assertEquals(errorMessageKeyExpected, exception.getMessageKey());
     assertEquals(param0Expected, exception.getParams()[0]);

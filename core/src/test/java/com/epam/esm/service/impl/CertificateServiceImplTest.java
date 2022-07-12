@@ -123,7 +123,8 @@ class CertificateServiceImplTest {
         .thenReturn(entityProvider.getCertificate1withTagsDto());
 
     assertEquals(
-        searchResultDtoExpected, certificateService.search(tagName, name, description, sort));
+        searchResultDtoExpected,
+        certificateService.search(tagName, name, description, sort, page, size));
 
     verify(certificateDao).search(tagName, name, description, sort);
     verify(tagDao).retrieveTagsByCertificateId(certificate6.getId());
@@ -160,15 +161,15 @@ class CertificateServiceImplTest {
     when(tagDao.findIdByTag(tag1ForCreationNoId)).thenReturn(1L);
     when(tagDao.findIdByTag(tag2ForCreationNoId)).thenReturn(2L);
     when(tagDao.findIdByTag(tag3ForCreationNoId)).thenReturn(3L);
-//    doNothing()
-//        .when(tagDao)
-//        .saveTagToCertificate(certificateCreated.getId(), tag1ForCreationWithId.getId());
-//    doNothing()
-//        .when(tagDao)
-//        .saveTagToCertificate(certificateCreated.getId(), tag2ForCreationWithId.getId());
-//    doNothing()
-//        .when(tagDao)
-//        .saveTagToCertificate(certificateCreated.getId(), tag3ForCreationWithId.getId());
+    //    doNothing()
+    //        .when(tagDao)
+    //        .saveTagToCertificate(certificateCreated.getId(), tag1ForCreationWithId.getId());
+    //    doNothing()
+    //        .when(tagDao)
+    //        .saveTagToCertificate(certificateCreated.getId(), tag2ForCreationWithId.getId());
+    //    doNothing()
+    //        .when(tagDao)
+    //        .saveTagToCertificate(certificateCreated.getId(), tag3ForCreationWithId.getId());
 
     assertEquals(
         certificateDtoCreatedExpected, certificateService.create(certificateDtoForCreation));
@@ -182,9 +183,12 @@ class CertificateServiceImplTest {
     verify(tagDao).findIdByTag(tag1ForCreationNoId);
     verify(tagDao).findIdByTag(tag2ForCreationNoId);
     verify(tagDao).findIdByTag(tag3ForCreationNoId);
-//    verify(tagDao).saveTagToCertificate(certificateCreated.getId(), tag1ForCreationWithId.getId());
-//    verify(tagDao).saveTagToCertificate(certificateCreated.getId(), tag2ForCreationWithId.getId());
-//    verify(tagDao).saveTagToCertificate(certificateCreated.getId(), tag3ForCreationWithId.getId());
+    //    verify(tagDao).saveTagToCertificate(certificateCreated.getId(),
+    // tag1ForCreationWithId.getId());
+    //    verify(tagDao).saveTagToCertificate(certificateCreated.getId(),
+    // tag2ForCreationWithId.getId());
+    //    verify(tagDao).saveTagToCertificate(certificateCreated.getId(),
+    // tag3ForCreationWithId.getId());
   }
 
   @Test
@@ -221,7 +225,7 @@ class CertificateServiceImplTest {
     when(certificateDao.update(certificateForReplacement)).thenReturn(certificateAfterReplacement);
     when(tagDao.isTagExists(tagReplacement)).thenReturn(true);
     when(tagDao.findIdByTag(tagReplacement)).thenReturn(tagId);
-//    doNothing().when(tagDao).saveTagToCertificate(certificateId, tagId);
+    //    doNothing().when(tagDao).saveTagToCertificate(certificateId, tagId);
     when(certificateMapper.convertToDto(certificateAfterReplacement))
         .thenReturn(certificateAfterReplacementDtoExpected);
 
@@ -234,7 +238,7 @@ class CertificateServiceImplTest {
     verify(certificateDao).update(certificateForReplacement);
     verify(tagDao).isTagExists(tagReplacement);
     verify(tagDao).findIdByTag(tagReplacement);
-//    verify(tagDao).saveTagToCertificate(certificateId, tagId);
+    //    verify(tagDao).saveTagToCertificate(certificateId, tagId);
     verify(certificateMapper).convertToDto(certificateAfterReplacement);
   }
 }

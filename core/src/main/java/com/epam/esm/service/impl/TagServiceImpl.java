@@ -40,9 +40,9 @@ public class TagServiceImpl implements TagService {
   }
 
   @Override
-  public List<TagDto> searchAll() {
-    log.debug("Reading all Tags");
-    List<Tag> allTags = tagDao.searchAll();
+  public List<TagDto> searchAll(int page, int size) {
+    log.debug("Reading all Tags. Page № - {}, size - {}", page, size);
+    List<Tag> allTags = tagDao.searchAll(page, size);
     return allTags.stream().map(tag -> tagMapper.convertToDto(tag)).collect(Collectors.toList());
   }
 
@@ -85,5 +85,4 @@ public class TagServiceImpl implements TagService {
           return new ResourceNotFoundException(id);
         });
   }
-
 }

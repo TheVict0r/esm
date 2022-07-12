@@ -1,7 +1,6 @@
 package com.epam.esm.controller.advice;
 
 import com.epam.esm.exception.AbstractLocalizedCustomException;
-import com.epam.esm.exception.DuplicateEntryException;
 import com.epam.esm.exception.InappropriateBodyContentException;
 import com.epam.esm.exception.InvalidRequestSortParamValueException;
 import com.epam.esm.exception.MismatchedIdValuesException;
@@ -46,15 +45,6 @@ public class GlobalExceptionHandler {
       ResourceNotFoundException resourceNotFoundException, HttpServletRequest request) {
     String localizedMessage = getLocalizedMessage(resourceNotFoundException, request);
     return new IncorrectData(resourceNotFoundException, localizedMessage);
-  }
-
-  // todo написать javadoc и errorMessage возникает при удалении несуществующего объекта
-  // может и ещё где
-  @ExceptionHandler(IllegalArgumentException.class)
-  @ResponseStatus(HttpStatus.NOT_FOUND)
-  public IncorrectData handleException(
-      IllegalArgumentException illegalArgumentException, HttpServletRequest request) {
-    return new IncorrectData(illegalArgumentException, "IllegalArgumentException");
   }
 
   /**
@@ -151,14 +141,6 @@ public class GlobalExceptionHandler {
     return new IncorrectData(sqlIntegrityConstraintViolationException, errorMessage);
   }
 
-  @ExceptionHandler(DuplicateEntryException.class)
-  @ResponseStatus(HttpStatus.BAD_REQUEST)
-  public IncorrectData handleException(
-      DuplicateEntryException duplicateEntryException, HttpServletRequest request) {
-    String errorMessage = getLocalizedMessage(duplicateEntryException, request);
-    return new IncorrectData(duplicateEntryException, errorMessage);
-  }
-
   /**
    * Prevents from being sent incorrect format body content.
    *
@@ -248,14 +230,6 @@ public class GlobalExceptionHandler {
     return getLocalizedMessageSplitFromStringValue(request, messageKey, exception.getMessage());
   }
 
-  private String getLocalizedMessage(
-      DuplicateEntryException exception, HttpServletRequest request) {
-    String messageKey = exception.getMessageKey();
-    String originalMessageFromSqlException = (String) (exception.getParams()[0]);
-    return getLocalizedMessageSplitFromStringValue(
-        request, messageKey, originalMessageFromSqlException);
-  }
-
   private String getLocalizedMessageSplitFromStringValue(
       HttpServletRequest request, String messageKey, String originalMessage) {
     String[] originalMessageSplit = originalMessage.split("'");
@@ -287,12 +261,10 @@ public class GlobalExceptionHandler {
       allCustomErrorCodes.put(ConstraintViolationException.class, 40005);
       allCustomErrorCodes.put(MethodArgumentNotValidException.class, 40006);
       allCustomErrorCodes.put(SQLIntegrityConstraintViolationException.class, 40007);
-      allCustomErrorCodes.put(DuplicateEntryException.class, 40008);
-      allCustomErrorCodes.put(HttpMessageNotReadableException.class, 40009);
+      allCustomErrorCodes.put(HttpMessageNotReadableException.class, 40008);
       allCustomErrorCodes.put(NonexistentLocaleException.class, 40401);
       allCustomErrorCodes.put(ResourceNotFoundException.class, 40402);
       allCustomErrorCodes.put(ResourceNotCreatedException.class, 50001);
-      allCustomErrorCodes.put(IllegalArgumentException.class, 40403);
     }
 
     IncorrectData(Exception exception, String errorMessage) {

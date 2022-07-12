@@ -38,5 +38,5 @@ public interface BasicDao<E> {
    *
    * @param entity entity to be deleted
    */
-  long delete(E entity);
+  void delete(E entity);
 }

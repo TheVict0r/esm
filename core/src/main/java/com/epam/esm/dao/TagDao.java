@@ -12,9 +12,11 @@ public interface TagDao extends BasicDao<Tag> {
   /**
    * Reads all existing {@code Tags} from the datasource.
    *
+   * @param page page number (used for pagination)
+   * @param size amount of {@code Tags} per page
    * @return - the list containing all {@code Tags} existing in the datasource
    */
-  List<Tag> searchAll();
+  List<Tag> searchAll(int page, int size);
 
   /**
    * Retrieves the set with all {@code Tags} associated with {@code Сertificate} from the
@@ -40,5 +42,4 @@ public interface TagDao extends BasicDao<Tag> {
    * @return - {@code Tag's} <b>ID</b>
    */
   long findIdByTag(Tag tag);
-
 }

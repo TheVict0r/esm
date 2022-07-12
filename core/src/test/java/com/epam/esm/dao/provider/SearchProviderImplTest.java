@@ -1,4 +1,4 @@
-package com.epam.esm.dao.search;
+package com.epam.esm.dao.provider;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -129,13 +129,15 @@ class SearchProviderImplTest {
 
   @Test
   void provideArgsWithTagNameShouldReturnValidStringArray() {
-    assertArrayEquals(new String[] {tagName}, searchProvider.setParametersToQuery(tagName, null, null));
+    assertArrayEquals(
+        new String[] {tagName}, searchProvider.setParametersToQuery(tagName, null, null));
   }
 
   @Test
   void provideArgsWithCertificateNameShouldReturnValidStringArray() {
     assertArrayEquals(
-        new String[] {certificateName}, searchProvider.setParametersToQuery(null, certificateName, null));
+        new String[] {certificateName},
+        searchProvider.setParametersToQuery(null, certificateName, null));
   }
 
   @Test

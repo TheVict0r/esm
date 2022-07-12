@@ -16,7 +16,19 @@ public interface CertificateService extends BasicService<CertificateDto> {
    * @param name {@code Certificate's} name
    * @param description {@code Certificate's} description
    * @param sort sort by some {@code Certificate's} parameter
+   * @param page page number (used for pagination)
+   * @param size amount of {@code Certificates} per page
    * @return The list with <b>DTOs</b> of found {@code Certificates}
    */
-  List<CertificateDto> search(String tagName, String name, String description, String sort);
+  List<CertificateDto> search(
+      String tagName, String name, String description, String sort, int page, int size);
+
+  /**
+   * Replaces existing {@code Certificate} found by ID with completely new data.
+   *
+   * @param id {@code Certificate's} ID
+   * @param certificateDto DTO object with the new data
+   * @return updated {@code CertificateDto}
+   */
+  CertificateDto replaceById(Long id, CertificateDto certificateDto);
 }

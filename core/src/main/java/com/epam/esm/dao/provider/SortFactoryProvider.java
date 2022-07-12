@@ -1,4 +1,4 @@
-package com.epam.esm.dao.search;
+package com.epam.esm.dao.provider;
 
 import org.springframework.stereotype.Component;
 
@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
  * ordering and its direction (ascending or descending)
  */
 @Component
-interface SortFactory {
+interface SortFactoryProvider {
 
   /**
    * Provides the fragment of sort SQL query for a bigger query.

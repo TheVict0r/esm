@@ -75,7 +75,6 @@ public class CertificateDto implements Serializable {
       message = "message.validation.certificate.create_date.past_or_present",
       groups = AdvancedInfo.class)
   @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
-  // @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
   private LocalDateTime createDate;
 
   @NotNull(
@@ -85,7 +84,6 @@ public class CertificateDto implements Serializable {
       message = "message.validation.certificate.last_update_date.past_or_present",
       groups = AdvancedInfo.class)
   @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
-  // @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
   private LocalDateTime lastUpdateDate;
 
   private Set<@Valid TagDto> tags;
