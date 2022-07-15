@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -57,7 +58,6 @@ public class Certificate implements Serializable {
       name = "gift_certificate_tag",
       joinColumns = @JoinColumn(name = "gift_certificate_id"),
       inverseJoinColumns = @JoinColumn(name = "tag_id"))
-  @ToString.Exclude
   private Set<Tag> tags = new HashSet<>();
 
   public Certificate(

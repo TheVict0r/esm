@@ -17,13 +17,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.hateoas.RepresentationModel;
 
 /** Basic DTO class for Certificate entity */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CertificateDto implements Serializable {
+public class CertificateDto extends RepresentationModel<CertificateDto> implements Serializable {
 
   @PositiveOrZero(
       message = "message.validation.certificate.id.positive_or_zero",

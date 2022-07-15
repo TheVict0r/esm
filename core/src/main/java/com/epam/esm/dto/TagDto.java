@@ -1,6 +1,7 @@
 package com.epam.esm.dto;
 
 import com.epam.esm.service.validation.BasicInfo;
+import java.io.Serializable;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.PositiveOrZero;
@@ -8,12 +9,13 @@ import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.hateoas.RepresentationModel;
 
 /** Basic DTO class for Tag entity */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TagDto {
+public class TagDto extends RepresentationModel<TagDto> implements Serializable {
   @PositiveOrZero(message = "message.validation.tag.id.positive_or_zero", groups = BasicInfo.class)
   private Long id;
 

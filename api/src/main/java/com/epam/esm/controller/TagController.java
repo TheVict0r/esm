@@ -1,5 +1,8 @@
 package com.epam.esm.controller;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.service.TagService;
 import com.epam.esm.service.validation.BasicInfo;
@@ -9,6 +12,7 @@ import javax.validation.constraints.Min;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,6 +32,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/tags")
 public class TagController {
 
+  public static final String UPDATE = "update";
+  public static final String FIND = "findById";
+  public static final String DELETE = "delete";
+  public static final String SHOW_ALL = "showAll";
   private TagService tagService;
 
   @Autowired
@@ -45,7 +53,9 @@ public class TagController {
   public TagDto findById(
       @Min(value = 1, message = "message.validation.id.min") @PathVariable("id") Long id) {
     log.info("Reading the Tag by ID - {}", id);
-    return tagService.findById(id);
+    TagDto tagDto = tagService.findById(id);
+    provideHateoas(tagDto);
+    return tagDto;
   }
 
   /**
@@ -55,16 +65,22 @@ public class TagController {
    *     and returned by the corresponding service level method.
    */
   @GetMapping
-  public List<TagDto> searchAll(
+  public List<TagDto> showAll(
       @Min(value = 1, message = "message.validation.page.min")
           @RequestParam(value = "page", defaultValue = "1")
-          int page,
+          Integer page,
       @Min(value = 1, message = "message.validation.page.size")
           @Max(value = 50, message = "message.validation.page.size")
           @RequestParam(value = "size", defaultValue = "10")
-          int size) {
+          Integer size) {
     log.info("Reading all Tags. Page № - {}, size - {}", page, size);
-    return tagService.searchAll(page, size);
+    List<TagDto> tagDtoList = tagService.searchAll(page, size);
+    tagDtoList.forEach(this::provideHateoas);
+    return tagDtoList;
+  }
+
+  public List<TagDto> showAll(){
+    return showAll(null, null);
   }
 
   /**
@@ -76,7 +92,14 @@ public class TagController {
   @ResponseStatus(HttpStatus.CREATED)
   public TagDto create(@RequestBody @Validated(BasicInfo.class) TagDto tagDto) {
     log.info("Creating Tag from DTO - {}", tagDto);
-    return tagService.create(tagDto);
+    TagDto tagDtoCreated = tagService.create(tagDto);
+    tagDtoCreated.add(linkTo(methodOn(TagController.class).create(tagDto)).withSelfRel());
+    tagDtoCreated.add(
+        linkTo(methodOn(TagController.class).updateById(tagDto.getId(), tagDto)).withRel(UPDATE));
+    tagDtoCreated.add(linkTo(methodOn(TagController.class).findById(tagDto.getId())).withRel(FIND));
+    tagDtoCreated.add(
+        linkTo(methodOn(TagController.class).deleteByID(tagDto.getId())).withRel(DELETE));
+    return tagDtoCreated;
   }
 
   /**
@@ -91,7 +114,13 @@ public class TagController {
       @Min(value = 1, message = "message.validation.id.min") @PathVariable("id") Long id,
       @RequestBody @Validated(BasicInfo.class) TagDto tagDto) {
     log.info("Updating Tag with ID - {}, from the DTO - {}", id, tagDto);
-    return tagService.updateById(id, tagDto);
+    TagDto tagDtoUpdated = tagService.updateById(id, tagDto);
+    tagDtoUpdated.add(
+        linkTo(methodOn(TagController.class).updateById(tagDto.getId(), tagDto)).withSelfRel());
+    tagDtoUpdated.add(linkTo(methodOn(TagController.class).findById(tagDto.getId())).withRel(FIND));
+    tagDtoUpdated.add(
+        linkTo(methodOn(TagController.class).deleteByID(tagDto.getId())).withRel(DELETE));
+    return tagDtoUpdated;
   }
 
   /**
@@ -101,9 +130,18 @@ public class TagController {
    */
   @DeleteMapping(path = "/{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void deleteByID(
+  public ResponseEntity<Void> deleteByID(
       @Min(value = 1, message = "message.validation.id.min") @PathVariable("id") Long id) {
     log.info("Deleting Tag by ID - {}", id);
     tagService.deleteById(id);
+    return ResponseEntity.noContent().build();
+  }
+
+  private void provideHateoas(TagDto tagDto) {
+    Long id = tagDto.getId();
+    tagDto.add(linkTo(methodOn(TagController.class).findById(id)).withSelfRel());
+    tagDto.add(linkTo(methodOn(TagController.class).updateById(id, tagDto)).withRel(UPDATE));
+    tagDto.add(linkTo(methodOn(TagController.class).deleteByID(id)).withRel(DELETE));
+    tagDto.add(linkTo(methodOn(TagController.class).showAll()).withRel(SHOW_ALL));
   }
 }
