@@ -31,5 +31,4 @@ public class CertificateMapperImpl implements EntityDtoMapper<Certificate, Certi
     log.debug("Converting Certificate - {} to DTO", entity);
     return mapper.map(entity, CertificateDto.class);
   }
-
 }

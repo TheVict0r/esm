@@ -1,8 +1,6 @@
 package com.epam.esm.controller;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
+import com.epam.esm.controller.hateoas.TagHateoasProvider;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.service.TagService;
 import com.epam.esm.service.validation.BasicInfo;
@@ -32,15 +30,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/tags")
 public class TagController {
 
-  public static final String UPDATE = "update";
-  public static final String FIND = "findById";
-  public static final String DELETE = "delete";
-  public static final String SHOW_ALL = "showAll";
   private TagService tagService;
+  private TagHateoasProvider hateoasProvider;
 
   @Autowired
-  public TagController(TagService tagService) {
+  public TagController(TagService tagService, TagHateoasProvider hateoasProvider) {
     this.tagService = tagService;
+    this.hateoasProvider = hateoasProvider;
   }
 
   /**
@@ -54,7 +50,7 @@ public class TagController {
       @Min(value = 1, message = "message.validation.id.min") @PathVariable("id") Long id) {
     log.info("Reading the Tag by ID - {}", id);
     TagDto tagDto = tagService.findById(id);
-    provideHateoas(tagDto);
+    hateoasProvider.addLinksForShowSingleTag(tagDto);
     return tagDto;
   }
 
@@ -75,11 +71,16 @@ public class TagController {
           Integer size) {
     log.info("Reading all Tags. Page № - {}, size - {}", page, size);
     List<TagDto> tagDtoList = tagService.searchAll(page, size);
-    tagDtoList.forEach(this::provideHateoas);
+    tagDtoList.forEach(tagDto -> hateoasProvider.addLinksForShowSingleTag(tagDto));
     return tagDtoList;
   }
 
-  public List<TagDto> showAll(){
+  /**
+   * Searches all {@code Tags}. Overloaded method for HATEOAS realisation.
+   *
+   * @return The List with found {@code TagDtos}
+   */
+  public List<TagDto> showAll() {
     return showAll(null, null);
   }
 
@@ -93,12 +94,7 @@ public class TagController {
   public TagDto create(@RequestBody @Validated(BasicInfo.class) TagDto tagDto) {
     log.info("Creating Tag from DTO - {}", tagDto);
     TagDto tagDtoCreated = tagService.create(tagDto);
-    tagDtoCreated.add(linkTo(methodOn(TagController.class).create(tagDto)).withSelfRel());
-    tagDtoCreated.add(
-        linkTo(methodOn(TagController.class).updateById(tagDto.getId(), tagDto)).withRel(UPDATE));
-    tagDtoCreated.add(linkTo(methodOn(TagController.class).findById(tagDto.getId())).withRel(FIND));
-    tagDtoCreated.add(
-        linkTo(methodOn(TagController.class).deleteByID(tagDto.getId())).withRel(DELETE));
+    hateoasProvider.addLinksForCreate(tagDtoCreated);
     return tagDtoCreated;
   }
 
@@ -115,11 +111,7 @@ public class TagController {
       @RequestBody @Validated(BasicInfo.class) TagDto tagDto) {
     log.info("Updating Tag with ID - {}, from the DTO - {}", id, tagDto);
     TagDto tagDtoUpdated = tagService.updateById(id, tagDto);
-    tagDtoUpdated.add(
-        linkTo(methodOn(TagController.class).updateById(tagDto.getId(), tagDto)).withSelfRel());
-    tagDtoUpdated.add(linkTo(methodOn(TagController.class).findById(tagDto.getId())).withRel(FIND));
-    tagDtoUpdated.add(
-        linkTo(methodOn(TagController.class).deleteByID(tagDto.getId())).withRel(DELETE));
+    hateoasProvider.addLinksForUpdateById(tagDtoUpdated);
     return tagDtoUpdated;
   }
 
@@ -130,18 +122,10 @@ public class TagController {
    */
   @DeleteMapping(path = "/{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public ResponseEntity<Void> deleteByID(
+  public ResponseEntity<Void> deleteById(
       @Min(value = 1, message = "message.validation.id.min") @PathVariable("id") Long id) {
     log.info("Deleting Tag by ID - {}", id);
     tagService.deleteById(id);
     return ResponseEntity.noContent().build();
-  }
-
-  private void provideHateoas(TagDto tagDto) {
-    Long id = tagDto.getId();
-    tagDto.add(linkTo(methodOn(TagController.class).findById(id)).withSelfRel());
-    tagDto.add(linkTo(methodOn(TagController.class).updateById(id, tagDto)).withRel(UPDATE));
-    tagDto.add(linkTo(methodOn(TagController.class).deleteByID(id)).withRel(DELETE));
-    tagDto.add(linkTo(methodOn(TagController.class).showAll()).withRel(SHOW_ALL));
   }
 }

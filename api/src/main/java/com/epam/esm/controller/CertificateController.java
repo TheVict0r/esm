@@ -1,8 +1,6 @@
 package com.epam.esm.controller;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
+import com.epam.esm.controller.hateoas.CertificateHateoasProvider;
 import com.epam.esm.dto.CertificateDto;
 import com.epam.esm.service.CertificateService;
 import com.epam.esm.service.validation.BasicInfo;
@@ -38,16 +36,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/certificates")
 public class CertificateController {
 
-  public static final String DELETE = "delete";
-  public static final String REPLACE = "replace";
-  public static final String FIND_BY_ID = "findById";
-  public static final String SHOW_ALL = "showAll";
   private CertificateService certificateService;
+  private CertificateHateoasProvider hateoasProvider;
   private ObjectMapper objectMapper;
 
   @Autowired
-  public CertificateController(CertificateService certificateService, ObjectMapper objectMapper) {
+  public CertificateController(
+      CertificateService certificateService,
+      ObjectMapper objectMapper,
+      CertificateHateoasProvider hateoasProvider) {
     this.certificateService = certificateService;
+    this.hateoasProvider = hateoasProvider;
     this.objectMapper = objectMapper;
   }
 
@@ -63,7 +62,7 @@ public class CertificateController {
       @Min(value = 1, message = "message.validation.id.min") @PathVariable("id") Long id) {
     log.info("Reading the certificate by ID - {}", id);
     CertificateDto certificateDto = certificateService.findById(id);
-    provideHateoas(certificateDto);
+    hateoasProvider.addLinksForShowSingleCertificate(certificateDto);
     return certificateDto;
   }
 
@@ -101,7 +100,8 @@ public class CertificateController {
         size);
     List<CertificateDto> certificateDtoList =
         certificateService.search(tagName, name, description, sort, page, size);
-    certificateDtoList.forEach(this::provideHateoas);
+    certificateDtoList.forEach(
+        certificateDto -> hateoasProvider.addLinksForShowSingleCertificate(certificateDto));
     return certificateDtoList;
   }
 
@@ -126,20 +126,7 @@ public class CertificateController {
       @RequestBody @Validated(BasicInfo.class) CertificateDto certificateDto) {
     log.info("Creating Certificate from DTO - {}", certificateDto);
     CertificateDto certificateDtoCreated = certificateService.create(certificateDto);
-
-    certificateDtoCreated.add(
-        linkTo(methodOn(CertificateController.class).create(certificateDto)).withSelfRel());
-    certificateDtoCreated.add(
-        linkTo(methodOn(CertificateController.class).findById(certificateDto.getId()))
-            .withRel(FIND_BY_ID));
-    certificateDtoCreated.add(
-        linkTo(
-                methodOn(CertificateController.class)
-                    .replaceById(certificateDtoCreated.getId(), certificateDto))
-            .withRel(REPLACE));
-    certificateDtoCreated.add(
-        linkTo(methodOn(CertificateController.class).deleteById(certificateDto.getId()))
-            .withRel(DELETE));
+    hateoasProvider.addLinksForCreate(certificateDtoCreated);
     return certificateDtoCreated;
   }
 
@@ -154,7 +141,9 @@ public class CertificateController {
   public CertificateDto replaceById(
       @Min(value = 1, message = "message.validation.id.min") @PathVariable("id") Long id,
       @RequestBody @Validated(BasicInfo.class) CertificateDto certificateDto) {
-    return certificateService.replaceById(id, certificateDto);
+    CertificateDto certificateDtoReplacedBy = certificateService.replaceById(id, certificateDto);
+    hateoasProvider.addLinksForReplaceById(certificateDtoReplacedBy);
+    return certificateDtoReplacedBy;
   }
 
   /**
@@ -176,7 +165,9 @@ public class CertificateController {
     JsonNode patched =
         patch.apply(objectMapper.convertValue(certificateDtoToBeUpdated, JsonNode.class));
     CertificateDto certificateDtoUpdated = objectMapper.treeToValue(patched, CertificateDto.class);
-    return certificateService.updateById(id, certificateDtoUpdated);
+    certificateDtoUpdated = certificateService.updateById(id, certificateDtoUpdated);
+    hateoasProvider.addLinksForUpdateById(certificateDtoUpdated);
+    return certificateDtoUpdated;
   }
 
   /**
@@ -191,18 +182,5 @@ public class CertificateController {
     log.info("Deleting certificate with ID - {}", id);
     certificateService.deleteById(id);
     return ResponseEntity.noContent().build();
-  }
-
-  private void provideHateoas(CertificateDto certificateDto) {
-    Long id = certificateDto.getId();
-    certificateDto.add(linkTo(methodOn(CertificateController.class).findById(id)).withSelfRel());
-    certificateDto.add(
-        linkTo(methodOn(CertificateController.class).replaceById(id, certificateDto))
-            .withRel(REPLACE));
-    certificateDto.add(
-        linkTo(methodOn(CertificateController.class).deleteById(id)).withRel(DELETE));
-    certificateDto.add(linkTo(methodOn(CertificateController.class).search()).withRel(SHOW_ALL));
-
-    //certificateDto.add(linkTo(methodOn(CertificateController.class).updateById(id, null)).withRel("update"));
   }
 }
