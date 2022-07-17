@@ -17,4 +17,7 @@ public interface TagService extends BasicService<TagDto> {
    *     existing in the datasource
    */
   List<TagDto> searchAll(int page, int size);
+
+  // todo JavaDoc
+  List<TagDto> findTagsByCertificateId(Long certificateId);
 }

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 public class CertificateHateoasProvider {
 
   /**
-   * Adds HATEOAS links to CertificateDto after it was read from the datasource.
+   * Adds HATEOAS links to CertificateDto after it has been read from the datasource.
    *
    * @param certificateDto CertificateDto instance
    */
@@ -20,6 +20,7 @@ public class CertificateHateoasProvider {
     addForReplaceById(certificateDto);
     addForUpdateById(certificateDto);
     addForDeleteById(certificateDto);
+    addForShowTagsForCertificate(certificateDto);
     addForSearch(certificateDto);
   }
 
@@ -34,6 +35,7 @@ public class CertificateHateoasProvider {
     addForReplaceById(certificateDto);
     addForUpdateById(certificateDto);
     addForDeleteById(certificateDto);
+    addForShowTagsForCertificate(certificateDto);
   }
 
   /**
@@ -46,6 +48,7 @@ public class CertificateHateoasProvider {
     addForFindById(certificateDto);
     addForUpdateById(certificateDto);
     addForDeleteById(certificateDto);
+    addForShowTagsForCertificate(certificateDto);
   }
 
   /**
@@ -58,6 +61,7 @@ public class CertificateHateoasProvider {
     addForReplaceById(certificateDto);
     addForFindById(certificateDto);
     addForDeleteById(certificateDto);
+    addForShowTagsForCertificate(certificateDto);
   }
 
   private void addForCreateSelf(CertificateDto certificateDto) {
@@ -132,5 +136,17 @@ public class CertificateHateoasProvider {
 
   private void addForSearch(CertificateDto certificateDto) {
     certificateDto.add(linkTo(methodOn(CertificateController.class).search()).withRel("showAll"));
+  }
+
+  private void addForShowTagsForCertificateSelf(CertificateDto certificateDto) {
+    certificateDto.add(
+        linkTo(methodOn(CertificateController.class).showTagsForCertificate(certificateDto.getId()))
+            .withSelfRel());
+  }
+
+  private void addForShowTagsForCertificate(CertificateDto certificateDto) {
+    certificateDto.add(
+        linkTo(methodOn(CertificateController.class).showTagsForCertificate(certificateDto.getId()))
+            .withRel("showTags"));
   }
 }

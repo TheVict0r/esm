@@ -1,8 +1,11 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.controller.hateoas.CertificateHateoasProvider;
+import com.epam.esm.controller.hateoas.TagHateoasProvider;
 import com.epam.esm.dto.CertificateDto;
+import com.epam.esm.dto.TagDto;
 import com.epam.esm.service.CertificateService;
+import com.epam.esm.service.TagService;
 import com.epam.esm.service.validation.BasicInfo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -37,16 +40,22 @@ import org.springframework.web.bind.annotation.RestController;
 public class CertificateController {
 
   private CertificateService certificateService;
+  private TagService tagService;
   private CertificateHateoasProvider hateoasProvider;
+  private TagHateoasProvider tagHateoasProvider;
   private ObjectMapper objectMapper;
 
   @Autowired
   public CertificateController(
       CertificateService certificateService,
+      TagService tagService,
       ObjectMapper objectMapper,
-      CertificateHateoasProvider hateoasProvider) {
+      CertificateHateoasProvider hateoasProvider,
+      TagHateoasProvider tagHateoasProvider) {
     this.certificateService = certificateService;
+    this.tagService = tagService;
     this.hateoasProvider = hateoasProvider;
+    this.tagHateoasProvider = tagHateoasProvider;
     this.objectMapper = objectMapper;
   }
 
@@ -64,6 +73,22 @@ public class CertificateController {
     CertificateDto certificateDto = certificateService.findById(id);
     hateoasProvider.addLinksForShowSingleCertificate(certificateDto);
     return certificateDto;
+  }
+
+  /**
+   * Shows Tags for Certificate.
+   *
+   * @param certificateId ID of Certificate.
+   * @return List with all TagDtos of the Certificate.
+   */
+  @GetMapping(path = "/{certificateId}/tags")
+  public List<TagDto> showTagsForCertificate(
+      @Min(value = 1, message = "message.validation.id.min") @PathVariable("certificateId")
+          Long certificateId) {
+    log.info("Reading tags for certificate with ID - {}", certificateId);
+    List<TagDto> tagsDtoByCertificateId = tagService.findTagsByCertificateId(certificateId);
+    tagsDtoByCertificateId.forEach(tagDto -> tagHateoasProvider.addLinksForShowSingleTag(tagDto));
+    return tagsDtoByCertificateId;
   }
 
   /**

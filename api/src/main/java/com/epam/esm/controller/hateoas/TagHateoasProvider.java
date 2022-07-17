@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 public class TagHateoasProvider {
 
   /**
-   * Adds HATEOAS links to TagDto after it was read from the datasource.
+   * Adds HATEOAS links to TagDto after it has been read from the datasource.
    *
    * @param tagDto TagDto instance
    */

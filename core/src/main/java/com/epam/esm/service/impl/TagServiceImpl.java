@@ -11,6 +11,7 @@ import com.epam.esm.service.validation.BasicInfo;
 import com.epam.esm.service.validation.InputDataValidator;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import javax.validation.constraints.Positive;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +66,13 @@ public class TagServiceImpl implements TagService {
     safeRetrieveTagById(id);
     tagDao.update(tagMapper.convertToEntity(tagDto));
     return tagDto;
+  }
+
+  @Override
+  public List<TagDto> findTagsByCertificateId(Long certificateId) {
+    Set<Tag> tags = tagDao.retrieveTagsByCertificateId(certificateId);
+
+    return tags.stream().map(tag -> tagMapper.convertToDto(tag)).toList();
   }
 
   @Override

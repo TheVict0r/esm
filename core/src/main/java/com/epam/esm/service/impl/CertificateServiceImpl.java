@@ -9,7 +9,6 @@ import com.epam.esm.exception.InappropriateBodyContentException;
 import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.mapper.impl.CertificateMapperImpl;
 import com.epam.esm.service.CertificateService;
-import com.epam.esm.service.TagService;
 import com.epam.esm.service.validation.InputDataValidator;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,7 +27,6 @@ public class CertificateServiceImpl implements CertificateService {
   private CertificateDao certificateDao;
   private CertificateMapperImpl certificateMapper;
   private TagDao tagDao;
-  private TagService tagService;
   private InputDataValidator validator;
 
   @Autowired
@@ -36,12 +34,10 @@ public class CertificateServiceImpl implements CertificateService {
       CertificateDao certificateDao,
       TagDao tagDao,
       CertificateMapperImpl certificateMapper,
-      TagService tagService,
       InputDataValidator validator) {
     this.certificateDao = certificateDao;
     this.tagDao = tagDao;
     this.certificateMapper = certificateMapper;
-    this.tagService = tagService;
     this.validator = validator;
   }
 
