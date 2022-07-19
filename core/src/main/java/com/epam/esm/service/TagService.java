@@ -18,6 +18,11 @@ public interface TagService extends BasicService<TagDto> {
    */
   List<TagDto> searchAll(int page, int size);
 
-  // todo JavaDoc
+  /**
+   * Provides all {@code TagDtos} objects related to Certificate with provided ID.
+   *
+   * @param certificateId ID of Certificate
+   * @return List with {@code TagDtos}
+   */
   List<TagDto> findTagsByCertificateId(Long certificateId);
 }

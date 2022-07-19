@@ -8,54 +8,51 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/** Entity class for creating {@code Tag} objects. */
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "tag")
-public class Tag implements Serializable {
+@Table(name = "user")
+public class User implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @EqualsAndHashCode.Exclude
   private long id;
 
   @Column(name = "name")
   private String name;
 
-  public Tag(String name) {
-    this.name = name;
-  }
-
-  @ManyToMany(mappedBy = "tags")
-  private Set<Certificate> certificates = new HashSet<>();
+  @OneToMany
+  @JoinColumn(name = "user_id")
+  Set<Purchase> purchases = new HashSet<>();
 
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
 
-    Tag tag = (Tag) o;
+    User user = (User) o;
 
-    return name.equals(tag.name);
+    if (id != user.id) return false;
+    return name.equals(user.name);
   }
 
   @Override
   public int hashCode() {
-    return name.hashCode();
+    int result = (int) (id ^ (id >>> 32));
+    result = 31 * result + name.hashCode();
+    return result;
   }
 
   @Override
   public String toString() {
-    return getClass().getSimpleName() + "{" + "id=" + id + ", name='" + name + "\'}";
+    return getClass().getSimpleName() + "{" + "id=" + id + ", name='" + name + '\'' + '}';
   }
 }
