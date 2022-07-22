@@ -13,40 +13,37 @@ import org.springframework.stereotype.Component;
 @Log4j2
 class SortFactoryProviderImpl implements SortFactoryProvider {
 
-  private static final Map<String, String> sortQueryFragments = new HashMap<>();
+	private static final Map<String, String> sortQueryFragments = new HashMap<>();
 
-  static {
-    sortQueryFragments.put("DATE_ASC", " ORDER BY c.createDate ASC");
-    sortQueryFragments.put("DATE_DESC", " ORDER BY c.createDate DESC");
-    sortQueryFragments.put("NAME_ASC", " ORDER BY c.name ASC");
-    sortQueryFragments.put("NAME_DESC", " ORDER BY c.name DESC");
-  }
+	static {
+		sortQueryFragments.put("DATE_ASC", " ORDER BY c.createDate ASC");
+		sortQueryFragments.put("DATE_DESC", " ORDER BY c.createDate DESC");
+		sortQueryFragments.put("NAME_ASC", " ORDER BY c.name ASC");
+		sortQueryFragments.put("NAME_DESC", " ORDER BY c.name DESC");
+	}
 
-  @Override
-  public String provideSortQueryFragment(String sort) {
-    log.debug("Providing sort SQL query fragment for request - {}", sort);
-    String sortQueryFragment = sortQueryFragments.get(sort.toUpperCase());
-    if (sortQueryFragment == null) {
-      log.error("Incorrect sort request {}", sort);
-      throw new InvalidRequestSortParamValueException(sort, getActualSortRequests());
-    }
-    return sortQueryFragment;
-  }
+	@Override
+	public String provideSortQueryFragment(String sort) {
+		log.debug("Providing sort SQL query fragment for request - {}", sort);
+		String sortQueryFragment = sortQueryFragments.get(sort.toUpperCase());
+		if (sortQueryFragment == null) {
+			log.error("Incorrect sort request {}", sort);
+			throw new InvalidRequestSortParamValueException(sort, getActualSortRequests());
+		}
+		return sortQueryFragment;
+	}
 
-  @Override
-  public void addNewSortQueryFragment(String sortRequest, String sortQueryFragment) {
-    log.debug(
-        "Adding for the request - {} the new sort SQL query fragment - {}",
-        sortRequest,
-        sortQueryFragment);
-    sortQueryFragments.put(sortRequest.toUpperCase(), sortQueryFragment);
-  }
+	@Override
+	public void addNewSortQueryFragment(String sortRequest, String sortQueryFragment) {
+		log.debug("Adding for the request - {} the new sort SQL query fragment - {}", sortRequest, sortQueryFragment);
+		sortQueryFragments.put(sortRequest.toUpperCase(), sortQueryFragment);
+	}
 
-  private String getActualSortRequests() {
-    Set<String> keySet = sortQueryFragments.keySet();
-    StringBuilder builder = new StringBuilder();
-    keySet.forEach(key -> builder.append(key).append(", "));
-    builder.delete(builder.lastIndexOf(", "), builder.lastIndexOf(", ") + 2);
-    return builder.toString();
-  }
+	private String getActualSortRequests() {
+		Set<String> keySet = sortQueryFragments.keySet();
+		StringBuilder builder = new StringBuilder();
+		keySet.forEach(key -> builder.append(key).append(", "));
+		builder.delete(builder.lastIndexOf(", "), builder.lastIndexOf(", ") + 2);
+		return builder.toString();
+	}
 }

@@ -17,21 +17,20 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ContextConfiguration(classes = {TestConfig.class})
 class InputDataValidatorImplTest {
 
-  @Autowired InputDataValidator dataValidator;
+	@Autowired
+	InputDataValidator dataValidator;
 
-  @Test
-  void pathAndBodyIdsCheckThrowsMismatchedIdValuesExceptionWhenIdsMismatch() {
-    Long pathId = 10L;
-    Long bodyId = 20L;
-    String errorMessageKeyExpected = "message.mismatched_id_values";
-    long param0Expected = 10L;
-    long param1Expected = 20L;
-    AbstractLocalizedCustomException exception =
-        assertThrows(
-            MismatchedIdValuesException.class,
-            () -> dataValidator.pathAndBodyIdsCheck(pathId, bodyId));
-    assertEquals(errorMessageKeyExpected, exception.getMessageKey());
-    assertEquals(param0Expected, exception.getParams()[0]);
-    assertEquals(param1Expected, exception.getParams()[1]);
-  }
+	@Test
+	void pathAndBodyIdsCheckThrowsMismatchedIdValuesExceptionWhenIdsMismatch() {
+		Long pathId = 10L;
+		Long bodyId = 20L;
+		String errorMessageKeyExpected = "message.mismatched_id_values";
+		long param0Expected = 10L;
+		long param1Expected = 20L;
+		AbstractLocalizedCustomException exception = assertThrows(MismatchedIdValuesException.class,
+				() -> dataValidator.pathAndBodyIdsCheck(pathId, bodyId));
+		assertEquals(errorMessageKeyExpected, exception.getMessageKey());
+		assertEquals(param0Expected, exception.getParams()[0]);
+		assertEquals(param1Expected, exception.getParams()[1]);
+	}
 }

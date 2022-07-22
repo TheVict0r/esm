@@ -6,8 +6,9 @@ plugins {
 dependencies {
     implementation project(':core')
     implementation 'org.springframework.boot:spring-boot-starter-validation'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'com.github.java-json-tools:json-patch:1.13'
+    /* test dependencies */
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 application {

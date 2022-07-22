@@ -18,25 +18,28 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ContextConfiguration(classes = {TestConfig.class})
 class CertificateMapperImplTest {
 
-  @Autowired CertificateMapperImpl certificateMapper;
-  @Autowired TestEntityProvider entityProvider;
+	@Autowired
+	CertificateMapperImpl certificateMapper;
 
-  @BeforeEach
-  void setUp() {
-    Locale.setDefault(Locale.ENGLISH);
-  }
+	@Autowired
+	TestEntityProvider entityProvider;
 
-  @Test
-  void convertToEntityShouldReturnEntity() {
-    CertificateDto certificateDto = entityProvider.getCertificate5dto();
-    Certificate expectedCertificate = entityProvider.getCertificate5();
-    assertEquals(expectedCertificate, certificateMapper.convertToEntity(certificateDto));
-  }
+	@BeforeEach
+	void setUp() {
+		Locale.setDefault(Locale.ENGLISH);
+	}
 
-  @Test
-  void convertToDtoShouldReturnDto() {
-    Certificate certificate = entityProvider.getCertificate2();
-    CertificateDto expectedCertificateDto = entityProvider.getCertificate2dto();
-    assertEquals(expectedCertificateDto, certificateMapper.convertToDto(certificate));
-  }
+	@Test
+	void convertToEntityShouldReturnEntity() {
+		CertificateDto certificateDto = entityProvider.getCertificate5dto();
+		Certificate expectedCertificate = entityProvider.getCertificate5();
+		assertEquals(expectedCertificate, certificateMapper.convertToEntity(certificateDto));
+	}
+
+	@Test
+	void convertToDtoShouldReturnDto() {
+		Certificate certificate = entityProvider.getCertificate2();
+		CertificateDto expectedCertificateDto = entityProvider.getCertificate2dto();
+		assertEquals(expectedCertificateDto, certificateMapper.convertToDto(certificate));
+	}
 }

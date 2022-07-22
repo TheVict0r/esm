@@ -16,19 +16,17 @@ import org.springframework.hateoas.RepresentationModel;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TagDto extends RepresentationModel<TagDto> implements Serializable {
-  @PositiveOrZero(message = "message.validation.tag.id.positive_or_zero", groups = BasicInfo.class)
-  private Long id;
+	@PositiveOrZero(message = "message.validation.tag.id.positive_or_zero", groups = BasicInfo.class)
+	private Long id;
 
-  @NotBlank(message = "message.validation.tag.name.not_blank", groups = BasicInfo.class)
-  @Size(min = 3, max = 30, message = "message.validation.tag.name.size", groups = BasicInfo.class)
-  @Pattern(
-      regexp = "^[a-zA-Z0-9\\s-]*$",
-      // regexp = "[\\w\\s,.'&×()-]{2,}",
-      message = "message.validation.tag.name.pattern",
-      groups = BasicInfo.class)
-  private String name;
+	@NotBlank(message = "message.validation.tag.name.not_blank", groups = BasicInfo.class)
+	@Size(min = 3, max = 30, message = "message.validation.tag.name.size", groups = BasicInfo.class)
+	@Pattern(regexp = "^[a-zA-Z0-9\\s-]*$",
+			// regexp = "[\\w\\s,.'&×()-]{2,}",
+			message = "message.validation.tag.name.pattern", groups = BasicInfo.class)
+	private String name;
 
-  public TagDto(String name) {
-    this.name = name;
-  }
+	public TagDto(String name) {
+		this.name = name;
+	}
 }

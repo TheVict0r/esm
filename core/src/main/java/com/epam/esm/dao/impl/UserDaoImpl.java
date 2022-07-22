@@ -15,21 +15,24 @@ import org.springframework.stereotype.Repository;
 @Log4j2
 public class UserDaoImpl extends AbstractBasicDaoImpl<User> implements UserDao {
 
-  private static final String FROM_USER = "FROM User";
-  @PersistenceContext private EntityManager entityManager;
-  private final PaginationProvider paginationProvider;
+	private static final String FROM_USER = "FROM User";
 
-  @Autowired
-  public UserDaoImpl(PaginationProvider paginationProvider) {
-    this.paginationProvider = paginationProvider;
-    this.setParams(User.class);
-  }
+	@PersistenceContext
+	private EntityManager entityManager;
 
-  @Override
-  public List<User> searchAll(int page, int size) {
-    log.debug("Reading all Users. Page № - {}, size - {}", page, size);
-    TypedQuery<User> query = entityManager.createQuery(FROM_USER, User.class);
-    paginationProvider.providePagination(query, page, size);
-    return query.getResultList();
-  }
+	private final PaginationProvider paginationProvider;
+
+	@Autowired
+	public UserDaoImpl(PaginationProvider paginationProvider) {
+		this.paginationProvider = paginationProvider;
+		this.setParams(User.class);
+	}
+
+	@Override
+	public List<User> searchAll(int page, int size) {
+		log.debug("Reading all Users. Page № - {}, size - {}", page, size);
+		TypedQuery<User> query = entityManager.createQuery(FROM_USER, User.class);
+		paginationProvider.providePagination(query, page, size);
+		return query.getResultList();
+	}
 }

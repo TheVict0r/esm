@@ -14,45 +14,39 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @Log4j2
-public class CertificateDaoImpl extends AbstractBasicDaoImpl<Certificate>
-    implements CertificateDao {
+public class CertificateDaoImpl extends AbstractBasicDaoImpl<Certificate> implements CertificateDao {
 
-  public static final String SELECT_CERTIFICATES_BY_TAG_ID =
-      "SELECT c FROM Certificate c JOIN c.tags t  WHERE t.id = :id";
-  private final SearchProvider searchProvider;
-  private final PaginationProvider paginationProvider;
-  @PersistenceContext private EntityManager entityManager;
+	public static final String SELECT_CERTIFICATES_BY_TAG_ID = "SELECT c FROM Certificate c JOIN c.tags t  WHERE t.id = :id";
+	private final SearchProvider searchProvider;
+	private final PaginationProvider paginationProvider;
 
-  @Autowired
-  public CertificateDaoImpl(SearchProvider searchProvider, PaginationProvider paginationProvider) {
-    this.searchProvider = searchProvider;
-    this.paginationProvider = paginationProvider;
-    this.setParams(Certificate.class);
-  }
+	@PersistenceContext
+	private EntityManager entityManager;
 
-  @Override
-  public List<Certificate> search(
-      String tagName, String name, String description, String sort, int page, int size) {
-    log.debug(
-        "Searching Certificate. Tag name - {}, Certificate name - {}, Certificate description - {}, sort - {}, page № - {}, size - {}",
-        tagName,
-        name,
-        description,
-        sort,
-        page,
-        size);
+	@Autowired
+	public CertificateDaoImpl(SearchProvider searchProvider, PaginationProvider paginationProvider) {
+		this.searchProvider = searchProvider;
+		this.paginationProvider = paginationProvider;
+		this.setParams(Certificate.class);
+	}
 
-    TypedQuery<Certificate> query = searchProvider.provideQuery(tagName, name, description, sort);
-    paginationProvider.providePagination(query, page, size);
-    return query.getResultList();
-  }
+	@Override
+	public List<Certificate> getCertificates(String tagName, String name, String description, String sort, int page,
+			int size) {
+		log.debug(
+				"Searching Certificate. Tag name - {}, Certificate name - {}, Certificate"
+						+ " description - {}, sort - {}, page № - {}, size - {}",
+				tagName, name, description, sort, page, size);
 
-  @Override
-  public List<Certificate> retrieveCertificatesByTagId(long tagId) {
-    log.debug("Retrieving the List of Certificates by Tag's ID - {}", tagId);
-    return entityManager
-        .createQuery(SELECT_CERTIFICATES_BY_TAG_ID, Certificate.class)
-        .setParameter("id", tagId)
-        .getResultList();
-  }
+		TypedQuery<Certificate> query = searchProvider.provideQuery(tagName, name, description, sort);
+		paginationProvider.providePagination(query, page, size);
+		return query.getResultList();
+	}
+
+	@Override
+	public List<Certificate> retrieveCertificatesByTagId(long tagId) {
+		log.debug("Retrieving the List of Certificates by Tag's ID - {}", tagId);
+		return entityManager.createQuery(SELECT_CERTIFICATES_BY_TAG_ID, Certificate.class).setParameter("id", tagId)
+				.getResultList();
+	}
 }

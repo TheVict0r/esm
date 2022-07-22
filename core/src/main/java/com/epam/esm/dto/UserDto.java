@@ -12,9 +12,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UserDto {
 
-  private Long id;
+	private Long id;
 
-  private String name;
+	private String name;
 
-  private Set<PurchaseDto> purchases;
+	private Set<PurchaseDto> purchases;
 }

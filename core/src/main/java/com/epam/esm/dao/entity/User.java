@@ -22,37 +22,40 @@ import lombok.Setter;
 @Table(name = "user")
 public class User implements Serializable {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private long id;
 
-  @Column(name = "name")
-  private String name;
+	@Column(name = "name")
+	private String name;
 
-  @OneToMany
-  @JoinColumn(name = "user_id")
-  Set<Purchase> purchases = new HashSet<>();
+	@OneToMany
+	@JoinColumn(name = "user_id")
+	Set<Purchase> purchases = new HashSet<>();
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
 
-    User user = (User) o;
+		User user = (User) o;
 
-    if (id != user.id) return false;
-    return name.equals(user.name);
-  }
+		if (id != user.id)
+			return false;
+		return name.equals(user.name);
+	}
 
-  @Override
-  public int hashCode() {
-    int result = (int) (id ^ (id >>> 32));
-    result = 31 * result + name.hashCode();
-    return result;
-  }
+	@Override
+	public int hashCode() {
+		int result = (int) (id ^ (id >>> 32));
+		result = 31 * result + name.hashCode();
+		return result;
+	}
 
-  @Override
-  public String toString() {
-    return getClass().getSimpleName() + "{" + "id=" + id + ", name='" + name + '\'' + '}';
-  }
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "{" + "id=" + id + ", name='" + name + '\'' + '}';
+	}
 }

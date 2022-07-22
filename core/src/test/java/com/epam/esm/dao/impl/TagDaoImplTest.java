@@ -23,68 +23,71 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class TagDaoImplTest {
 
-  @Autowired TestEntityProvider entityProvider;
-  @Autowired TagDao tagDao;
+	@Autowired
+	TestEntityProvider entityProvider;
 
-  @Test
-  void readByIdShouldReturnOptionalOfTagEntity() {
-    long tagId = 1L;
-    Optional<Tag> tag1Expected = Optional.of(entityProvider.getTag1());
-    assertEquals(tag1Expected, tagDao.readById(tagId));
-  }
+	@Autowired
+	TagDao tagDao;
 
-  @Test
-  void readByNonexistentIdShouldReturnEmptyOptional() {
-    long nonexistentId = 100_500L;
-    Optional<Tag> tag1Expected = Optional.empty();
-    assertEquals(tag1Expected, tagDao.readById(nonexistentId));
-  }
+	@Test
+	void readByIdShouldReturnOptionalOfTagEntity() {
+		long tagId = 1L;
+		Optional<Tag> tag1Expected = Optional.of(entityProvider.getTag1());
+		assertEquals(tag1Expected, tagDao.readById(tagId));
+	}
 
-  @Test
-  void searchAllShouldReturnAllTagsAsList() {
-    List<Tag> tagListExpected = entityProvider.getAllTagsList();
-    assertEquals(tagListExpected, tagDao.searchAll());
-  }
+	@Test
+	void readByNonexistentIdShouldReturnEmptyOptional() {
+		long nonexistentId = 100_500L;
+		Optional<Tag> tag1Expected = Optional.empty();
+		assertEquals(tag1Expected, tagDao.readById(nonexistentId));
+	}
 
-  @Test
-  void createShouldReturnTagWithId() {
-    Tag tagForCreation = new Tag("Tag for creation");
-    Tag tagCreatedExpected = new Tag(11L, "Tag for creation");
-    assertEquals(tagCreatedExpected, tagDao.create(tagForCreation));
-  }
+	@Test
+	void searchAllShouldReturnAllTagsAsList() {
+		List<Tag> tagListExpected = entityProvider.getAllTagsList();
+		assertEquals(tagListExpected, tagDao.searchAll());
+	}
 
-  @Test
-  void updateShouldReturnUpdatedTag() {
-    Tag tagForUpdate = new Tag(7L, "Tag updated");
-    Tag tagUpdatedExpected = new Tag(7L, "Tag updated");
-    assertEquals(tagUpdatedExpected, tagDao.update(tagForUpdate));
-  }
+	@Test
+	void createShouldReturnTagWithId() {
+		Tag tagForCreation = new Tag("Tag for creation");
+		Tag tagCreatedExpected = new Tag(11L, "Tag for creation");
+		assertEquals(tagCreatedExpected, tagDao.create(tagForCreation));
+	}
 
-  @Test
-  void updateByTagWithNonexistentIdShouldThrowResourceNotFoundException() {
-    Tag tagForUpdate = new Tag(100_500L, "Tag updated");
-    String errorMessageKeyExpected = "message.resource_not_found";
-    long paramExpected = 100_500L;
-    AbstractLocalizedCustomException exception =
-        assertThrows(ResourceNotFoundException.class, () -> tagDao.update(tagForUpdate));
-    assertEquals(errorMessageKeyExpected, exception.getMessageKey());
-    assertEquals(paramExpected, exception.getParams()[0]);
-  }
+	@Test
+	void updateShouldReturnUpdatedTag() {
+		Tag tagForUpdate = new Tag(7L, "Tag updated");
+		Tag tagUpdatedExpected = new Tag(7L, "Tag updated");
+		assertEquals(tagUpdatedExpected, tagDao.update(tagForUpdate));
+	}
 
-  @Test
-  void deleteByIdShouldReturnId() {
-    long tagId = 6L;
-    assertEquals(tagId, tagDao.deleteById(tagId));
-  }
+	@Test
+	void updateByTagWithNonexistentIdShouldThrowResourceNotFoundException() {
+		Tag tagForUpdate = new Tag(100_500L, "Tag updated");
+		String errorMessageKeyExpected = "message.resource_not_found";
+		long paramExpected = 100_500L;
+		AbstractLocalizedCustomException exception = assertThrows(ResourceNotFoundException.class,
+				() -> tagDao.update(tagForUpdate));
+		assertEquals(errorMessageKeyExpected, exception.getMessageKey());
+		assertEquals(paramExpected, exception.getParams()[0]);
+	}
 
-  @Test
-  void deleteByIdShouldThrowResourceNotFoundException() {
-    long nonexistentId = 100_500L;
-    String errorMessageKeyExpected = "message.resource_not_found";
-    long paramExpected = 100_500L;
-    AbstractLocalizedCustomException exception =
-        assertThrows(ResourceNotFoundException.class, () -> tagDao.deleteById(nonexistentId));
-    assertEquals(errorMessageKeyExpected, exception.getMessageKey());
-    assertEquals(paramExpected, exception.getParams()[0]);
-  }
+	@Test
+	void deleteByIdShouldReturnId() {
+		long tagId = 6L;
+		assertEquals(tagId, tagDao.deleteById(tagId));
+	}
+
+	@Test
+	void deleteByIdShouldThrowResourceNotFoundException() {
+		long nonexistentId = 100_500L;
+		String errorMessageKeyExpected = "message.resource_not_found";
+		long paramExpected = 100_500L;
+		AbstractLocalizedCustomException exception = assertThrows(ResourceNotFoundException.class,
+				() -> tagDao.deleteById(nonexistentId));
+		assertEquals(errorMessageKeyExpected, exception.getMessageKey());
+		assertEquals(paramExpected, exception.getParams()[0]);
+	}
 }

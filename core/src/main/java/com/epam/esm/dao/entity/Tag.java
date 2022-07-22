@@ -10,7 +10,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,38 +23,40 @@ import lombok.Setter;
 @Table(name = "tag")
 public class Tag implements Serializable {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @EqualsAndHashCode.Exclude
-  private long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@EqualsAndHashCode.Exclude
+	private long id;
 
-  @Column(name = "name")
-  private String name;
+	@Column(name = "name")
+	private String name;
 
-  public Tag(String name) {
-    this.name = name;
-  }
+	public Tag(String name) {
+		this.name = name;
+	}
 
-  @ManyToMany(mappedBy = "tags")
-  private Set<Certificate> certificates = new HashSet<>();
+	@ManyToMany(mappedBy = "tags")
+	private Set<Certificate> certificates = new HashSet<>();
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
 
-    Tag tag = (Tag) o;
+		Tag tag = (Tag) o;
 
-    return name.equals(tag.name);
-  }
+		return name.equals(tag.name);
+	}
 
-  @Override
-  public int hashCode() {
-    return name.hashCode();
-  }
+	@Override
+	public int hashCode() {
+		return name.hashCode();
+	}
 
-  @Override
-  public String toString() {
-    return getClass().getSimpleName() + "{" + "id=" + id + ", name='" + name + "\'}";
-  }
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "{" + "id=" + id + ", name='" + name + "\'}";
+	}
 }

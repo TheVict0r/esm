@@ -20,67 +20,62 @@ import org.springframework.stereotype.Repository;
 @Log4j2
 public class TagDaoImpl extends AbstractBasicDaoImpl<Tag> implements TagDao {
 
-  public static final int ILLEGAL_TAG_ID = -1;
-  public static final String FROM_TAG = "from Tag";
-  public static final String READ_TAG_BY_NAME = "from Tag where name = :tagName";
+	public static final int ILLEGAL_TAG_ID = -1;
+	public static final String FROM_TAG = "from Tag";
+	public static final String READ_TAG_BY_NAME = "from Tag where name = :tagName";
 
-  private final CertificateDao certificateDao;
-  @PersistenceContext private EntityManager entityManager;
-  private final PaginationProvider paginationProvider;
+	private final CertificateDao certificateDao;
 
-  @Autowired
-  public TagDaoImpl(CertificateDao certificateDao, PaginationProvider paginationProvider) {
-    this.certificateDao = certificateDao;
-    this.paginationProvider = paginationProvider;
-    this.setParams(Tag.class);
-  }
+	@PersistenceContext
+	private EntityManager entityManager;
 
-  @Override
-  public List<Tag> searchAll(int page, int size) {
-    log.debug("Reading all Tags. Page № - {}, size - {}", page, size);
-    TypedQuery<Tag> query = entityManager.createQuery(FROM_TAG, Tag.class);
-    paginationProvider.providePagination(query, page, size);
-    return query.getResultList();
-  }
+	private final PaginationProvider paginationProvider;
 
-  @Override
-  public Set<Tag> retrieveTagsByCertificateId(long certificateId) {
-    log.debug("Retrieving the set of tags by Certificate ID - {}.", certificateId);
-    Certificate certificate =
-        certificateDao
-            .readById(certificateId)
-            .orElseThrow(
-                () -> {
-                  log.error("There is no tag with ID '{}' in the database", certificateId);
-                  return new ResourceNotFoundException(certificateId);
-                });
-    return certificate.getTags();
-  }
+	@Autowired
+	public TagDaoImpl(CertificateDao certificateDao, PaginationProvider paginationProvider) {
+		this.certificateDao = certificateDao;
+		this.paginationProvider = paginationProvider;
+		this.setParams(Tag.class);
+	}
 
-  @Override
-  public boolean isTagExists(Tag tag) {
-    log.debug("Checking is Tag - {} exists.", tag);
-    return readByName(tag.getName()).isPresent();
-  }
+	@Override
+	public List<Tag> searchAll(int page, int size) {
+		log.debug("Reading all Tags. Page № - {}, size - {}", page, size);
+		TypedQuery<Tag> query = entityManager.createQuery(FROM_TAG, Tag.class);
+		paginationProvider.providePagination(query, page, size);
+		return query.getResultList();
+	}
 
-  @Override
-  public long findIdByTag(Tag tag) {
-    log.debug("Searching Tag - {} by it's name.", tag);
-    Optional<Tag> tagRetrievedByName = readByName(tag.getName());
-    long tagID = ILLEGAL_TAG_ID;
-    if (tagRetrievedByName.isPresent()) {
-      tagID = tagRetrievedByName.get().getId();
-    }
-    return tagID;
-  }
+	@Override
+	public Set<Tag> retrieveTagsByCertificateId(long certificateId) {
+		log.debug("Retrieving the set of tags by Certificate ID - {}.", certificateId);
+		Certificate certificate = certificateDao.readById(certificateId).orElseThrow(() -> {
+			log.error("There is no tag with ID '{}' in the database", certificateId);
+			return new ResourceNotFoundException(certificateId);
+		});
+		return certificate.getTags();
+	}
 
-  private Optional<Tag> readByName(String tagName) {
-    log.debug("Reading Tag by name - {}.", tagName);
-    return entityManager
-        .createQuery(READ_TAG_BY_NAME, Tag.class)
-        .setParameter("tagName", tagName)
-        .getResultList()
-        .stream()
-        .findAny();
-  }
+	@Override
+	public boolean isTagExists(Tag tag) {
+		log.debug("Checking is Tag - {} exists.", tag);
+		return readByName(tag.getName()).isPresent();
+	}
+
+	@Override
+	public long findIdByTag(Tag tag) {
+		log.debug("Searching Tag - {} by it's name.", tag);
+		Optional<Tag> tagRetrievedByName = readByName(tag.getName());
+		long tagID = ILLEGAL_TAG_ID;
+		if (tagRetrievedByName.isPresent()) {
+			tagID = tagRetrievedByName.get().getId();
+		}
+		return tagID;
+	}
+
+	private Optional<Tag> readByName(String tagName) {
+		log.debug("Reading Tag by name - {}.", tagName);
+		return entityManager.createQuery(READ_TAG_BY_NAME, Tag.class).setParameter("tagName", tagName).getResultList()
+				.stream().findAny();
+	}
 }

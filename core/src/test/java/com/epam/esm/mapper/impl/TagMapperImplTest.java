@@ -18,25 +18,28 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ContextConfiguration(classes = {TestConfig.class})
 class TagMapperImplTest {
 
-  @Autowired private TagMapperImpl tagMapper;
-  @Autowired TestEntityProvider entityProvider;
+	@Autowired
+	private TagMapperImpl tagMapper;
 
-  @BeforeEach
-  void setUp() {
-    Locale.setDefault(Locale.ENGLISH);
-  }
+	@Autowired
+	TestEntityProvider entityProvider;
 
-  @Test
-  void convertToEntityShouldReturnEntity() {
-    TagDto tagDto = entityProvider.getTag1dto();
-    Tag expectedTag = entityProvider.getTag1();
-    assertEquals(expectedTag, tagMapper.convertToEntity(tagDto));
-  }
+	@BeforeEach
+	void setUp() {
+		Locale.setDefault(Locale.ENGLISH);
+	}
 
-  @Test
-  void convertToDtoShouldReturnDto() {
-    Tag tag = entityProvider.getTag1();
-    TagDto expectedTagDto = entityProvider.getTag1dto();
-    assertEquals(expectedTagDto, tagMapper.convertToDto(tag));
-  }
+	@Test
+	void convertToEntityShouldReturnEntity() {
+		TagDto tagDto = entityProvider.getTag1dto();
+		Tag expectedTag = entityProvider.getTag1();
+		assertEquals(expectedTag, tagMapper.convertToEntity(tagDto));
+	}
+
+	@Test
+	void convertToDtoShouldReturnDto() {
+		Tag tag = entityProvider.getTag1();
+		TagDto expectedTagDto = entityProvider.getTag1dto();
+		assertEquals(expectedTagDto, tagMapper.convertToDto(tag));
+	}
 }

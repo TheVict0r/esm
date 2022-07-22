@@ -35,16 +35,16 @@ subprojects {
         implementation 'org.springframework.boot:spring-boot-starter-web'
         compileOnly 'org.projectlombok:lombok'
         annotationProcessor 'org.projectlombok:lombok'
+        /* test dependencies */
         testCompileOnly 'org.projectlombok:lombok'
         testAnnotationProcessor 'org.projectlombok:lombok'
-
     }
 
     spotless {
         java {
             removeUnusedImports()
             importOrder()
-            googleJavaFormat()
+            eclipse()
         }
     }
 
