@@ -1,0 +1,11 @@
+${Ansi.BRIGHT_GREEN}
+${Ansi.BRIGHT_GREEN}          __  __    _____            _               ____              _
+${Ansi.BRIGHT_GREEN}         / _|/ _|  / ____|          (_)             |  _ \            | |
+${Ansi.BRIGHT_GREEN}    ___ | |_| |_  | (___  _ __  _ __ _ _ __   __ _  | |_) | ___   ___ | |_
+${Ansi.BRIGHT_GREEN}   / _ \|  _|  _|  \___ \| '_ \| '__| | '_ \ / _` | |  _ < / _ \ / _ \| __|
+${Ansi.BRIGHT_GREEN}  | (_) | | | |    ____) | |_) | |  | | | | | (_| | | |_) | (_) | (_) | |_
+${Ansi.BRIGHT_GREEN}   \___/|_| |_|   |_____/| .__/|_|  |_|_| |_|\__, | |____/ \___/ \___/ \__|  v.${spring-boot.version}
+${Ansi.BRIGHT_GREEN}                         | |                  __/ |
+${Ansi.BRIGHT_GREEN}                         |_|                 |___/
+
+${Ansi.BRIGHT_RED}     [READY]    ->    [STEADY]    ->    [GO]

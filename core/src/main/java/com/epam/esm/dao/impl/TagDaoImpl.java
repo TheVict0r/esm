@@ -1,0 +1,81 @@
+package com.epam.esm.dao.impl;
+
+import com.epam.esm.dao.CertificateDao;
+import com.epam.esm.dao.TagDao;
+import com.epam.esm.dao.entity.Certificate;
+import com.epam.esm.dao.entity.Tag;
+import com.epam.esm.dao.provider.PaginationProvider;
+import com.epam.esm.exception.ResourceNotFoundException;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+@Repository
+@Log4j2
+public class TagDaoImpl extends AbstractBasicDaoImpl<Tag> implements TagDao {
+
+	public static final int ILLEGAL_TAG_ID = -1;
+	public static final String FROM_TAG = "from Tag";
+	public static final String READ_TAG_BY_NAME = "from Tag where name = :tagName";
+
+	private final CertificateDao certificateDao;
+
+	@PersistenceContext
+	private EntityManager entityManager;
+
+	private final PaginationProvider paginationProvider;
+
+	@Autowired
+	public TagDaoImpl(CertificateDao certificateDao, PaginationProvider paginationProvider) {
+		this.certificateDao = certificateDao;
+		this.paginationProvider = paginationProvider;
+		this.setParams(Tag.class);
+	}
+
+	@Override
+	public List<Tag> searchAll(int page, int size) {
+		log.debug("Reading all Tags. Page № - {}, size - {}", page, size);
+		TypedQuery<Tag> query = entityManager.createQuery(FROM_TAG, Tag.class);
+		paginationProvider.providePagination(query, page, size);
+		return query.getResultList();
+	}
+
+	@Override
+	public Set<Tag> retrieveTagsByCertificateId(long certificateId) {
+		log.debug("Retrieving the set of tags by Certificate ID - {}.", certificateId);
+		Certificate certificate = certificateDao.readById(certificateId).orElseThrow(() -> {
+			log.error("There is no tag with ID '{}' in the database", certificateId);
+			return new ResourceNotFoundException(certificateId);
+		});
+		return certificate.getTags();
+	}
+
+	@Override
+	public boolean isTagExists(Tag tag) {
+		log.debug("Checking is Tag - {} exists.", tag);
+		return readByName(tag.getName()).isPresent();
+	}
+
+	@Override
+	public long findIdByTag(Tag tag) {
+		log.debug("Searching Tag - {} by it's name.", tag);
+		Optional<Tag> tagRetrievedByName = readByName(tag.getName());
+		long tagID = ILLEGAL_TAG_ID;
+		if (tagRetrievedByName.isPresent()) {
+			tagID = tagRetrievedByName.get().getId();
+		}
+		return tagID;
+	}
+
+	private Optional<Tag> readByName(String tagName) {
+		log.debug("Reading Tag by name - {}.", tagName);
+		return entityManager.createQuery(READ_TAG_BY_NAME, Tag.class).setParameter("tagName", tagName).getResultList()
+				.stream().findAny();
+	}
+}
