@@ -31,22 +31,22 @@ public class CertificateServiceImpl implements CertificateService {
 	private final InputDataValidator validator;
 
 	@Override
-	public CertificateDto findById(Long id) {
-		log.debug("Reading the Certificate by ID {}", id);
-		return certificateMapper.convertToDto(safeRetrieveCertificateById(id));
+	public CertificateDto getById(Long id) {
+		log.debug("Reading the Certificate by ID '{}'", id);
+		return certificateMapper.convertToDto(safeGetById(id));
 	}
 
 	@Override
 	public List<CertificateDto> getCertificates(String tagName, String name, String description, String sort, int page,
 			int size) {
 		log.debug(
-				"Searching the Certificate. Tag name {}, Certificate name {}, Certificate"
-						+ " description {}, sort {}, page № - {}, size - {}",
+				"Searching the Certificate. Tag name '{}', Certificate name '{}', Certificate"
+						+ " description '{}', sort '{}', page № - '{}', size - '{}'",
 				tagName, name, description, sort, page, size);
 
 		List<Certificate> searchResult = certificateDao.getCertificates(tagName, name, description, sort, page, size);
 
-		return searchResult.stream().map(certificate -> certificateMapper.convertToDto(certificate)).toList();
+		return searchResult.stream().map(certificateMapper::convertToDto).toList();
 	}
 
 	@Override
@@ -70,10 +70,10 @@ public class CertificateServiceImpl implements CertificateService {
 
 	@Override
 	public CertificateDto updateById(Long certificateId, CertificateDto certificateDto) {
-		log.debug("Replacing the Certificate with ID {}, the new Certificate is {}", certificateId, certificateDto);
+		log.debug("Replacing the Certificate with ID '{}', the new Certificate is {}", certificateId, certificateDto);
 		validator.pathAndBodyIdsCheck(certificateId, certificateDto.getId());
 
-		Certificate certificateFromDatasource = safeRetrieveCertificateById(certificateId);
+		Certificate certificateFromDatasource = safeGetById(certificateId);
 		Set<Tag> certificateFromDatasourceTags = Set.copyOf(certificateFromDatasource.getTags());
 
 		Certificate certificateForUpdate = certificateMapper.convertToEntity(certificateDto);
@@ -89,14 +89,15 @@ public class CertificateServiceImpl implements CertificateService {
 
 	@Override
 	public CertificateDto replaceById(Long certificateId, CertificateDto certificateDto) {
+		log.debug("Replacing Certificate - {} by ID - '{}'", certificateDto, certificateId);
 		certificateDto.setCreateDate(LocalDateTime.now());
 		return updateById(certificateId, certificateDto);
 	}
 
 	@Override
 	public long deleteById(Long id) {
-		log.debug("Deleting the Certificate with ID {}", id);
-		Certificate certificate = safeRetrieveCertificateById(id);
+		log.debug("Deleting the Certificate with ID '{}'", id);
+		Certificate certificate = safeGetById(id);
 		Set<Tag> certificateTags = Set.copyOf(certificate.getTags());
 		certificateDao.delete(certificate);
 		deleteOrphanTags(certificateTags);
@@ -104,8 +105,9 @@ public class CertificateServiceImpl implements CertificateService {
 	}
 
 	private void deleteOrphanTags(Set<Tag> tagSet) {
+		log.debug("Deleting orphan tags - {}", tagSet);
 		tagSet.forEach(tag -> {
-			List<Certificate> certificateByTagId = certificateDao.retrieveCertificatesByTagId(tag.getId());
+			List<Certificate> certificateByTagId = certificateDao.getCertificatesByTagId(tag.getId());
 			if (certificateByTagId.isEmpty()) {
 				tagDao.delete(tag);
 			}
@@ -113,12 +115,12 @@ public class CertificateServiceImpl implements CertificateService {
 	}
 
 	private Set<Tag> saveCurrentCertificateTags(Certificate certificate, Long certificateId) {
-		log.debug("Saving tags from the Certificate {} with ID {}", certificate, certificateId);
+		log.debug("Saving tags from the Certificate {} with ID '{}'", certificate, certificateId);
 		Set<Tag> tags = certificate.getTags();
 		tags.forEach(tag -> {
 			long tagId;
-			if (tagDao.isTagExists(tag)) {
-				tagId = tagDao.findIdByTag(tag);
+			if (tagDao.isExist(tag)) {
+				tagId = tagDao.getId(tag);
 			} else {
 				tagId = tagDao.create(tag).getId();
 			}
@@ -127,8 +129,8 @@ public class CertificateServiceImpl implements CertificateService {
 		return tags;
 	}
 
-	private Certificate safeRetrieveCertificateById(Long id) {
-		Optional<Certificate> certificateOptional = certificateDao.readById(id);
+	private Certificate safeGetById(Long id) {
+		Optional<Certificate> certificateOptional = certificateDao.getById(id);
 		return certificateOptional.orElseThrow(() -> {
 			log.error("There is no Certificate with ID '{}' in the database", id);
 			return new ResourceNotFoundException(id);

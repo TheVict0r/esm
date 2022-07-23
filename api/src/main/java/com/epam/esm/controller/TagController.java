@@ -45,7 +45,7 @@ public class TagController {
 	@GetMapping(path = "/{id}")
 	public TagDto findById(@Min(value = 1, message = "message.validation.id.min") @PathVariable("id") Long id) {
 		log.info("Reading the Tag by ID - {}", id);
-		TagDto tagDto = tagService.findById(id);
+		TagDto tagDto = tagService.getById(id);
 		hateoasProvider.addLinksForShowSingleTag(tagDto);
 		return tagDto;
 	}
@@ -62,7 +62,7 @@ public class TagController {
 			@Min(value = 1, message = "message.validation.page.min") @RequestParam(value = "page", defaultValue = "1") Integer page,
 			@Min(value = 1, message = "message.validation.page.size") @Max(value = 50, message = "message.validation.page.size") @RequestParam(value = "size", defaultValue = "10") Integer size) {
 		log.info("Reading all Tags. Page № - {}, size - {}", page, size);
-		List<TagDto> tagDtoList = tagService.searchAll(page, size);
+		List<TagDto> tagDtoList = tagService.getAll(page, size);
 		tagDtoList.forEach(tagDto -> hateoasProvider.addLinksForShowSingleTag(tagDto));
 		return tagDtoList;
 	}

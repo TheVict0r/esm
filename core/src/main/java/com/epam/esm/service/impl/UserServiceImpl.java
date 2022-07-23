@@ -21,15 +21,15 @@ public class UserServiceImpl implements UserService {
 	private final UserMapperImpl userMapper;
 
 	@Override
-	public List<UserDto> searchAll(int page, int size) {
+	public List<UserDto> getAll(int page, int size) {
 		log.debug("Reading all Users. Page № - {}, size - {}", page, size);
 		List<User> userList = userDao.searchAll(page, size);
 		return userList.stream().map(user -> userMapper.convertToDto(user)).toList();
 	}
 
 	@Override
-	public UserDto findById(Long id) {
-		User user = userDao.readById(id).orElseThrow(() -> {
+	public UserDto getById(Long id) {
+		User user = userDao.getById(id).orElseThrow(() -> {
 			log.error("There is no User with ID '{}' in the database", id);
 			return new ResourceNotFoundException(id);
 		});
@@ -37,8 +37,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<PurchaseDto> findAllPurchasesByUserId(Long userId) {
+	public List<PurchaseDto> getAllPurchasesByUserId(Long userId) {
 		log.debug("Reading Purchases for the User with ID - {}", userId);
-		return findById(userId).getPurchases().stream().toList();
+		return getById(userId).getPurchases().stream().toList();
 	}
 }

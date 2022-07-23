@@ -29,7 +29,7 @@ public class UserController {
 	@GetMapping(value = {"/{id}"})
 	public UserDto findById(@Min(value = 1, message = "message.validation.id.min") @PathVariable("id") Long id) {
 		log.info("Reading the User by ID - {}", id);
-		UserDto userDto = userService.findById(id);
+		UserDto userDto = userService.getById(id);
 		// todo add HATEAOS
 		return userDto;
 	}
@@ -45,7 +45,7 @@ public class UserController {
 	public List<PurchaseDto> getAllUserPurchases(
 			@Min(value = 1, message = "message.validation.id.min") @PathVariable("userId") Long userId) {
 		log.info("Reading Purchases for the User with ID - {}", userId);
-		List<PurchaseDto> purchases = userService.findAllPurchasesByUserId(userId);
+		List<PurchaseDto> purchases = userService.getAllPurchasesByUserId(userId);
 		// todo add HATEAOS
 		return purchases;
 	}
@@ -81,7 +81,7 @@ public class UserController {
 			@Min(value = 1, message = "message.validation.page.min") @RequestParam(value = "page", defaultValue = "1") Integer page,
 			@Min(value = 1, message = "message.validation.page.size") @Max(value = 50, message = "message.validation.page.size") @RequestParam(value = "size", defaultValue = "10") Integer size) {
 		log.info("Reading all Users. Page № - {}, size - {}", page, size);
-		List<UserDto> userDtoList = userService.searchAll(page, size);
+		List<UserDto> userDtoList = userService.getAll(page, size);
 		// todo add HATEAOS
 		return userDtoList;
 	}

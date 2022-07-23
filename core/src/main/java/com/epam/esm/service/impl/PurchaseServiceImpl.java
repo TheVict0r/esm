@@ -25,7 +25,7 @@ public class PurchaseServiceImpl implements PurchaseService {
 		log.info("Reading Purchase with ID - {} for the User with ID - {}", purchaseId, userId);
 
 		/* user existence check */
-		userService.findById(userId);
+		userService.getById(userId);
 
 		Purchase purchase = purchaseDao.getPurchaseForUser(userId, purchaseId)
 				.orElseThrow(() -> new MismatchedUserAndPurchaseException(userId, purchaseId));

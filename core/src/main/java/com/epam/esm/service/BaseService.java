@@ -6,14 +6,14 @@ package com.epam.esm.service;
  * @param <E>
  *            DTO for CRUD operations
  */
-public interface BasicService<E> {
+public interface BaseService<E> {
 
 	/**
 	 * Creates a new entity in the datasource.
 	 *
 	 * @param dto
 	 *            DTO object with data for entity need to be created
-	 * @return <b>DTO</b> of created entity
+	 * @return DTO object of created entity
 	 */
 	E create(E dto);
 
@@ -25,7 +25,7 @@ public interface BasicService<E> {
 	 * @return <b>DTO</b> of entity, returned by the corresponding {@code DAO level}
 	 *         method
 	 */
-	E findById(Long id);
+	E getById(Long id);
 
 	/**
 	 * Replaces the particular entity's data, the entity selected by provided

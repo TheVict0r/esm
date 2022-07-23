@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 /** Service operations with the {@code Tag} */
 @Service
-public interface TagService extends BasicService<TagDto> {
+public interface TagService extends BaseService<TagDto> {
 
 	/**
 	 * Provides all existing {@code TagDto} objects.
@@ -18,7 +18,7 @@ public interface TagService extends BasicService<TagDto> {
 	 * @return the list containing all {@code TagsDto} objects converted from all
 	 *         {@code Tags} existing in the datasource
 	 */
-	List<TagDto> searchAll(int page, int size);
+	List<TagDto> getAll(int page, int size);
 
 	/**
 	 * Provides all {@code TagDtos} objects related to Certificate with provided ID.
@@ -27,5 +27,5 @@ public interface TagService extends BasicService<TagDto> {
 	 *            ID of Certificate
 	 * @return List with {@code TagDtos}
 	 */
-	List<TagDto> findTagsByCertificateId(Long certificateId);
+	List<TagDto> getTagsByCertificateId(Long certificateId);
 }

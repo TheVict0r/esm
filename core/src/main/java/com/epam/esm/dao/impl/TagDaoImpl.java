@@ -1,5 +1,6 @@
 package com.epam.esm.dao.impl;
 
+import com.epam.esm.dao.AbstractBaseDao;
 import com.epam.esm.dao.CertificateDao;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dao.entity.Certificate;
@@ -18,12 +19,11 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @Log4j2
-public class TagDaoImpl extends AbstractBasicDaoImpl<Tag> implements TagDao {
+public class TagDaoImpl extends AbstractBaseDao<Tag> implements TagDao {
 
 	public static final int ILLEGAL_TAG_ID = -1;
 	public static final String FROM_TAG = "from Tag";
 	public static final String READ_TAG_BY_NAME = "from Tag where name = :tagName";
-
 	private final CertificateDao certificateDao;
 
 	@PersistenceContext
@@ -33,13 +33,13 @@ public class TagDaoImpl extends AbstractBasicDaoImpl<Tag> implements TagDao {
 
 	@Autowired
 	public TagDaoImpl(CertificateDao certificateDao, PaginationProvider paginationProvider) {
+		super(Tag.class);
 		this.certificateDao = certificateDao;
 		this.paginationProvider = paginationProvider;
-		this.setParams(Tag.class);
 	}
 
 	@Override
-	public List<Tag> searchAll(int page, int size) {
+	public List<Tag> getAll(int page, int size) {
 		log.debug("Reading all Tags. Page № - {}, size - {}", page, size);
 		TypedQuery<Tag> query = entityManager.createQuery(FROM_TAG, Tag.class);
 		paginationProvider.providePagination(query, page, size);
@@ -47,9 +47,9 @@ public class TagDaoImpl extends AbstractBasicDaoImpl<Tag> implements TagDao {
 	}
 
 	@Override
-	public Set<Tag> retrieveTagsByCertificateId(long certificateId) {
+	public Set<Tag> getTagsByCertificateId(long certificateId) {
 		log.debug("Retrieving the set of tags by Certificate ID - {}.", certificateId);
-		Certificate certificate = certificateDao.readById(certificateId).orElseThrow(() -> {
+		Certificate certificate = certificateDao.getById(certificateId).orElseThrow(() -> {
 			log.error("There is no tag with ID '{}' in the database", certificateId);
 			return new ResourceNotFoundException(certificateId);
 		});
@@ -57,13 +57,13 @@ public class TagDaoImpl extends AbstractBasicDaoImpl<Tag> implements TagDao {
 	}
 
 	@Override
-	public boolean isTagExists(Tag tag) {
+	public boolean isExist(Tag tag) {
 		log.debug("Checking is Tag - {} exists.", tag);
 		return readByName(tag.getName()).isPresent();
 	}
 
 	@Override
-	public long findIdByTag(Tag tag) {
+	public long getId(Tag tag) {
 		log.debug("Searching Tag - {} by it's name.", tag);
 		Optional<Tag> tagRetrievedByName = readByName(tag.getName());
 		long tagID = ILLEGAL_TAG_ID;

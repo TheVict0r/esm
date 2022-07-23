@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 /** Data access operations with the {@code Certificate}. */
 @Repository
-public interface CertificateDao extends BasicDao<Certificate> {
+public interface CertificateDao extends BaseDao<Certificate> {
 
 	/**
 	 * Searches {@code Certificates} with tags (all params are optional and can be
@@ -37,5 +37,5 @@ public interface CertificateDao extends BasicDao<Certificate> {
 	 *            <b>ID</b> of the {@code Tag}
 	 * @return List with all {@code Certificates} which contain the {@code Tag}
 	 */
-	List<Certificate> retrieveCertificatesByTagId(long tagId);
+	List<Certificate> getCertificatesByTagId(long tagId);
 }

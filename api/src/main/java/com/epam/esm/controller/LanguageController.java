@@ -1,6 +1,6 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.exception.NonexistentLocaleException;
+import com.epam.esm.exception.NonExistentLocaleException;
 import java.util.Locale;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,7 +31,7 @@ public class LanguageController {
 			language = Language.valueOf(defaultLocale.toUpperCase());
 		} catch (IllegalArgumentException e) {
 			Locale.setDefault(Locale.ENGLISH);
-			throw new NonexistentLocaleException(defaultLocale);
+			throw new NonExistentLocaleException(defaultLocale);
 		}
 		Locale.setDefault(new Locale(language.toString()));
 		return language;

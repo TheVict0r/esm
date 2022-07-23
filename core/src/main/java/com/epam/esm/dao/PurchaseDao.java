@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PurchaseDao extends BasicDao<Purchase> {
+public interface PurchaseDao extends BaseDao<Purchase> {
 	/**
 	 * Provides Purchase by its ID for User
 	 *

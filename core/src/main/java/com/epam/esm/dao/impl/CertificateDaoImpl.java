@@ -1,5 +1,6 @@
 package com.epam.esm.dao.impl;
 
+import com.epam.esm.dao.AbstractBaseDao;
 import com.epam.esm.dao.CertificateDao;
 import com.epam.esm.dao.entity.Certificate;
 import com.epam.esm.dao.provider.PaginationProvider;
@@ -14,7 +15,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @Log4j2
-public class CertificateDaoImpl extends AbstractBasicDaoImpl<Certificate> implements CertificateDao {
+public class CertificateDaoImpl extends AbstractBaseDao<Certificate> implements CertificateDao {
 
 	public static final String SELECT_CERTIFICATES_BY_TAG_ID = "SELECT c FROM Certificate c JOIN c.tags t  WHERE t.id = :id";
 	private final SearchProvider searchProvider;
@@ -25,9 +26,9 @@ public class CertificateDaoImpl extends AbstractBasicDaoImpl<Certificate> implem
 
 	@Autowired
 	public CertificateDaoImpl(SearchProvider searchProvider, PaginationProvider paginationProvider) {
+		super(Certificate.class);
 		this.searchProvider = searchProvider;
 		this.paginationProvider = paginationProvider;
-		this.setParams(Certificate.class);
 	}
 
 	@Override
@@ -44,7 +45,7 @@ public class CertificateDaoImpl extends AbstractBasicDaoImpl<Certificate> implem
 	}
 
 	@Override
-	public List<Certificate> retrieveCertificatesByTagId(long tagId) {
+	public List<Certificate> getCertificatesByTagId(long tagId) {
 		log.debug("Retrieving the List of Certificates by Tag's ID - {}", tagId);
 		return entityManager.createQuery(SELECT_CERTIFICATES_BY_TAG_ID, Certificate.class).setParameter("id", tagId)
 				.getResultList();

@@ -69,10 +69,10 @@ class CertificateServiceImplTest {
 		CertificateDto certificateDtoExpected = entityProvider.getCertificate3dto();
 		long certificateDtoId = certificateDtoExpected.getId();
 		Certificate certificate = entityProvider.getCertificate3();
-		when(certificateDao.readById(certificateDtoId)).thenReturn(Optional.of(certificate));
+		when(certificateDao.getById(certificateDtoId)).thenReturn(Optional.of(certificate));
 		when(certificateMapper.convertToDto(certificate)).thenReturn(certificateDtoExpected);
-		assertEquals(certificateDtoExpected, certificateService.findById(certificateDtoId));
-		verify(certificateDao, times(1)).readById(certificateDtoId);
+		assertEquals(certificateDtoExpected, certificateService.getById(certificateDtoId));
+		verify(certificateDao, times(1)).getById(certificateDtoId);
 		verify(certificateMapper).convertToDto(certificate);
 	}
 
@@ -80,13 +80,13 @@ class CertificateServiceImplTest {
 	void findByIdShouldThrowResourceNotFoundException() {
 		long nonExistedCertificateId = 999L;
 		long paramExpected = 999L;
-		when(certificateDao.readById(nonExistedCertificateId)).thenReturn(Optional.empty());
+		when(certificateDao.getById(nonExistedCertificateId)).thenReturn(Optional.empty());
 		String exceptionMessageKeyExpected = "message.resource_not_found";
 		AbstractLocalizedCustomException exception = assertThrows(ResourceNotFoundException.class,
-				() -> certificateService.findById(nonExistedCertificateId));
+				() -> certificateService.getById(nonExistedCertificateId));
 		assertEquals(exceptionMessageKeyExpected, exception.getMessageKey());
 		assertEquals(paramExpected, exception.getParams()[0]);
-		verify(certificateDao).readById(nonExistedCertificateId);
+		verify(certificateDao).getById(nonExistedCertificateId);
 	}
 
 	@Test
@@ -115,11 +115,9 @@ class CertificateServiceImplTest {
 		searchResultDtoExpected.add(entityProvider.getCertificate1withTagsDto());
 
 		when(certificateDao.getCertificates(tagName, name, description, sort)).thenReturn(searchResult);
-		when(tagDao.retrieveTagsByCertificateId(certificate6.getId()))
-				.thenReturn(new HashSet<>(Set.of(tag1, tag2, tag3)));
-		when(tagDao.retrieveTagsByCertificateId(certificate2.getId())).thenReturn(new HashSet<>(Set.of(tag2, tag3)));
-		when(tagDao.retrieveTagsByCertificateId(certificate1.getId()))
-				.thenReturn(new HashSet<>(Set.of(tag1, tag2, tag3)));
+		when(tagDao.getTagsByCertificateId(certificate6.getId())).thenReturn(new HashSet<>(Set.of(tag1, tag2, tag3)));
+		when(tagDao.getTagsByCertificateId(certificate2.getId())).thenReturn(new HashSet<>(Set.of(tag2, tag3)));
+		when(tagDao.getTagsByCertificateId(certificate1.getId())).thenReturn(new HashSet<>(Set.of(tag1, tag2, tag3)));
 
 		when(certificateMapper.convertToDto(entityProvider.getCertificate6withTags()))
 				.thenReturn(entityProvider.getCertificate6withTagsDto());
@@ -132,9 +130,9 @@ class CertificateServiceImplTest {
 				certificateService.getCertificates(tagName, name, description, sort, page, size));
 
 		verify(certificateDao).getCertificates(tagName, name, description, sort);
-		verify(tagDao).retrieveTagsByCertificateId(certificate6.getId());
-		verify(tagDao).retrieveTagsByCertificateId(certificate2.getId());
-		verify(tagDao).retrieveTagsByCertificateId(certificate1.getId());
+		verify(tagDao).getTagsByCertificateId(certificate6.getId());
+		verify(tagDao).getTagsByCertificateId(certificate2.getId());
+		verify(tagDao).getTagsByCertificateId(certificate1.getId());
 		verify(certificateMapper).convertToDto(entityProvider.getCertificate6withTags());
 		verify(certificateMapper).convertToDto(entityProvider.getCertificate2withTags());
 		verify(certificateMapper).convertToDto(entityProvider.getCertificate1withTags());
@@ -158,42 +156,24 @@ class CertificateServiceImplTest {
 		when(certificateMapper.convertToEntity(certificateDtoForCreation)).thenReturn(certificateForCreation);
 		when(certificateDao.create(certificateForCreation)).thenReturn(certificateCreated);
 		when(certificateMapper.convertToDto(certificateCreated)).thenReturn(certificateDtoCreatedExpected);
-		when(tagDao.isTagExists(tag1ForCreationNoId)).thenReturn(true);
-		when(tagDao.isTagExists(tag2ForCreationNoId)).thenReturn(true);
-		when(tagDao.isTagExists(tag3ForCreationNoId)).thenReturn(true);
-		when(tagDao.findIdByTag(tag1ForCreationNoId)).thenReturn(1L);
-		when(tagDao.findIdByTag(tag2ForCreationNoId)).thenReturn(2L);
-		when(tagDao.findIdByTag(tag3ForCreationNoId)).thenReturn(3L);
-		// doNothing()
-		// .when(tagDao)
-		// .saveTagToCertificate(certificateCreated.getId(),
-		// tag1ForCreationWithId.getId());
-		// doNothing()
-		// .when(tagDao)
-		// .saveTagToCertificate(certificateCreated.getId(),
-		// tag2ForCreationWithId.getId());
-		// doNothing()
-		// .when(tagDao)
-		// .saveTagToCertificate(certificateCreated.getId(),
-		// tag3ForCreationWithId.getId());
+		when(tagDao.isExist(tag1ForCreationNoId)).thenReturn(true);
+		when(tagDao.isExist(tag2ForCreationNoId)).thenReturn(true);
+		when(tagDao.isExist(tag3ForCreationNoId)).thenReturn(true);
+		when(tagDao.getId(tag1ForCreationNoId)).thenReturn(1L);
+		when(tagDao.getId(tag2ForCreationNoId)).thenReturn(2L);
+		when(tagDao.getId(tag3ForCreationNoId)).thenReturn(3L);
 
 		assertEquals(certificateDtoCreatedExpected, certificateService.create(certificateDtoForCreation));
 
 		verify(certificateMapper).convertToEntity(certificateDtoForCreation);
 		verify(certificateDao).create(certificateForCreation);
 		verify(certificateMapper).convertToDto(certificateCreated);
-		verify(tagDao).isTagExists(tag1ForCreationNoId);
-		verify(tagDao).isTagExists(tag2ForCreationNoId);
-		verify(tagDao).isTagExists(tag3ForCreationNoId);
-		verify(tagDao).findIdByTag(tag1ForCreationNoId);
-		verify(tagDao).findIdByTag(tag2ForCreationNoId);
-		verify(tagDao).findIdByTag(tag3ForCreationNoId);
-		// verify(tagDao).saveTagToCertificate(certificateCreated.getId(),
-		// tag1ForCreationWithId.getId());
-		// verify(tagDao).saveTagToCertificate(certificateCreated.getId(),
-		// tag2ForCreationWithId.getId());
-		// verify(tagDao).saveTagToCertificate(certificateCreated.getId(),
-		// tag3ForCreationWithId.getId());
+		verify(tagDao).isExist(tag1ForCreationNoId);
+		verify(tagDao).isExist(tag2ForCreationNoId);
+		verify(tagDao).isExist(tag3ForCreationNoId);
+		verify(tagDao).getId(tag1ForCreationNoId);
+		verify(tagDao).getId(tag2ForCreationNoId);
+		verify(tagDao).getId(tag3ForCreationNoId);
 	}
 
 	@Test
@@ -220,9 +200,8 @@ class CertificateServiceImplTest {
 		doNothing().when(validator).pathAndBodyIdsCheck(certificateId, certificateDtoForReplacement.getId());
 		when(certificateMapper.convertToEntity(certificateDtoForReplacement)).thenReturn(certificateForReplacement);
 		when(certificateDao.update(certificateForReplacement)).thenReturn(certificateAfterReplacement);
-		when(tagDao.isTagExists(tagReplacement)).thenReturn(true);
-		when(tagDao.findIdByTag(tagReplacement)).thenReturn(tagId);
-		// doNothing().when(tagDao).saveTagToCertificate(certificateId, tagId);
+		when(tagDao.isExist(tagReplacement)).thenReturn(true);
+		when(tagDao.getId(tagReplacement)).thenReturn(tagId);
 		when(certificateMapper.convertToDto(certificateAfterReplacement))
 				.thenReturn(certificateAfterReplacementDtoExpected);
 
@@ -232,9 +211,8 @@ class CertificateServiceImplTest {
 		verify(validator).pathAndBodyIdsCheck(certificateId, certificateDtoForReplacement.getId());
 		verify(certificateMapper).convertToEntity(certificateDtoForReplacement);
 		verify(certificateDao).update(certificateForReplacement);
-		verify(tagDao).isTagExists(tagReplacement);
-		verify(tagDao).findIdByTag(tagReplacement);
-		// verify(tagDao).saveTagToCertificate(certificateId, tagId);
+		verify(tagDao).isExist(tagReplacement);
+		verify(tagDao).getId(tagReplacement);
 		verify(certificateMapper).convertToDto(certificateAfterReplacement);
 	}
 }

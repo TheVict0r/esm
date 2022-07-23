@@ -16,7 +16,7 @@ public interface UserService {
 	 * @return the list containing all {@code UserDto} objects converted from all
 	 *         {@code Users} existing in the datasource
 	 */
-	List<UserDto> searchAll(int page, int size);
+	List<UserDto> getAll(int page, int size);
 
 	/**
 	 * Finds the User by its <b>ID</b> in the datasource.
@@ -26,7 +26,7 @@ public interface UserService {
 	 * @return <b>UserDto</b>, returned by the corresponding {@code DAO level}
 	 *         method
 	 */
-	UserDto findById(Long id);
+	UserDto getById(Long id);
 
 	/**
 	 * Provides all purchases for User by its ID
@@ -35,5 +35,5 @@ public interface UserService {
 	 *            User ID
 	 * @return list containing all purchases for User
 	 */
-	List<PurchaseDto> findAllPurchasesByUserId(Long userId);
+	List<PurchaseDto> getAllPurchasesByUserId(Long userId);
 }

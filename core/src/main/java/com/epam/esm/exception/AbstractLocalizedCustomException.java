@@ -1,16 +1,12 @@
 package com.epam.esm.exception;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /** Basic abstract class for custom exceptions. */
 @Data
+@AllArgsConstructor
 public abstract class AbstractLocalizedCustomException extends RuntimeException {
-
-	private String messageKey;
-	private Object[] params;
-
-	public AbstractLocalizedCustomException(String messageKey, Object[] params) {
-		this.messageKey = messageKey;
-		this.params = params;
-	}
+	private final String messageKey;
+	private final Object[] params;
 }

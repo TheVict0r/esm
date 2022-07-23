@@ -33,20 +33,20 @@ class TagDaoImplTest {
 	void readByIdShouldReturnOptionalOfTagEntity() {
 		long tagId = 1L;
 		Optional<Tag> tag1Expected = Optional.of(entityProvider.getTag1());
-		assertEquals(tag1Expected, tagDao.readById(tagId));
+		assertEquals(tag1Expected, tagDao.getById(tagId));
 	}
 
 	@Test
 	void readByNonexistentIdShouldReturnEmptyOptional() {
 		long nonexistentId = 100_500L;
 		Optional<Tag> tag1Expected = Optional.empty();
-		assertEquals(tag1Expected, tagDao.readById(nonexistentId));
+		assertEquals(tag1Expected, tagDao.getById(nonexistentId));
 	}
 
 	@Test
 	void searchAllShouldReturnAllTagsAsList() {
 		List<Tag> tagListExpected = entityProvider.getAllTagsList();
-		assertEquals(tagListExpected, tagDao.searchAll());
+		assertEquals(tagListExpected, tagDao.getAll());
 	}
 
 	@Test

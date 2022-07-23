@@ -1,5 +1,6 @@
 package com.epam.esm.dao.impl;
 
+import com.epam.esm.dao.AbstractBaseDao;
 import com.epam.esm.dao.UserDao;
 import com.epam.esm.dao.entity.User;
 import com.epam.esm.dao.provider.PaginationProvider;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @Log4j2
-public class UserDaoImpl extends AbstractBasicDaoImpl<User> implements UserDao {
+public class UserDaoImpl extends AbstractBaseDao<User> implements UserDao {
 
 	private static final String FROM_USER = "FROM User";
 
@@ -24,8 +25,8 @@ public class UserDaoImpl extends AbstractBasicDaoImpl<User> implements UserDao {
 
 	@Autowired
 	public UserDaoImpl(PaginationProvider paginationProvider) {
+		super(User.class);
 		this.paginationProvider = paginationProvider;
-		this.setParams(User.class);
 	}
 
 	@Override

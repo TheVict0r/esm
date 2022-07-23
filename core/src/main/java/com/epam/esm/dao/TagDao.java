@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 /** Data access operations with the {@code Tag} */
 @Repository
-public interface TagDao extends BasicDao<Tag> {
+public interface TagDao extends BaseDao<Tag> {
 
 	/**
 	 * Reads all existing {@code Tags} from the datasource.
@@ -18,7 +18,7 @@ public interface TagDao extends BasicDao<Tag> {
 	 *            amount of {@code Tags} per page
 	 * @return - the list containing all {@code Tags} existing in the datasource
 	 */
-	List<Tag> searchAll(int page, int size);
+	List<Tag> getAll(int page, int size);
 
 	/**
 	 * Retrieves the set with all {@code Tags} associated with {@code Сertificate}
@@ -28,7 +28,7 @@ public interface TagDao extends BasicDao<Tag> {
 	 *            the <b>ID</b> of the {@code Сertificate}
 	 * @return the set with all {@code Tags} related to the {@code Сertificate}
 	 */
-	Set<Tag> retrieveTagsByCertificateId(long certificateID);
+	Set<Tag> getTagsByCertificateId(long certificateID);
 
 	/**
 	 * Checks is {@code Tag} presented in the datasource.
@@ -38,7 +38,7 @@ public interface TagDao extends BasicDao<Tag> {
 	 * @return {@code true} if {@code Tag} presented in the datasource,
 	 *         {@code false} if not
 	 */
-	boolean isTagExists(Tag tag);
+	boolean isExist(Tag tag);
 
 	/**
 	 * Finds {@code Tag's} <b>ID</b> for {@code Tag} that do not contain <b>ID</b>
@@ -48,5 +48,5 @@ public interface TagDao extends BasicDao<Tag> {
 	 *            - the {@code Tag} that does not contain <b>ID</b> data
 	 * @return - {@code Tag's} <b>ID</b>
 	 */
-	long findIdByTag(Tag tag);
+	long getId(Tag tag);
 }

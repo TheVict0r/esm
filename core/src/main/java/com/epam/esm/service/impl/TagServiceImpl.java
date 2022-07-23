@@ -21,22 +21,21 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 public class TagServiceImpl implements TagService {
-
 	private final TagDao tagDao;
 	private final TagMapperImpl tagMapper;
 	private final InputDataValidator validator;
 
 	@Override
-	public TagDto findById(@Positive(message = "message.validation.id.min", groups = BasicInfo.class) Long id) {
+	public TagDto getById(@Positive(message = "message.validation.id.min", groups = BasicInfo.class) Long id) {
 		log.debug("Reading the Tag by ID {}", id);
-		return tagMapper.convertToDto(safeRetrieveTagById(id));
+		return tagMapper.convertToDto(safeGetById(id));
 	}
 
 	@Override
-	public List<TagDto> searchAll(int page, int size) {
+	public List<TagDto> getAll(int page, int size) {
 		log.debug("Reading all Tags. Page № - {}, size - {}", page, size);
-		List<Tag> allTags = tagDao.searchAll(page, size);
-		return allTags.stream().map(tag -> tagMapper.convertToDto(tag)).toList();
+		List<Tag> allTags = tagDao.getAll(page, size);
+		return allTags.stream().map(tagMapper::convertToDto).toList();
 	}
 
 	@Override
@@ -55,27 +54,26 @@ public class TagServiceImpl implements TagService {
 	public TagDto updateById(Long id, TagDto tagDto) {
 		log.debug("Updating the Tag by ID {}, the new Tag is {}", id, tagDto);
 		validator.pathAndBodyIdsCheck(id, tagDto.getId());
-		safeRetrieveTagById(id);
+		safeGetById(id);
 		tagDao.update(tagMapper.convertToEntity(tagDto));
 		return tagDto;
 	}
 
 	@Override
-	public List<TagDto> findTagsByCertificateId(Long certificateId) {
-		Set<Tag> tags = tagDao.retrieveTagsByCertificateId(certificateId);
-
-		return tags.stream().map(tag -> tagMapper.convertToDto(tag)).toList();
+	public List<TagDto> getTagsByCertificateId(Long certificateId) {
+		Set<Tag> tags = tagDao.getTagsByCertificateId(certificateId);
+		return tags.stream().map(tagMapper::convertToDto).toList();
 	}
 
 	@Override
 	public long deleteById(Long id) {
 		log.debug("Deleting the Tag by ID {}", id);
-		tagDao.delete(safeRetrieveTagById(id));
+		tagDao.delete(safeGetById(id));
 		return id;
 	}
 
-	private Tag safeRetrieveTagById(Long id) {
-		Optional<Tag> tagOptional = tagDao.readById(id);
+	private Tag safeGetById(Long id) {
+		Optional<Tag> tagOptional = tagDao.getById(id);
 		return tagOptional.orElseThrow(() -> {
 			log.error("There is no tag with ID '{}' in the database", id);
 			return new ResourceNotFoundException(id);

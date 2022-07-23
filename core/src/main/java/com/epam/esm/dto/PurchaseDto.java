@@ -2,7 +2,6 @@ package com.epam.esm.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,5 +26,5 @@ public class PurchaseDto {
 
 	private Integer cost;
 
-	Set<CertificateDto> certificates = new HashSet<>();
+	private Set<CertificateDto> certificates;
 }

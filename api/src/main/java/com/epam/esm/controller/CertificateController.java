@@ -57,7 +57,7 @@ public class CertificateController {
 	@GetMapping(path = "/{id}")
 	public CertificateDto findById(@Min(value = 1, message = "message.validation.id.min") @PathVariable("id") Long id) {
 		log.info("Reading the certificate by ID - {}", id);
-		CertificateDto certificateDto = certificateService.findById(id);
+		CertificateDto certificateDto = certificateService.getById(id);
 		hateoasProvider.addLinksForShowSingleCertificate(certificateDto);
 		return certificateDto;
 	}
@@ -73,7 +73,7 @@ public class CertificateController {
 	public List<TagDto> getTagsForCertificate(
 			@Min(value = 1, message = "message.validation.id.min") @PathVariable("certificateId") Long certificateId) {
 		log.info("Reading tags for certificate with ID - {}", certificateId);
-		List<TagDto> tagsDtoByCertificateId = tagService.findTagsByCertificateId(certificateId);
+		List<TagDto> tagsDtoByCertificateId = tagService.getTagsByCertificateId(certificateId);
 		tagsDtoByCertificateId.forEach(tagDto -> tagHateoasProvider.addLinksForShowSingleTag(tagDto));
 		return tagsDtoByCertificateId;
 	}
@@ -162,7 +162,7 @@ public class CertificateController {
 	public CertificateDto updateById(@Min(value = 1, message = "message.validation.id.min") @PathVariable("id") Long id,
 			@RequestBody JsonPatch patch) throws JsonPatchException, JsonProcessingException {
 		log.info("Patching certificate with ID - {} from patch - {}", id, patch);
-		CertificateDto certificateDtoToBeUpdated = certificateService.findById(id);
+		CertificateDto certificateDtoToBeUpdated = certificateService.getById(id);
 		JsonNode patched = patch.apply(objectMapper.convertValue(certificateDtoToBeUpdated, JsonNode.class));
 		CertificateDto certificateDtoUpdated = objectMapper.treeToValue(patched, CertificateDto.class);
 		certificateDtoUpdated = certificateService.updateById(id, certificateDtoUpdated);

@@ -25,23 +25,23 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 class CertificateDaoImplTest {
 
 	@Autowired
-	TestEntityProvider entityProvider;
+	private TestEntityProvider entityProvider;
 
 	@Autowired
-	CertificateDao certificateDao;
+	private CertificateDao certificateDao;
 
 	@Test
 	void readByIdShouldReturnCertificateEntity() {
 		long certificateId = 4L;
 		Optional<Certificate> certificateExpected = Optional.of(entityProvider.getCertificate4());
-		assertEquals(certificateExpected, certificateDao.readById(certificateId));
+		assertEquals(certificateExpected, certificateDao.getById(certificateId));
 	}
 
 	@Test
 	void readByNonexistentIdShouldReturnEmptyOptional() {
 		long nonexistentId = 100_500L;
 		Optional<Certificate> certificate1Expected = Optional.empty();
-		assertEquals(certificate1Expected, certificateDao.readById(nonexistentId));
+		assertEquals(certificate1Expected, certificateDao.getById(nonexistentId));
 	}
 
 	@Test
@@ -114,7 +114,7 @@ class CertificateDaoImplTest {
 	void deleteByIdShouldReturnIdOfDeletedEntity() {
 		long deletedTagIdExpected = 5;
 		assertEquals(deletedTagIdExpected, certificateDao.deleteById(5));
-		Optional<Certificate> result = certificateDao.readById(5);
+		Optional<Certificate> result = certificateDao.getById(5);
 		assertEquals(Optional.empty(), result);
 	}
 

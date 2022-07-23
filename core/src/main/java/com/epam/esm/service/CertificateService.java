@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 /** Service operations with the {@code Certificate}. */
 @Service
-public interface CertificateService extends BasicService<CertificateDto> {
+public interface CertificateService extends BaseService<CertificateDto> {
 
 	/**
 	 * Searches {@code Certificates} with tags (all params are optional and can be

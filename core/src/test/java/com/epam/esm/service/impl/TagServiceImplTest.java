@@ -58,10 +58,10 @@ class TagServiceImplTest {
 		TagDto tagDtoExpected = entityProvider.getTag1dto();
 		Tag tag1 = entityProvider.getTag1();
 		Long id = 1L;
-		when(tagDao.readById(id)).thenReturn(Optional.of(tag1));
+		when(tagDao.getById(id)).thenReturn(Optional.of(tag1));
 		when(tagMapper.convertToDto(tag1)).thenReturn(tagDtoExpected);
-		assertEquals(tagDtoExpected, tagService.findById(id));
-		verify(tagDao).readById(id);
+		assertEquals(tagDtoExpected, tagService.getById(id));
+		verify(tagDao).getById(id);
 		verify(tagMapper).convertToDto(tag1);
 	}
 
@@ -70,9 +70,9 @@ class TagServiceImplTest {
 		Long nonExistentId = 1_000_000L;
 		String errorMessageKeyExpected = "message.resource_not_found";
 		long paramExpected = 1_000_000L;
-		when(tagDao.readById(nonExistentId)).thenReturn(Optional.empty());
+		when(tagDao.getById(nonExistentId)).thenReturn(Optional.empty());
 		AbstractLocalizedCustomException exception = assertThrows(ResourceNotFoundException.class,
-				() -> tagService.findById(nonExistentId));
+				() -> tagService.getById(nonExistentId));
 		assertEquals(errorMessageKeyExpected, exception.getMessageKey());
 		assertEquals(paramExpected, exception.getParams()[0]);
 	}
@@ -81,7 +81,7 @@ class TagServiceImplTest {
 	void searchAllReturnTagDtoList() {
 		List<TagDto> allTagsDtoExpected = entityProvider.getAllTagsDtoList();
 		List<Tag> allTagsFound = entityProvider.getAllTagsList();
-		when(tagDao.searchAll()).thenReturn(allTagsFound);
+		when(tagDao.getAll()).thenReturn(allTagsFound);
 
 		when(tagMapper.convertToDto(entityProvider.getTag1())).thenReturn(entityProvider.getTag1dto());
 		when(tagMapper.convertToDto(entityProvider.getTag2())).thenReturn(entityProvider.getTag2dto());
@@ -94,9 +94,9 @@ class TagServiceImplTest {
 		when(tagMapper.convertToDto(entityProvider.getTag9())).thenReturn(entityProvider.getTag9dto());
 		when(tagMapper.convertToDto(entityProvider.getTag10())).thenReturn(entityProvider.getTag10dto());
 
-		assertEquals(allTagsDtoExpected, tagService.searchAll());
+		assertEquals(allTagsDtoExpected, tagService.getAll());
 
-		verify(tagDao).searchAll();
+		verify(tagDao).getAll();
 		verify(tagMapper).convertToDto(entityProvider.getTag1());
 		verify(tagMapper).convertToDto(entityProvider.getTag2());
 		verify(tagMapper).convertToDto(entityProvider.getTag3());

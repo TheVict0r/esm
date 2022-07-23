@@ -8,7 +8,7 @@ import java.util.Optional;
  * @param <E>
  *            entity for CRUD operations
  */
-public interface BasicDao<E> {
+public interface BaseDao<E> {
 
 	/**
 	 * Creates a new entity in the datasource.
@@ -26,7 +26,7 @@ public interface BasicDao<E> {
 	 *            entity's <b>ID</b>
 	 * @return Optional container object which may or may not contain entity
 	 */
-	Optional<E> readById(long id);
+	Optional<E> getById(long id);
 
 	/**
 	 * Updates entity by its <b>ID</b> in the datasource.

@@ -1,5 +1,6 @@
 package com.epam.esm.dao.impl;
 
+import com.epam.esm.dao.AbstractBaseDao;
 import com.epam.esm.dao.PurchaseDao;
 import com.epam.esm.dao.entity.Purchase;
 import java.util.Optional;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @Log4j2
-public class PurchaseDaoImpl extends AbstractBasicDaoImpl<Purchase> implements PurchaseDao {
+public class PurchaseDaoImpl extends AbstractBaseDao<Purchase> implements PurchaseDao {
 
 	public static final String FROM_PURCHASE_BY_USER_ID_AND_PURCHASE_ID = "from Purchase p where p.userId = :userId and p.id = :purchaseId";
 
@@ -18,7 +19,7 @@ public class PurchaseDaoImpl extends AbstractBasicDaoImpl<Purchase> implements P
 	private EntityManager entityManager;
 
 	public PurchaseDaoImpl() {
-		this.setParams(Purchase.class);
+		super(Purchase.class);
 	}
 
 	@Override

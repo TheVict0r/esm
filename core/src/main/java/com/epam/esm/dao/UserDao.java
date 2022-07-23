@@ -3,7 +3,7 @@ package com.epam.esm.dao;
 import com.epam.esm.dao.entity.User;
 import java.util.List;
 
-public interface UserDao extends BasicDao<User> {
+public interface UserDao extends BaseDao<User> {
 
 	/**
 	 * Reads all existing {@code Users} from the datasource.

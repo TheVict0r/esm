@@ -5,26 +5,19 @@ import com.epam.esm.exception.InappropriateBodyContentException;
 import com.epam.esm.exception.InvalidRequestSortParamValueException;
 import com.epam.esm.exception.MismatchedIdValuesException;
 import com.epam.esm.exception.MismatchedUserAndPurchaseException;
-import com.epam.esm.exception.NonexistentLocaleException;
+import com.epam.esm.exception.NonExistentLocaleException;
 import com.epam.esm.exception.ResourceNotCreatedException;
 import com.epam.esm.exception.ResourceNotFoundException;
 import java.sql.SQLIntegrityConstraintViolationException;
-import java.text.MessageFormat;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
-import java.util.ResourceBundle;
-import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import lombok.Data;
-import org.springframework.http.HttpHeaders;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -33,7 +26,10 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 /** A class for handling all exceptions that occur. */
 @RestControllerAdvice
+@RequiredArgsConstructor
 public class GlobalExceptionHandler {
+
+	private final MessageLocalizator localizator;
 
 	/**
 	 * Handles the situation, when there is no appropriate entity in the datasource.
@@ -46,8 +42,8 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(ResourceNotFoundException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	public IncorrectData handleException(ResourceNotFoundException resourceNotFoundException,
-			HttpServletRequest request) {
-		String localizedMessage = getLocalizedMessage(resourceNotFoundException, request);
+										 Locale locale) {
+		String localizedMessage = localizator.getLocalizedMessage(resourceNotFoundException, locale);
 		return new IncorrectData(resourceNotFoundException, localizedMessage);
 	}
 
@@ -77,11 +73,11 @@ public class GlobalExceptionHandler {
 	 */
 	@ExceptionHandler({InvalidRequestSortParamValueException.class, InappropriateBodyContentException.class,
 			MismatchedIdValuesException.class, MismatchedUserAndPurchaseException.class,
-			NonexistentLocaleException.class})
+			NonExistentLocaleException.class})
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public IncorrectData handleException(AbstractLocalizedCustomException abstractLocalizedCustomException,
-			HttpServletRequest request) {
-		String localizedMessage = getLocalizedMessage(abstractLocalizedCustomException, request);
+										 Locale locale) {
+		String localizedMessage = localizator.getLocalizedMessage(abstractLocalizedCustomException, locale);
 		return new IncorrectData(abstractLocalizedCustomException, localizedMessage);
 	}
 
@@ -95,9 +91,9 @@ public class GlobalExceptionHandler {
 	 */
 	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public IncorrectData handleException(MethodArgumentTypeMismatchException exception, HttpServletRequest request) {
+	public IncorrectData handleException(MethodArgumentTypeMismatchException exception, Locale locale) {
 		String messageKey = "message.method_argument_type_mismatch";
-		String localizedMessage = getLocalizedMessage(messageKey, request, exception.getValue(),
+		String localizedMessage = localizator.getLocalizedMessage(messageKey, locale, exception.getValue(),
 				exception.getRequiredType());
 		return new IncorrectData(exception, localizedMessage);
 	}
@@ -114,8 +110,8 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(ConstraintViolationException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public IncorrectData handleException(ConstraintViolationException constraintViolationException,
-			HttpServletRequest request) {
-		String errorMessage = getLocalizedMessage(constraintViolationException, request);
+										 Locale locale) {
+		String errorMessage = localizator.getLocalizedMessage(constraintViolationException, locale);
 		return new IncorrectData(constraintViolationException, errorMessage);
 	}
 
@@ -131,8 +127,8 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public IncorrectData handleException(MethodArgumentNotValidException methodArgumentNotValidException,
-			HttpServletRequest request) {
-		String errorMessage = getLocalizedMessage(methodArgumentNotValidException, request);
+										 Locale locale) {
+		String errorMessage = localizator.getLocalizedMessage(methodArgumentNotValidException, locale);
 		return new IncorrectData(methodArgumentNotValidException, errorMessage);
 	}
 
@@ -149,8 +145,8 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public IncorrectData handleException(
 			SQLIntegrityConstraintViolationException sqlIntegrityConstraintViolationException,
-			HttpServletRequest request) {
-		String errorMessage = getLocalizedMessage(sqlIntegrityConstraintViolationException, request);
+			Locale locale) {
+		String errorMessage = localizator.getLocalizedMessage(sqlIntegrityConstraintViolationException, locale);
 		return new IncorrectData(sqlIntegrityConstraintViolationException, errorMessage);
 	}
 
@@ -165,71 +161,10 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(HttpMessageNotReadableException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public IncorrectData handleException(HttpMessageNotReadableException httpMessageNotReadableException,
-			HttpServletRequest request) {
+										 Locale locale) {
 		String messageKey = "message.http_message_not_readable_exception";
-		String errorMessage = getLocalisedMessageFromBundle(messageKey, getLocale(request));
+		String errorMessage = localizator.getLocalisedMessageFromBundle(messageKey, locale);
 		return new IncorrectData(httpMessageNotReadableException, errorMessage);
-	}
-
-	private Locale getLocale(HttpServletRequest request) {
-		return Optional.ofNullable(request.getHeader(HttpHeaders.ACCEPT_LANGUAGE)).filter(header -> !(header.isBlank()))
-				.map(Locale::new).orElse(Locale.ENGLISH);
-	}
-
-	public static String getLocalisedMessageFromBundle(String messageKey, Locale locale) {
-		String baseName = "messages";
-		return ResourceBundle.getBundle(baseName, locale).getString(messageKey);
-	}
-
-	private String getLocalizedMessage(AbstractLocalizedCustomException exception, HttpServletRequest request) {
-		String messageKey = exception.getMessageKey();
-		Locale locale = getLocale(request);
-		Object[] params = exception.getParams();
-		String pattern = getLocalisedMessageFromBundle(messageKey, locale);
-		return MessageFormat.format(pattern, params);
-	}
-
-	private String getLocalizedMessage(String messageKey, HttpServletRequest request, Object... params) {
-		Locale locale = getLocale(request);
-		String pattern = getLocalisedMessageFromBundle(messageKey, locale);
-		return MessageFormat.format(pattern, params);
-	}
-
-	private String getLocalizedMessage(ConstraintViolationException exception, HttpServletRequest request) {
-		String messageKey = "message.validation.intro";
-		Locale locale = getLocale(request);
-		StringBuilder builder = new StringBuilder(getLocalisedMessageFromBundle(messageKey, locale));
-		Set<ConstraintViolation<?>> constraintViolations = exception.getConstraintViolations();
-		constraintViolations.forEach(violation -> {
-			builder.append("(").append(violation.getInvalidValue()).append(") - ")
-					.append(getLocalisedMessageFromBundle(violation.getMessage(), locale));
-		});
-		return builder.toString();
-	}
-
-	private String getLocalizedMessage(MethodArgumentNotValidException exception, HttpServletRequest request) {
-		String messageKey = "message.validation.intro";
-		Locale locale = getLocale(request);
-		StringBuilder builder = new StringBuilder(getLocalisedMessageFromBundle(messageKey, locale));
-		List<FieldError> fieldErrors = exception.getFieldErrors();
-		fieldErrors.forEach(error -> {
-			builder.append(error.getField()).append(" = '").append(error.getRejectedValue()).append("' - ")
-					.append(getLocalisedMessageFromBundle(error.getDefaultMessage(), locale)).append(" | ");
-		});
-		return builder.toString();
-	}
-
-	private String getLocalizedMessage(SQLIntegrityConstraintViolationException exception, HttpServletRequest request) {
-		String messageKey = "message.duplicate_key";
-		return getLocalizedMessageSplitFromStringValue(request, messageKey, exception.getMessage());
-	}
-
-	private String getLocalizedMessageSplitFromStringValue(HttpServletRequest request, String messageKey,
-			String originalMessage) {
-		String[] originalMessageSplit = originalMessage.split("'");
-		String entry = originalMessageSplit[1];
-		String uniqueKey = originalMessageSplit[3];
-		return getLocalizedMessage(messageKey, request, entry, uniqueKey);
 	}
 
 	/**
@@ -239,15 +174,8 @@ public class GlobalExceptionHandler {
 	@Data
 	class IncorrectData {
 
-		/** Custom error code based on appropriate standard HTTP status code. */
-		private int errorCode;
-
-		/** Message provided to user after exception was handled. */
-		private String errorMessage;
-
 		/** Container with all custom error codes. */
 		private static Map<Class, Integer> allCustomErrorCodes = new HashMap<>();
-
 		static {
 			allCustomErrorCodes.put(InappropriateBodyContentException.class, 40001);
 			allCustomErrorCodes.put(InvalidRequestSortParamValueException.class, 40002);
@@ -258,10 +186,16 @@ public class GlobalExceptionHandler {
 			allCustomErrorCodes.put(SQLIntegrityConstraintViolationException.class, 40007);
 			allCustomErrorCodes.put(HttpMessageNotReadableException.class, 40008);
 			allCustomErrorCodes.put(MismatchedUserAndPurchaseException.class, 40009);
-			allCustomErrorCodes.put(NonexistentLocaleException.class, 40401);
+			allCustomErrorCodes.put(NonExistentLocaleException.class, 40401);
 			allCustomErrorCodes.put(ResourceNotFoundException.class, 40402);
 			allCustomErrorCodes.put(ResourceNotCreatedException.class, 50001);
 		}
+
+		/** Custom error code based on appropriate standard HTTP status code. */
+		private final int errorCode;
+
+		/** Message provided to user after exception was handled. */
+		private final String errorMessage;
 
 		IncorrectData(Exception exception, String errorMessage) {
 			this.errorCode = allCustomErrorCodes.get(exception.getClass());

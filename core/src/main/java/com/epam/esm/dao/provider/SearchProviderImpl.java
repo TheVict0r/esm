@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 @Component
 @Log4j2
 public class SearchProviderImpl implements SearchProvider {
-
 	public static final String BASIC_QUERY = "SELECT DISTINCT c FROM Certificate c";
 	public static final String WHERE_TAG_NAME = " JOIN c.tags t WHERE t.name=:tagNameProvided";
 	public static final String AND_CERTIFICATE_NAME = " AND c.name=:certificateNameProvided";
