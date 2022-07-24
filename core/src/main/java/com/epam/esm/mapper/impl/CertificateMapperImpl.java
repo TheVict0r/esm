@@ -2,29 +2,13 @@ package com.epam.esm.mapper.impl;
 
 import com.epam.esm.dao.entity.Certificate;
 import com.epam.esm.dto.CertificateDto;
-import com.epam.esm.mapper.EntityDtoMapper;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import com.epam.esm.mapper.AbstractEntityDtoMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor
-@Log4j2
-public class CertificateMapperImpl implements EntityDtoMapper<Certificate, CertificateDto> {
-
-	private final ModelMapper mapper;
-
-	@Override
-	public Certificate convertToEntity(@NonNull CertificateDto dto) {
-		log.debug("Converting DTO - {} to Certificate", dto);
-		return mapper.map(dto, Certificate.class);
-	}
-
-	@Override
-	public CertificateDto convertToDto(@NonNull Certificate entity) {
-		log.debug("Converting Certificate - {} to DTO", entity);
-		return mapper.map(entity, CertificateDto.class);
+public class CertificateMapperImpl extends AbstractEntityDtoMapper<Certificate, CertificateDto> {
+	public CertificateMapperImpl(ModelMapper mapper) {
+		super(Certificate.class, CertificateDto.class, mapper);
 	}
 }

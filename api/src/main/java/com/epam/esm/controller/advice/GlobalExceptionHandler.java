@@ -12,7 +12,6 @@ import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -41,8 +40,7 @@ public class GlobalExceptionHandler {
 	 */
 	@ExceptionHandler(ResourceNotFoundException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)
-	public IncorrectData handleException(ResourceNotFoundException resourceNotFoundException,
-										 Locale locale) {
+	public IncorrectData handleException(ResourceNotFoundException resourceNotFoundException, Locale locale) {
 		String localizedMessage = localizator.getLocalizedMessage(resourceNotFoundException, locale);
 		return new IncorrectData(resourceNotFoundException, localizedMessage);
 	}
@@ -76,7 +74,7 @@ public class GlobalExceptionHandler {
 			NonExistentLocaleException.class})
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public IncorrectData handleException(AbstractLocalizedCustomException abstractLocalizedCustomException,
-										 Locale locale) {
+			Locale locale) {
 		String localizedMessage = localizator.getLocalizedMessage(abstractLocalizedCustomException, locale);
 		return new IncorrectData(abstractLocalizedCustomException, localizedMessage);
 	}
@@ -109,8 +107,7 @@ public class GlobalExceptionHandler {
 	 */
 	@ExceptionHandler(ConstraintViolationException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public IncorrectData handleException(ConstraintViolationException constraintViolationException,
-										 Locale locale) {
+	public IncorrectData handleException(ConstraintViolationException constraintViolationException, Locale locale) {
 		String errorMessage = localizator.getLocalizedMessage(constraintViolationException, locale);
 		return new IncorrectData(constraintViolationException, errorMessage);
 	}
@@ -127,7 +124,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public IncorrectData handleException(MethodArgumentNotValidException methodArgumentNotValidException,
-										 Locale locale) {
+			Locale locale) {
 		String errorMessage = localizator.getLocalizedMessage(methodArgumentNotValidException, locale);
 		return new IncorrectData(methodArgumentNotValidException, errorMessage);
 	}
@@ -144,8 +141,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(SQLIntegrityConstraintViolationException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public IncorrectData handleException(
-			SQLIntegrityConstraintViolationException sqlIntegrityConstraintViolationException,
-			Locale locale) {
+			SQLIntegrityConstraintViolationException sqlIntegrityConstraintViolationException, Locale locale) {
 		String errorMessage = localizator.getLocalizedMessage(sqlIntegrityConstraintViolationException, locale);
 		return new IncorrectData(sqlIntegrityConstraintViolationException, errorMessage);
 	}
@@ -161,7 +157,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(HttpMessageNotReadableException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public IncorrectData handleException(HttpMessageNotReadableException httpMessageNotReadableException,
-										 Locale locale) {
+			Locale locale) {
 		String messageKey = "message.http_message_not_readable_exception";
 		String errorMessage = localizator.getLocalisedMessageFromBundle(messageKey, locale);
 		return new IncorrectData(httpMessageNotReadableException, errorMessage);

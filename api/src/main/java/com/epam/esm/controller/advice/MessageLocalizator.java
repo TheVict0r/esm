@@ -5,13 +5,10 @@ import java.sql.SQLIntegrityConstraintViolationException;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -63,8 +60,7 @@ public class MessageLocalizator {
 		return getLocalizedMessageSplitFromStringValue(locale, messageKey, exception.getMessage());
 	}
 
-	public String getLocalizedMessageSplitFromStringValue(Locale locale, String messageKey,
-			String originalMessage) {
+	public String getLocalizedMessageSplitFromStringValue(Locale locale, String messageKey, String originalMessage) {
 		String[] originalMessageSplit = originalMessage.split("'");
 		String entry = originalMessageSplit[1];
 		String uniqueKey = originalMessageSplit[3];

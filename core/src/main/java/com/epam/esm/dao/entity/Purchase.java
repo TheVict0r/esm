@@ -67,7 +67,7 @@ public class Purchase implements Serializable {
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + "{" + "id=" + id + ", userId=" + userId + ", date=" + date + ", cost="
-				+ cost + '}';
+		return getClass().getSimpleName() + " {id=" + id + ", userId=" + userId + ", date=" + date + ", cost=" + cost
+				+ '}';
 	}
 }

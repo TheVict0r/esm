@@ -57,6 +57,6 @@ public class Tag implements Serializable {
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + "{" + "id=" + id + ", name='" + name + "\'}";
+		return getClass().getSimpleName() + " {id=" + id + ", name='" + name + "\'}";
 	}
 }

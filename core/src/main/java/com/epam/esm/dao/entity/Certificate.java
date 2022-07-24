@@ -103,7 +103,7 @@ public class Certificate implements Serializable {
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + "{id=" + id + ", name='" + name + '\'' + ", description='" + description
+		return getClass().getSimpleName() + " {id=" + id + ", name='" + name + '\'' + ", description='" + description
 				+ '\'' + ", price=" + price + ", duration=" + duration + ", createDate=" + createDate
 				+ ", lastUpdateDate=" + lastUpdateDate + '}';
 	}
