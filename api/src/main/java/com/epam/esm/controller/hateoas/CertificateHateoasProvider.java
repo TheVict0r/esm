@@ -5,11 +5,16 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import com.epam.esm.controller.CertificateController;
 import com.epam.esm.dto.CertificateDto;
+import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 /** Provides HATEAOS realisation for Certificate controller */
 @Component
+@RequiredArgsConstructor
 public class CertificateHateoasProvider {
+
+	private final TagHateoasProvider tagHateoasProvider;
 
 	/**
 	 * Adds HATEOAS links to CertificateDto after it has been read from the
@@ -18,13 +23,28 @@ public class CertificateHateoasProvider {
 	 * @param certificateDto
 	 *            CertificateDto instance
 	 */
-	public void addLinksForShowSingleCertificate(CertificateDto certificateDto) {
-		addForFindByIdSelf(certificateDto);
+	public void addLinksForSingleCertificateWithTags(CertificateDto certificateDto) {
+		addLinksForSingleCertificateNoTags(certificateDto);
+		addLinksForTags(certificateDto);
+	}
+
+	public void addLinksForSingleCertificateNoTags(CertificateDto certificateDto) {
+		addForGetByIdSelf(certificateDto);
 		addForReplaceById(certificateDto);
 		addForUpdateById(certificateDto);
 		addForDeleteById(certificateDto);
-		addForShowTagsForCertificate(certificateDto);
+		addForGetTagsForCertificate(certificateDto);
 		addForGetCertificates(certificateDto);
+	}
+
+	/**
+	 * Adds HATEOAS links to List of CertificateDtos
+	 *
+	 * @param certificateDtoList
+	 *            list of CertificateDto instances
+	 */
+	public void addLinksForMultipleCertificates(List<CertificateDto> certificateDtoList) {
+		certificateDtoList.forEach(this::addLinksForSingleCertificateWithTags);
 	}
 
 	/**
@@ -35,11 +55,12 @@ public class CertificateHateoasProvider {
 	 */
 	public void addLinksForCreate(CertificateDto certificateDto) {
 		addForCreateSelf(certificateDto);
-		addForFindById(certificateDto);
+		addForGetById(certificateDto);
 		addForReplaceById(certificateDto);
 		addForUpdateById(certificateDto);
 		addForDeleteById(certificateDto);
-		addForShowTagsForCertificate(certificateDto);
+		addForGetTagsForCertificate(certificateDto);
+		addLinksForTags(certificateDto);
 	}
 
 	/**
@@ -51,10 +72,11 @@ public class CertificateHateoasProvider {
 	 */
 	public void addLinksForReplaceById(CertificateDto certificateDto) {
 		addForReplaceByIdSelf(certificateDto);
-		addForFindById(certificateDto);
+		addForGetById(certificateDto);
 		addForUpdateById(certificateDto);
 		addForDeleteById(certificateDto);
-		addForShowTagsForCertificate(certificateDto);
+		addForGetTagsForCertificate(certificateDto);
+		addLinksForTags(certificateDto);
 	}
 
 	/**
@@ -67,9 +89,10 @@ public class CertificateHateoasProvider {
 	public void addLinksForUpdateById(CertificateDto certificateDto) {
 		addForUpdateByIdSelf(certificateDto);
 		addForReplaceById(certificateDto);
-		addForFindById(certificateDto);
+		addForGetById(certificateDto);
 		addForDeleteById(certificateDto);
-		addForShowTagsForCertificate(certificateDto);
+		addForGetTagsForCertificate(certificateDto);
+		addLinksForTags(certificateDto);
 	}
 
 	private void addForCreateSelf(CertificateDto certificateDto) {
@@ -80,14 +103,14 @@ public class CertificateHateoasProvider {
 		certificateDto.add(linkTo(methodOn(CertificateController.class).create(certificateDto)).withRel("create"));
 	}
 
-	private void addForFindByIdSelf(CertificateDto certificateDto) {
+	private void addForGetByIdSelf(CertificateDto certificateDto) {
 		certificateDto
 				.add(linkTo(methodOn(CertificateController.class).findById(certificateDto.getId())).withSelfRel());
 	}
 
-	private void addForFindById(CertificateDto certificateDto) {
-		certificateDto.add(
-				linkTo(methodOn(CertificateController.class).findById(certificateDto.getId())).withRel("findById"));
+	private void addForGetById(CertificateDto certificateDto) {
+		certificateDto
+				.add(linkTo(methodOn(CertificateController.class).findById(certificateDto.getId())).withRel("getById"));
 	}
 
 	private void addForReplaceByIdSelf(CertificateDto certificateDto) {
@@ -133,16 +156,21 @@ public class CertificateHateoasProvider {
 	private void addForGetCertificates(CertificateDto certificateDto) {
 		certificateDto
 				.add(linkTo(methodOn(CertificateController.class).getCertificates(null, null, null, null, null, null))
-						.withRel("showAll").expand());
+						.withRel("getAll").expand());
 	}
 
-	private void addForShowTagsForCertificateSelf(CertificateDto certificateDto) {
+	private void addForGetTagsForCertificateSelf(CertificateDto certificateDto) {
 		certificateDto.add(linkTo(methodOn(CertificateController.class).getTagsForCertificate(certificateDto.getId()))
 				.withSelfRel());
 	}
 
-	private void addForShowTagsForCertificate(CertificateDto certificateDto) {
+	private void addForGetTagsForCertificate(CertificateDto certificateDto) {
 		certificateDto.add(linkTo(methodOn(CertificateController.class).getTagsForCertificate(certificateDto.getId()))
-				.withRel("showTags"));
+				.withRel("getTags"));
 	}
+
+	private void addLinksForTags(CertificateDto certificateDto) {
+		certificateDto.getTags().forEach(tagHateoasProvider::addLinksForSingleTag);
+	}
+
 }

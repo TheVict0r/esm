@@ -8,6 +8,7 @@ import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.mapper.impl.UserMapperImpl;
 import com.epam.esm.service.UserService;
 import java.util.List;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -37,8 +38,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<PurchaseDto> getAllPurchasesByUserId(Long userId) {
+	public Set<PurchaseDto> getAllPurchasesByUserId(Long userId) {
 		log.debug("Reading Purchases for the User with ID - {}", userId);
-		return getById(userId).getPurchases().stream().toList();
+		return getById(userId).getPurchases();
 	}
 }

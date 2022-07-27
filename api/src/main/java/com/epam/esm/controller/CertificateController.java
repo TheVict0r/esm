@@ -42,7 +42,7 @@ public class CertificateController {
 
 	private final CertificateService certificateService;
 	private final TagService tagService;
-	private final CertificateHateoasProvider hateoasProvider;
+	private final CertificateHateoasProvider certificateHateoasProvider;
 	private final TagHateoasProvider tagHateoasProvider;
 	private final ObjectMapper objectMapper;
 
@@ -58,7 +58,7 @@ public class CertificateController {
 	public CertificateDto findById(@Min(value = 1, message = "message.validation.id.min") @PathVariable("id") Long id) {
 		log.info("Reading the certificate by ID - {}", id);
 		CertificateDto certificateDto = certificateService.getById(id);
-		hateoasProvider.addLinksForShowSingleCertificate(certificateDto);
+		certificateHateoasProvider.addLinksForSingleCertificateWithTags(certificateDto);
 		return certificateDto;
 	}
 
@@ -74,7 +74,7 @@ public class CertificateController {
 			@Min(value = 1, message = "message.validation.id.min") @PathVariable("certificateId") Long certificateId) {
 		log.info("Reading tags for certificate with ID - {}", certificateId);
 		List<TagDto> tagsDtoByCertificateId = tagService.getTagsByCertificateId(certificateId);
-		tagsDtoByCertificateId.forEach(tagDto -> tagHateoasProvider.addLinksForShowSingleTag(tagDto));
+		tagHateoasProvider.addLinksForMultipleTags(tagsDtoByCertificateId);
 		return tagsDtoByCertificateId;
 	}
 
@@ -107,7 +107,7 @@ public class CertificateController {
 				tagName, name, description, sort, page, size);
 		List<CertificateDto> certificateDtoList = certificateService.getCertificates(tagName, name, description, sort,
 				page, size);
-		certificateDtoList.forEach(certificateDto -> hateoasProvider.addLinksForShowSingleCertificate(certificateDto));
+		certificateHateoasProvider.addLinksForMultipleCertificates(certificateDtoList);
 		return certificateDtoList;
 	}
 
@@ -123,7 +123,7 @@ public class CertificateController {
 	public CertificateDto create(@RequestBody @Validated(BasicInfo.class) CertificateDto certificateDto) {
 		log.info("Creating Certificate from DTO - {}", certificateDto);
 		CertificateDto certificateDtoCreated = certificateService.create(certificateDto);
-		hateoasProvider.addLinksForCreate(certificateDtoCreated);
+		certificateHateoasProvider.addLinksForCreate(certificateDtoCreated);
 		return certificateDtoCreated;
 	}
 
@@ -141,7 +141,7 @@ public class CertificateController {
 			@Min(value = 1, message = "message.validation.id.min") @PathVariable("id") Long id,
 			@RequestBody @Validated(BasicInfo.class) CertificateDto certificateDto) {
 		CertificateDto certificateDtoReplacedBy = certificateService.replaceById(id, certificateDto);
-		hateoasProvider.addLinksForReplaceById(certificateDtoReplacedBy);
+		certificateHateoasProvider.addLinksForReplaceById(certificateDtoReplacedBy);
 		return certificateDtoReplacedBy;
 	}
 
@@ -166,7 +166,7 @@ public class CertificateController {
 		JsonNode patched = patch.apply(objectMapper.convertValue(certificateDtoToBeUpdated, JsonNode.class));
 		CertificateDto certificateDtoUpdated = objectMapper.treeToValue(patched, CertificateDto.class);
 		certificateDtoUpdated = certificateService.updateById(id, certificateDtoUpdated);
-		hateoasProvider.addLinksForUpdateById(certificateDtoUpdated);
+		certificateHateoasProvider.addLinksForUpdateById(certificateDtoUpdated);
 		return certificateDtoUpdated;
 	}
 

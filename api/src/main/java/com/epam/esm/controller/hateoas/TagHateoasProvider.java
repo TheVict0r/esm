@@ -5,6 +5,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import com.epam.esm.controller.TagController;
 import com.epam.esm.dto.TagDto;
+import java.util.List;
 import org.springframework.stereotype.Component;
 
 /** Provides HATEAOS realisation for Tag controller */
@@ -17,11 +18,21 @@ public class TagHateoasProvider {
 	 * @param tagDto
 	 *            TagDto instance
 	 */
-	public void addLinksForShowSingleTag(TagDto tagDto) {
-		addForFindByIdSelf(tagDto);
+	public void addLinksForSingleTag(TagDto tagDto) {
+		addForGetByIdSelf(tagDto);
 		addForUpdateById(tagDto);
 		addForDeleteById(tagDto);
-		addForShowAll(tagDto);
+		addForGetAll(tagDto);
+	}
+
+	/**
+	 * Adds HATEOAS links to List of TagDtos
+	 *
+	 * @param tagDtos
+	 *            list of TagDto instances
+	 */
+	public void addLinksForMultipleTags(List<TagDto> tagDtos) {
+		tagDtos.forEach(this::addLinksForSingleTag);
 	}
 
 	/**
@@ -32,7 +43,7 @@ public class TagHateoasProvider {
 	 */
 	public void addLinksForCreate(TagDto tagDto) {
 		addForCreateSelf(tagDto);
-		addForFindById(tagDto);
+		addForGetById(tagDto);
 		addForUpdateById(tagDto);
 		addForDeleteById(tagDto);
 	}
@@ -45,16 +56,16 @@ public class TagHateoasProvider {
 	 */
 	public void addLinksForUpdateById(TagDto tagDto) {
 		addForUpdateByIdSelf(tagDto);
-		addForFindById(tagDto);
+		addForGetById(tagDto);
 		addForDeleteById(tagDto);
 	}
 
-	private void addForFindByIdSelf(TagDto tagDto) {
-		tagDto.add(linkTo(methodOn(TagController.class).findById(tagDto.getId())).withSelfRel());
+	private void addForGetByIdSelf(TagDto tagDto) {
+		tagDto.add(linkTo(methodOn(TagController.class).getById(tagDto.getId())).withSelfRel());
 	}
 
-	private void addForFindById(TagDto tagDto) {
-		tagDto.add(linkTo(methodOn(TagController.class).findById(tagDto.getId())).withRel("findById"));
+	private void addForGetById(TagDto tagDto) {
+		tagDto.add(linkTo(methodOn(TagController.class).getById(tagDto.getId())).withRel("getById"));
 	}
 
 	private void addForCreateSelf(TagDto tagDto) {
@@ -81,11 +92,11 @@ public class TagHateoasProvider {
 		tagDto.add(linkTo(methodOn(TagController.class).deleteById(tagDto.getId())).withRel("deleteById"));
 	}
 
-	private void addForShowAllSelf(TagDto tagDto) {
-		tagDto.add(linkTo(methodOn(TagController.class).showAll(1, 10)).withSelfRel());
+	private void addForGetAllSelf(TagDto tagDto) {
+		tagDto.add(linkTo(methodOn(TagController.class).getAll(null, null)).withSelfRel().expand());
 	}
 
-	private void addForShowAll(TagDto tagDto) {
-		tagDto.add(linkTo(methodOn(TagController.class).showAll(1, 10)).withRel("showAll"));
+	private void addForGetAll(TagDto tagDto) {
+		tagDto.add(linkTo(methodOn(TagController.class).getAll(null, null)).withRel("getAll").expand());
 	}
 }

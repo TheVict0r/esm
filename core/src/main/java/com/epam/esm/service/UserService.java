@@ -3,6 +3,7 @@ package com.epam.esm.service;
 import com.epam.esm.dto.PurchaseDto;
 import com.epam.esm.dto.UserDto;
 import java.util.List;
+import java.util.Set;
 
 public interface UserService {
 
@@ -35,5 +36,5 @@ public interface UserService {
 	 *            User ID
 	 * @return list containing all purchases for User
 	 */
-	List<PurchaseDto> getAllPurchasesByUserId(Long userId);
+	Set<PurchaseDto> getAllPurchasesByUserId(Long userId);
 }

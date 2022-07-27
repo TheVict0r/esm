@@ -57,11 +57,7 @@ public class MessageLocalizator {
 
 	public String getLocalizedMessage(SQLIntegrityConstraintViolationException exception, Locale locale) {
 		String messageKey = "message.duplicate_key";
-		return getLocalizedMessageSplitFromStringValue(locale, messageKey, exception.getMessage());
-	}
-
-	public String getLocalizedMessageSplitFromStringValue(Locale locale, String messageKey, String originalMessage) {
-		String[] originalMessageSplit = originalMessage.split("'");
+		String[] originalMessageSplit = exception.getMessage().split("'");
 		String entry = originalMessageSplit[1];
 		String uniqueKey = originalMessageSplit[3];
 		return getLocalizedMessage(messageKey, locale, entry, uniqueKey);

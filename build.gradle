@@ -50,6 +50,15 @@ subprojects {
 
 }
 
+task preBuild {
+    doFirst {
+        spotlessApply
+    }
+}
+
+assemble.dependsOn preBuild
+
+
 bootJar {
     enabled = false
 }

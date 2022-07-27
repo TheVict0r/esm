@@ -7,12 +7,10 @@ import com.epam.esm.exception.InappropriateBodyContentException;
 import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.mapper.impl.TagMapperImpl;
 import com.epam.esm.service.TagService;
-import com.epam.esm.service.validation.BasicInfo;
 import com.epam.esm.service.validation.InputDataValidator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import javax.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -26,7 +24,7 @@ public class TagServiceImpl implements TagService {
 	private final InputDataValidator validator;
 
 	@Override
-	public TagDto getById(@Positive(message = "message.validation.id.min", groups = BasicInfo.class) Long id) {
+	public TagDto getById(Long id) {
 		log.debug("Reading the Tag by ID {}", id);
 		return tagMapper.convertToDto(safeGetById(id));
 	}
