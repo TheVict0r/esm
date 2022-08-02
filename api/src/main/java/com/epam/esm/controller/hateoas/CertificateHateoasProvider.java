@@ -105,12 +105,12 @@ public class CertificateHateoasProvider {
 
 	private void addForGetByIdSelf(CertificateDto certificateDto) {
 		certificateDto
-				.add(linkTo(methodOn(CertificateController.class).findById(certificateDto.getId())).withSelfRel());
+				.add(linkTo(methodOn(CertificateController.class).getById(certificateDto.getId())).withSelfRel());
 	}
 
 	private void addForGetById(CertificateDto certificateDto) {
 		certificateDto
-				.add(linkTo(methodOn(CertificateController.class).findById(certificateDto.getId())).withRel("getById"));
+				.add(linkTo(methodOn(CertificateController.class).getById(certificateDto.getId())).withRel("getById"));
 	}
 
 	private void addForReplaceByIdSelf(CertificateDto certificateDto) {

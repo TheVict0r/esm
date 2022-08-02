@@ -16,4 +16,13 @@ public interface PurchaseService {
 	 * @return requested PurchaseDto
 	 */
 	PurchaseDto getPurchaseForUser(Long userId, Long purchaseId);
+
+	/**
+	 * Adds a new Purchase for the user.
+	 *
+	 * @param userId      the ID of the user.
+	 * @param purchaseDto PurchaseDto need to be added
+	 * @return added PurchaseDto
+	 */
+	PurchaseDto create(Long userId, PurchaseDto purchaseDto);
 }

@@ -12,8 +12,8 @@ public interface CertificateDao extends BaseDao<Certificate> {
 	 * Searches {@code Certificates} with tags (all params are optional and can be
 	 * used in conjunction).
 	 *
-	 * @param tagName
-	 *            {@code Tag's} name
+	 * @param tagNames
+	 *            the list of {@code Tags} names
 	 * @param name
 	 *            {@code Certificate's} name
 	 * @param description
@@ -28,7 +28,7 @@ public interface CertificateDao extends BaseDao<Certificate> {
 	 * @return The list with found {@code Certificates}, or empty list if nothing
 	 *         was found
 	 */
-	List<Certificate> getCertificates(String tagName, String name, String description, String sort, int page, int size);
+	List<Certificate> getCertificates(List<String> tagNames, String name, String description, String sort, int page, int size);
 
 	/**
 	 * Retrieves all {@code Certificates} which contain the {@code Tag}.

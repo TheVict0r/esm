@@ -41,13 +41,22 @@ public class UserHateoasProvider {
 
 	public void addLinksForSinglePurchase(PurchaseDto purchaseDto) {
 		addForGetPurchaseForUserSelf(purchaseDto);
-		Set<CertificateDto> certificates = purchaseDto.getCertificates();
-		certificates.forEach(certificateHateoasProvider::addLinksForSingleCertificateNoTags);
-		addLinksForTags(certificates.stream().toList());
+		handleSinglePurchase(purchaseDto);
 	}
 
 	public void addLinksForGetUserAllPurchases(Set<PurchaseDto> purchases) {
 		addLinksToMultiplePurchases(purchases);
+	}
+
+	public void addLinksForCreatePurchase(PurchaseDto purchaseDto){
+		addForCreatePurchaseSelf(purchaseDto);
+		handleSinglePurchase(purchaseDto);
+	}
+
+	private void handleSinglePurchase(PurchaseDto purchaseDto) {
+		Set<CertificateDto> certificates = purchaseDto.getCertificates();
+		certificates.forEach(certificateHateoasProvider::addLinksForSingleCertificateNoTags);
+		addLinksForTags(certificates.stream().toList());
 	}
 
 	private void addForGetByIdSelf(UserDto userDto) {
@@ -85,6 +94,13 @@ public class UserHateoasProvider {
 
 	private void addForGetAll(UserDto userDto) {
 		userDto.add(linkTo(methodOn(UserController.class).getAll(null, null)).withRel("getAllUsers").expand());
+	}
+
+	private void addForCreatePurchaseSelf(PurchaseDto purchaseDto){
+		purchaseDto.add(linkTo((methodOn(UserController.class).createPurchase(purchaseDto.getUserId(), purchaseDto))).withSelfRel());
+	}
+	private void addForCreatePurchase(PurchaseDto purchaseDto){
+		purchaseDto.add(linkTo((methodOn(UserController.class).createPurchase(purchaseDto.getUserId(), purchaseDto))).withRel("createPurchase"));
 	}
 
 	private void addLinksToMultiplePurchases(Set<PurchaseDto> purchaseDtoSet) {

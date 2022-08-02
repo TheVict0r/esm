@@ -37,4 +37,12 @@ public interface UserService {
 	 * @return list containing all purchases for User
 	 */
 	Set<PurchaseDto> getAllPurchasesByUserId(Long userId);
+
+	/**
+	 * Checks if user exists in the datasource.
+	 *
+	 * @param userId The ID of user need to be checked.
+	 * @return {@code true} if user with provided ID exists in the datasource, {@code false} otherwise.
+	 */
+	boolean isUserExist(Long userId);
 }

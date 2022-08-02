@@ -32,14 +32,14 @@ public class CertificateDaoImpl extends AbstractBaseDao<Certificate> implements 
 	}
 
 	@Override
-	public List<Certificate> getCertificates(String tagName, String name, String description, String sort, int page,
-			int size) {
+	public List<Certificate> getCertificates(List<String> tagNames, String name, String description, String sort, int page,
+											 int size) {
 		log.debug(
 				"Searching Certificate. Tag name - {}, Certificate name - {}, Certificate"
 						+ " description - {}, sort - {}, page № - {}, size - {}",
-				tagName, name, description, sort, page, size);
+				tagNames, name, description, sort, page, size);
 
-		TypedQuery<Certificate> query = searchProvider.provideQuery(tagName, name, description, sort);
+		TypedQuery<Certificate> query = searchProvider.provideQuery(tagNames, name, description, sort);
 		paginationProvider.providePagination(query, page, size);
 		return query.getResultList();
 	}

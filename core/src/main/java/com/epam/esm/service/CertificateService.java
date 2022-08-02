@@ -12,8 +12,8 @@ public interface CertificateService extends BaseService<CertificateDto> {
 	 * Searches {@code Certificates} with tags (all params are optional and can be
 	 * used in conjunction).
 	 *
-	 * @param tagName
-	 *            {@code Tag's} name
+	 * @param tagNames
+	 *            the list of the names of {@code Tags}
 	 * @param name
 	 *            {@code Certificate's} name
 	 * @param description
@@ -26,7 +26,7 @@ public interface CertificateService extends BaseService<CertificateDto> {
 	 *            amount of {@code Certificates} per page
 	 * @return The list with <b>DTOs</b> of found {@code Certificates}
 	 */
-	List<CertificateDto> getCertificates(String tagName, String name, String description, String sort, int page,
+	List<CertificateDto> getCertificates(List<String> tagNames, String name, String description, String sort, int page,
 			int size);
 
 	/**

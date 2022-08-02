@@ -55,12 +55,13 @@ public class CertificateController {
 	 *         service layer method
 	 */
 	@GetMapping(path = "/{id}")
-	public CertificateDto findById(@Min(value = 1, message = "message.validation.id.min") @PathVariable("id") Long id) {
+	public CertificateDto getById(@Min(value = 1, message = "message.validation.id.min") @PathVariable("id") Long id) {
 		log.info("Reading the certificate by ID - {}", id);
 		CertificateDto certificateDto = certificateService.getById(id);
 		certificateHateoasProvider.addLinksForSingleCertificateWithTags(certificateDto);
 		return certificateDto;
 	}
+
 
 	/**
 	 * Shows Tags for Certificate.
@@ -84,8 +85,8 @@ public class CertificateController {
 	 * <p>
 	 * All params are optional and can be used in conjunction.
 	 *
-	 * @param tagName
-	 *            {@code Tag's} name
+	 * @param tagNames
+	 *            the list  of {@code Tags} names
 	 * @param name
 	 *            {@code Certificate's} name
 	 * @param description
@@ -95,17 +96,17 @@ public class CertificateController {
 	 * @return The List with found {@code CertificateDtos}
 	 */
 	@GetMapping
-	public List<CertificateDto> getCertificates(@RequestParam(value = "tagName", required = false) String tagName,
+	public List<CertificateDto> getCertificates(@RequestParam(value = "tagName", required = false) List<String> tagNames,
 			@RequestParam(value = "name", required = false) String name,
 			@RequestParam(value = "description", required = false) String description,
 			@RequestParam(value = "sort", required = false) String sort,
 			@Min(value = 1, message = "message.validation.page.min") @RequestParam(value = "page", defaultValue = "1") Integer page,
 			@Min(value = 1, message = "message.validation.page.size") @Max(value = 50, message = "message.validation.page.size") @RequestParam(value = "size", defaultValue = "10") Integer size) {
 		log.info(
-				"Searching Certificate. Tag name - {}, Certificate name - {}, Certificate"
+				"Searching Certificate. Tag names - {}, Certificate name - {}, Certificate"
 						+ " description - {}, sort - {}, page № - {}, size - {}",
-				tagName, name, description, sort, page, size);
-		List<CertificateDto> certificateDtoList = certificateService.getCertificates(tagName, name, description, sort,
+				tagNames, name, description, sort, page, size);
+		List<CertificateDto> certificateDtoList = certificateService.getCertificates(tagNames, name, description, sort,
 				page, size);
 		certificateHateoasProvider.addLinksForMultipleCertificates(certificateDtoList);
 		return certificateDtoList;

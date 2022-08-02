@@ -4,6 +4,8 @@ import com.epam.esm.dao.entity.Certificate;
 import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * Basic interface for search methods used to provide complex Certificate search
  * by various parameters
@@ -19,7 +21,7 @@ public interface SearchProvider {
 	 * All params are optional and can be used in conjunction. If the parameter is
 	 * not used, null value is passed instead.
 	 *
-	 * @param tagName
+	 * @param tagNames
 	 *            {@code Tag's} name
 	 * @param name
 	 *            {@code Certificate's} name
@@ -29,5 +31,5 @@ public interface SearchProvider {
 	 *            sort by some {@code Certificate's} parameter
 	 * @return SQL query for prepared statement
 	 */
-	TypedQuery<Certificate> provideQuery(String tagName, String name, String description, String sort);
+	TypedQuery<Certificate> provideQuery(List<String> tagNames, String name, String description, String sort);
 }

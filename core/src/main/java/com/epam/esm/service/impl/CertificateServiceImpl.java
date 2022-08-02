@@ -37,14 +37,14 @@ public class CertificateServiceImpl implements CertificateService {
 	}
 
 	@Override
-	public List<CertificateDto> getCertificates(String tagName, String name, String description, String sort, int page,
+	public List<CertificateDto> getCertificates(List<String> tagNames, String name, String description, String sort, int page,
 			int size) {
 		log.debug(
 				"Searching the Certificate. Tag name '{}', Certificate name '{}', Certificate"
 						+ " description '{}', sort '{}', page № - '{}', size - '{}'",
-				tagName, name, description, sort, page, size);
+				tagNames, name, description, sort, page, size);
 
-		List<Certificate> searchResult = certificateDao.getCertificates(tagName, name, description, sort, page, size);
+		List<Certificate> searchResult = certificateDao.getCertificates(tagNames, name, description, sort, page, size);
 
 		return searchResult.stream().map(certificateMapper::convertToDto).toList();
 	}
