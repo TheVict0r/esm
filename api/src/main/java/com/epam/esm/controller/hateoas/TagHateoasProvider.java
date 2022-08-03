@@ -99,4 +99,5 @@ public class TagHateoasProvider {
 	private void addForGetAll(TagDto tagDto) {
 		tagDto.add(linkTo(methodOn(TagController.class).getAll(null, null)).withRel("getAll").expand());
 	}
+
 }

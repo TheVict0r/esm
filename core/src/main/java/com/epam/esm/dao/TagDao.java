@@ -49,4 +49,11 @@ public interface TagDao extends BaseDao<Tag> {
 	 * @return - {@code Tag's} <b>ID</b>
 	 */
 	long getId(Tag tag);
+
+	/**
+	 * Gets the most widely used tag of a user with the highest cost of all orders.
+	 *
+	 * @return the list of the most widely used Tag or Tags of a user with the highest cost of all orders.
+	 */
+	List<Tag> getMostUsedTag();
 }

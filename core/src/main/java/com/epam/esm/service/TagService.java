@@ -28,4 +28,11 @@ public interface TagService extends BaseService<TagDto> {
 	 * @return List with {@code TagDtos}
 	 */
 	List<TagDto> getTagsByCertificateId(Long certificateId);
+
+	/**
+	 * Gets the most widely used tag of a user with the highest cost of all orders.
+	 *
+	 * @return the list of the most widely used TagDto or TagDtos of a user with the highest cost of all orders.
+	 */
+	List<TagDto> getMostUsedTag();
 }

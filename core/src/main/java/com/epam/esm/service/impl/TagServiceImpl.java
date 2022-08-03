@@ -59,7 +59,15 @@ public class TagServiceImpl implements TagService {
 
 	@Override
 	public List<TagDto> getTagsByCertificateId(Long certificateId) {
+		log.debug("Getting Tags by certificate ID - {}", certificateId);
 		Set<Tag> tags = tagDao.getTagsByCertificateId(certificateId);
+		return tags.stream().map(tagMapper::convertToDto).toList();
+	}
+
+	@Override
+	public List<TagDto> getMostUsedTag() {
+		log.debug("Getting the most widely used tag of a user with the highest cost of all orders.");
+		List<Tag> tags = tagDao.getMostUsedTag();
 		return tags.stream().map(tagMapper::convertToDto).toList();
 	}
 

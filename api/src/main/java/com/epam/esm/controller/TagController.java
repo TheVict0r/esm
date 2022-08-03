@@ -114,4 +114,18 @@ public class TagController {
 		tagService.deleteById(id);
 		return ResponseEntity.noContent().build();
 	}
+
+	/**
+	 * Gets the most widely used tag of a user with the highest cost of all orders.
+	 *
+	 * @return the list of the most widely used TagDto or TagDtos of a user with the highest cost of all orders.
+	 */
+	@GetMapping(path = "/most-used-tag")
+	public List<TagDto> getMostUsedTag(){
+		log.info("Getting the most widely used tag of a user with the highest cost of all orders.");
+		List<TagDto> tags = tagService.getMostUsedTag();
+		hateoasProvider.addLinksForMultipleTags(tags);
+		return tags;
+	}
+
 }
