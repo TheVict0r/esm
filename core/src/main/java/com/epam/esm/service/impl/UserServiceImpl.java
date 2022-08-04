@@ -4,6 +4,7 @@ import com.epam.esm.dao.UserDao;
 import com.epam.esm.dao.entity.User;
 import com.epam.esm.dto.PurchaseDto;
 import com.epam.esm.dto.UserDto;
+import com.epam.esm.exception.InappropriateBodyContentException;
 import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.mapper.impl.UserMapperImpl;
 import com.epam.esm.service.UserService;
@@ -39,6 +40,18 @@ public class UserServiceImpl implements UserService {
             return new ResourceNotFoundException(id);
         });
         return userMapper.convertToDto(user);
+    }
+
+    @Override
+    public UserDto create(UserDto userDto) {
+        log.debug("Creating the User {}", userDto);
+        if (userDto.getId() != null) {
+            log.error("When creating a new User, you should not specify the ID. Current input data has"
+                    + " ID value '{}'.", userDto.getId());
+            throw new InappropriateBodyContentException(userDto.getId());
+        }
+        User userCreated = userDao.create(userMapper.convertToEntity(userDto));
+        return userMapper.convertToDto(userCreated);
     }
 
     @Override

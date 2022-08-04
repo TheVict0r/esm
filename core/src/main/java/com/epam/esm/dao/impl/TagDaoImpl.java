@@ -28,27 +28,25 @@ public class TagDaoImpl extends AbstractBaseDao<Tag> implements TagDao {
     public static final String FROM_TAG = "from Tag";
     public static final String READ_TAG_BY_NAME = "from Tag where name = :tagName";
     private static final String GET_MOST_USED_TAG = """
-            SELECT withCount.id, withCount.name FROM
-            (SELECT t.id, t.name, count(*) AS c FROM tag AS t
-            JOIN gift_certificate_tag AS gct ON t.id = gct.tag_id
-            JOIN gift_certificate AS gc ON gct.gift_certificate_id = gc.id
-            JOIN purchase_gift_certificate AS pgc ON gc.id = pgc.gift_certificate_id
-            JOIN purchase AS p ON pgc.purchase_id = p.id
-            WHERE p.user_id =
-            (SELECT  user_id FROM purchase
-            GROUP BY user_id ORDER BY SUM(cost) DESC LIMIT 1 )
-            GROUP BY t.name HAVING c =
-            (SELECT MAX(c) FROM
-            (SELECT t.id, t.name, count(*) AS c FROM tag AS t
-            JOIN gift_certificate_tag AS gct ON t.id = gct.tag_id
-            JOIN gift_certificate AS gc ON gct.gift_certificate_id = gc.id
-            JOIN purchase_gift_certificate AS pgc ON gc.id = pgc.gift_certificate_id
-            JOIN purchase AS p ON pgc.purchase_id = p.id
-            WHERE p.user_id =
-            (SELECT  user_id FROM purchase
-            GROUP BY user_id ORDER BY SUM(cost) DESC LIMIT 1)
-            GROUP BY t.name ) AS tagsWithAmount)) AS withCount;
-            """;
+        SELECT t.id, t.name FROM tag AS t
+        JOIN gift_certificate_tag AS gct ON t.id = gct.tag_id
+        JOIN gift_certificate AS gc ON gct.gift_certificate_id = gc.id
+        JOIN purchase_gift_certificate AS pgc ON gc.id = pgc.gift_certificate_id
+        JOIN purchase AS p ON pgc.purchase_id = p.id
+        WHERE p.user_id =
+        (SELECT  user_id FROM purchase
+        GROUP BY user_id ORDER BY SUM(cost) DESC LIMIT 1 )
+        GROUP BY t.name HAVING count(t.id) =
+        (SELECT count(gct.tag_id) AS tag_count
+        FROM gift_certificate_tag AS gct
+        JOIN gift_certificate AS gc ON gct.gift_certificate_id = gc.id
+        JOIN purchase_gift_certificate AS pgc ON gc.id = pgc.gift_certificate_id
+        JOIN purchase AS p ON pgc.purchase_id = p.id
+        WHERE p.user_id =
+        (SELECT  user_id AS richest_user_id FROM purchase
+        GROUP BY user_id ORDER BY SUM(cost) DESC LIMIT 1)
+        GROUP BY gct.tag_id ORDER BY tag_count DESC LIMIT 1)
+                """;
     private final CertificateDao certificateDao;
 
     @PersistenceContext
@@ -107,7 +105,6 @@ public class TagDaoImpl extends AbstractBaseDao<Tag> implements TagDao {
 
     private Optional<Tag> readByName(String tagName) {
         log.debug("Reading Tag by name - {}.", tagName);
-        return entityManager.createQuery(READ_TAG_BY_NAME, Tag.class).setParameter("tagName", tagName).getResultList()
-                .stream().findAny();
+        return entityManager.createQuery(READ_TAG_BY_NAME, Tag.class).setParameter("tagName", tagName).getResultList().stream().findAny();
     }
 }

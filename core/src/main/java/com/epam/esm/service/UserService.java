@@ -30,6 +30,17 @@ public interface UserService {
 	UserDto getById(Long id);
 
 	/**
+	 * Creates a new User in the datasource.
+	 *
+	 * @param userDto
+	 *            DTO of User with data for entity need to be created
+	 * @return DTO object of created User entity
+	 */
+
+	UserDto create(UserDto userDto);
+
+
+	/**
 	 * Provides all purchases for User by its ID
 	 *
 	 * @param userId
