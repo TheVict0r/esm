@@ -24,11 +24,11 @@ public interface TagDao extends BaseDao<Tag> {
 	 * Retrieves the set with all {@code Tags} associated with {@code Сertificate}
 	 * from the datasource.
 	 *
-	 * @param certificateID
+	 * @param certificateId
 	 *            the <b>ID</b> of the {@code Сertificate}
 	 * @return the set with all {@code Tags} related to the {@code Сertificate}
 	 */
-	Set<Tag> getTagsByCertificateId(long certificateID);
+	Set<Tag> getTagsByCertificateId(long certificateId);
 
 	/**
 	 * Checks is {@code Tag} presented in the datasource.
