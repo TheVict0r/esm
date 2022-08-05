@@ -32,8 +32,8 @@ public class CertificateDaoImpl extends AbstractBaseDao<Certificate> implements 
 	}
 
 	@Override
-	public List<Certificate> getCertificates(List<String> tagNames, String name, String description, String sort, int page,
-											 int size) {
+	public List<Certificate> getCertificates(List<String> tagNames, String name, String description, String sort,
+			int page, int size) {
 		log.debug(
 				"Searching Certificate. Tag name - {}, Certificate name - {}, Certificate"
 						+ " description - {}, sort - {}, page № - {}, size - {}",

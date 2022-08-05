@@ -1,10 +1,9 @@
 package com.epam.esm.dao.provider;
 
 import com.epam.esm.dao.entity.Certificate;
+import java.util.List;
 import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 /**
  * Basic interface for search methods used to provide complex Certificate search

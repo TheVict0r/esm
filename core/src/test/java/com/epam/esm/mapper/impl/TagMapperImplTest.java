@@ -2,44 +2,29 @@ package com.epam.esm.mapper.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.epam.esm.TestConfig;
-import com.epam.esm.TestEntityProvider;
 import com.epam.esm.dao.entity.Tag;
 import com.epam.esm.dto.TagDto;
-import java.util.Locale;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.boot.test.context.SpringBootTest;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {TestConfig.class})
+@SpringBootTest
 class TagMapperImplTest {
 
 	@Autowired
 	private TagMapperImpl tagMapper;
 
-	@Autowired
-	TestEntityProvider entityProvider;
-
-	@BeforeEach
-	void setUp() {
-		Locale.setDefault(Locale.ENGLISH);
-	}
-
 	@Test
 	void convertToEntityShouldReturnEntity() {
-		TagDto tagDto = entityProvider.getTag1dto();
-		Tag expectedTag = entityProvider.getTag1();
+		TagDto tagDto = new TagDto(1L, "Tag 1 test");
+		Tag expectedTag = new Tag(1L, "Tag 1 test");
 		assertEquals(expectedTag, tagMapper.convertToEntity(tagDto));
 	}
 
 	@Test
 	void convertToDtoShouldReturnDto() {
-		Tag tag = entityProvider.getTag1();
-		TagDto expectedTagDto = entityProvider.getTag1dto();
+		Tag tag = new Tag(1L, "Tag 1 test");
+		TagDto expectedTagDto = new TagDto(1L, "Tag 1 test");
 		assertEquals(expectedTagDto, tagMapper.convertToDto(tag));
 	}
 }

@@ -28,7 +28,8 @@ public interface CertificateDao extends BaseDao<Certificate> {
 	 * @return The list with found {@code Certificates}, or empty list if nothing
 	 *         was found
 	 */
-	List<Certificate> getCertificates(List<String> tagNames, String name, String description, String sort, int page, int size);
+	List<Certificate> getCertificates(List<String> tagNames, String name, String description, String sort, int page,
+			int size);
 
 	/**
 	 * Retrieves all {@code Certificates} which contain the {@code Tag}.

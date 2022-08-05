@@ -2,44 +2,48 @@ package com.epam.esm.mapper.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.epam.esm.TestConfig;
-import com.epam.esm.TestEntityProvider;
 import com.epam.esm.dao.entity.Certificate;
 import com.epam.esm.dto.CertificateDto;
-import java.util.Locale;
-import org.junit.jupiter.api.BeforeEach;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.boot.test.context.SpringBootTest;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {TestConfig.class})
+@SpringBootTest
 class CertificateMapperImplTest {
 
 	@Autowired
 	CertificateMapperImpl certificateMapper;
 
-	@Autowired
-	TestEntityProvider entityProvider;
-
-	@BeforeEach
-	void setUp() {
-		Locale.setDefault(Locale.ENGLISH);
-	}
+	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
 
 	@Test
 	void convertToEntityShouldReturnEntity() {
-		CertificateDto certificateDto = entityProvider.getCertificate5dto();
-		Certificate expectedCertificate = entityProvider.getCertificate5();
+		CertificateDto certificateDto = new CertificateDto().builder().id(5L).name("name 5 test")
+				.description("description 5").price(80).duration(80)
+				.createDate(LocalDateTime.parse("2022-04-25 13:11:03.635", formatter))
+				.lastUpdateDate(LocalDateTime.parse("2022-04-25 13:12:03.636", formatter)).build();
+
+		Certificate expectedCertificate = new Certificate().builder().id(5L).name("name 5 test")
+				.description("description 5").price(80).duration(80)
+				.createDate(LocalDateTime.parse("2022-04-25 13:11:03.635", formatter))
+				.lastUpdateDate(LocalDateTime.parse("2022-04-25 13:12:03.636", formatter)).build();
+
 		assertEquals(expectedCertificate, certificateMapper.convertToEntity(certificateDto));
 	}
 
 	@Test
 	void convertToDtoShouldReturnDto() {
-		Certificate certificate = entityProvider.getCertificate2();
-		CertificateDto expectedCertificateDto = entityProvider.getCertificate2dto();
+		Certificate certificate = new Certificate().builder().id(2L).name("name 2 test").description("description 2")
+				.price(20).duration(20).createDate(LocalDateTime.parse("2022-04-22 23:14:03.635", formatter))
+				.lastUpdateDate(LocalDateTime.parse("2022-04-22 23:14:03.636", formatter)).build();
+
+		CertificateDto expectedCertificateDto = new CertificateDto().builder().id(2L).name("name 2 test")
+				.description("description 2").price(20).duration(20)
+				.createDate(LocalDateTime.parse("2022-04-22 23:14:03.635", formatter))
+				.lastUpdateDate(LocalDateTime.parse("2022-04-22 23:14:03.636", formatter)).build();
+
 		assertEquals(expectedCertificateDto, certificateMapper.convertToDto(certificate));
 	}
 }

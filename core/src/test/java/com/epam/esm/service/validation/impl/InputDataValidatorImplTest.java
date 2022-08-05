@@ -21,7 +21,7 @@ class InputDataValidatorImplTest {
 	InputDataValidator dataValidator;
 
 	@Test
-	void pathAndBodyIdsCheckThrowsMismatchedIdValuesExceptionWhenIdsMismatch() {
+	void pathAndBodyIdsCheckShouldThrowMismatchedIdValuesExceptionWhenIdsMismatch() {
 		Long pathId = 10L;
 		Long bodyId = 20L;
 		String errorMessageKeyExpected = "message.mismatched_id_values";

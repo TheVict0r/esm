@@ -11,13 +11,12 @@ import com.epam.esm.service.CertificateService;
 import com.epam.esm.service.PurchaseService;
 import com.epam.esm.service.UserService;
 import com.epam.esm.service.validation.InputDataValidator;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.stereotype.Service;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -29,7 +28,6 @@ public class PurchaseServiceImpl implements PurchaseService {
 	private final CertificateService certificateService;
 	private final PurchaseMapperImpl purchaseMapper;
 	private final InputDataValidator validator;
-
 
 	@Override
 	public PurchaseDto getPurchaseForUser(Long userId, Long purchaseId) {
@@ -48,13 +46,13 @@ public class PurchaseServiceImpl implements PurchaseService {
 		log.debug("Adding PurchaseDto - {} to user with ID - {}", purchaseDto, userId);
 		validator.pathAndBodyIdsCheck(userId, purchaseDto.getUserId());
 		Purchase purchase;
-		if(userService.isUserExist(userId)){
+		if (userService.isUserExist(userId)) {
 			purchaseDto.setDate(LocalDateTime.now());
 
 			Set<CertificateDto> certificatesIdOnly = purchaseDto.getCertificates();
 			Set<CertificateDto> certificatesFullData = new HashSet<>();
 			int purchaseCost = 0;
-			for(CertificateDto certificateDtoIdOnly : certificatesIdOnly){
+			for (CertificateDto certificateDtoIdOnly : certificatesIdOnly) {
 				CertificateDto certificateDtoFullData = certificateService.getById(certificateDtoIdOnly.getId());
 				certificatesFullData.add(certificateDtoFullData);
 				purchaseCost += certificateDtoFullData.getPrice();

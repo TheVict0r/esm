@@ -48,7 +48,7 @@ public class UserHateoasProvider {
 		addLinksToMultiplePurchases(purchases);
 	}
 
-	public void addLinksForCreatePurchase(PurchaseDto purchaseDto){
+	public void addLinksForCreatePurchase(PurchaseDto purchaseDto) {
 		addForCreatePurchaseSelf(purchaseDto);
 		handleSinglePurchase(purchaseDto);
 	}
@@ -96,11 +96,13 @@ public class UserHateoasProvider {
 		userDto.add(linkTo(methodOn(UserController.class).getAll(null, null)).withRel("getAllUsers").expand());
 	}
 
-	private void addForCreatePurchaseSelf(PurchaseDto purchaseDto){
-		purchaseDto.add(linkTo((methodOn(UserController.class).createPurchase(purchaseDto.getUserId(), purchaseDto))).withSelfRel());
+	private void addForCreatePurchaseSelf(PurchaseDto purchaseDto) {
+		purchaseDto.add(linkTo((methodOn(UserController.class).createPurchase(purchaseDto.getUserId(), purchaseDto)))
+				.withSelfRel());
 	}
-	private void addForCreatePurchase(PurchaseDto purchaseDto){
-		purchaseDto.add(linkTo((methodOn(UserController.class).createPurchase(purchaseDto.getUserId(), purchaseDto))).withRel("createPurchase"));
+	private void addForCreatePurchase(PurchaseDto purchaseDto) {
+		purchaseDto.add(linkTo((methodOn(UserController.class).createPurchase(purchaseDto.getUserId(), purchaseDto)))
+				.withRel("createPurchase"));
 	}
 
 	private void addLinksToMultiplePurchases(Set<PurchaseDto> purchaseDtoSet) {

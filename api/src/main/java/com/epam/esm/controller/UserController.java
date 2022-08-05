@@ -5,12 +5,11 @@ import com.epam.esm.dto.PurchaseDto;
 import com.epam.esm.dto.UserDto;
 import com.epam.esm.service.PurchaseService;
 import com.epam.esm.service.UserService;
+import com.epam.esm.service.validation.BasicInfo;
 import java.util.List;
 import java.util.Set;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-
-import com.epam.esm.service.validation.BasicInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -87,15 +86,17 @@ public class UserController {
 	/**
 	 * Adds a new Purchase for the user.
 	 *
-	 * @param userId the ID of the user.
-	 * @param purchaseDto PurchaseDto need to be added
+	 * @param userId
+	 *            the ID of the user.
+	 * @param purchaseDto
+	 *            PurchaseDto need to be added
 	 * @return added PurchaseDto
 	 */
 	@PostMapping(value = {"/{userId}/purchases/"})
 	@ResponseStatus(HttpStatus.CREATED)
 	public PurchaseDto createPurchase(
 			@Min(value = 1, message = "message.validation.id.min") @PathVariable("userId") Long userId,
-			@RequestBody @Validated(BasicInfo.class) PurchaseDto purchaseDto){
+			@RequestBody @Validated(BasicInfo.class) PurchaseDto purchaseDto) {
 		log.info("Adding PurchaseDto - {} to user with ID - {}", purchaseDto, userId);
 		PurchaseDto purchaseDtoCreated = purchaseService.create(userId, purchaseDto);
 		userHateoasProvider.addLinksForCreatePurchase(purchaseDtoCreated);

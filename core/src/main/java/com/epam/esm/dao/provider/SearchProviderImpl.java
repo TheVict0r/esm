@@ -1,14 +1,13 @@
 package com.epam.esm.dao.provider;
 
 import com.epam.esm.dao.entity.Certificate;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 @Log4j2
@@ -48,11 +47,8 @@ public class SearchProviderImpl implements SearchProvider {
 		if (tagNames != null) {
 			tagsAmount = tagNames.size();
 			builder.append(WHERE_TAG_NAME);
-			for(int i = 1;  i <= tagsAmount; i++){
-				builder.append(":")
-						.append(TAG_NAME)
-						.append(i)
-						.append(COMMA);
+			for (int i = 1; i <= tagsAmount; i++) {
+				builder.append(":").append(TAG_NAME).append(i).append(COMMA);
 			}
 			builder.replace(builder.lastIndexOf(COMMA), builder.lastIndexOf(COMMA) + 1, ")");
 			isWhere = true;
@@ -72,9 +68,8 @@ public class SearchProviderImpl implements SearchProvider {
 			builder.append(WHERE_DESCRIPTION);
 		}
 
-		if(needGroupBy){
-			builder.append(GROUP_BY_AND_HAVING)
-					.append(tagsAmount);
+		if (needGroupBy) {
+			builder.append(GROUP_BY_AND_HAVING).append(tagsAmount);
 		}
 
 		if (sort != null) {
@@ -86,15 +81,14 @@ public class SearchProviderImpl implements SearchProvider {
 
 	private TypedQuery<Certificate> setParametersToQuery(List<String> tagNames, String name, String description,
 			String queryString) {
-		log.debug(
-				"Setting params to query - {}. Tag names - {}, Certificate name - {}, Certificate" + " description - {}",
-				queryString, tagNames, name, description);
+		log.debug("Setting params to query - {}. Tag names - {}, Certificate name - {}, Certificate"
+				+ " description - {}", queryString, tagNames, name, description);
 
 		TypedQuery<Certificate> query = entityManager.createQuery(queryString, Certificate.class);
 
 		if (tagNames != null) {
 			int tagsAmount = tagNames.size();
-			for(int i = 1;  i <= tagsAmount; i++){
+			for (int i = 1; i <= tagsAmount; i++) {
 				query.setParameter(TAG_NAME + i, tagNames.get(i - 1));
 			}
 

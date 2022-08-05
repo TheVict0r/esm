@@ -104,8 +104,7 @@ public class CertificateHateoasProvider {
 	}
 
 	private void addForGetByIdSelf(CertificateDto certificateDto) {
-		certificateDto
-				.add(linkTo(methodOn(CertificateController.class).getById(certificateDto.getId())).withSelfRel());
+		certificateDto.add(linkTo(methodOn(CertificateController.class).getById(certificateDto.getId())).withSelfRel());
 	}
 
 	private void addForGetById(CertificateDto certificateDto) {

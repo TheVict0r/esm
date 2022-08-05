@@ -37,8 +37,8 @@ public class CertificateServiceImpl implements CertificateService {
 	}
 
 	@Override
-	public List<CertificateDto> getCertificates(List<String> tagNames, String name, String description, String sort, int page,
-			int size) {
+	public List<CertificateDto> getCertificates(List<String> tagNames, String name, String description, String sort,
+			int page, int size) {
 		log.debug(
 				"Searching the Certificate. Tag name '{}', Certificate name '{}', Certificate"
 						+ " description '{}', sort '{}', page № - '{}', size - '{}'",

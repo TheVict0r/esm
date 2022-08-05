@@ -62,7 +62,6 @@ public class CertificateController {
 		return certificateDto;
 	}
 
-
 	/**
 	 * Shows Tags for Certificate.
 	 *
@@ -86,7 +85,7 @@ public class CertificateController {
 	 * All params are optional and can be used in conjunction.
 	 *
 	 * @param tagNames
-	 *            the list  of {@code Tags} names
+	 *            the list of {@code Tags} names
 	 * @param name
 	 *            {@code Certificate's} name
 	 * @param description
@@ -96,7 +95,8 @@ public class CertificateController {
 	 * @return The List with found {@code CertificateDtos}
 	 */
 	@GetMapping
-	public List<CertificateDto> getCertificates(@RequestParam(value = "tagName", required = false) List<String> tagNames,
+	public List<CertificateDto> getCertificates(
+			@RequestParam(value = "tagName", required = false) List<String> tagNames,
 			@RequestParam(value = "name", required = false) String name,
 			@RequestParam(value = "description", required = false) String description,
 			@RequestParam(value = "sort", required = false) String sort,

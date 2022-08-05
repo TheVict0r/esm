@@ -35,6 +35,11 @@ public class Tag implements Serializable {
 		this.name = name;
 	}
 
+	public Tag(long id, String name) {
+		this.id = id;
+		this.name = name;
+	}
+
 	@ManyToMany(mappedBy = "tags")
 	private Set<Certificate> certificates = new HashSet<>();
 

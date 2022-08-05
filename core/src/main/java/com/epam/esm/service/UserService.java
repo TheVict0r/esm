@@ -39,7 +39,6 @@ public interface UserService {
 
 	UserDto create(UserDto userDto);
 
-
 	/**
 	 * Provides all purchases for User by its ID
 	 *
@@ -52,8 +51,10 @@ public interface UserService {
 	/**
 	 * Checks if user exists in the datasource.
 	 *
-	 * @param userId The ID of user need to be checked.
-	 * @return {@code true} if user with provided ID exists in the datasource, {@code false} otherwise.
+	 * @param userId
+	 *            The ID of user need to be checked.
+	 * @return {@code true} if user with provided ID exists in the datasource,
+	 *         {@code false} otherwise.
 	 */
 	boolean isUserExist(Long userId);
 }
