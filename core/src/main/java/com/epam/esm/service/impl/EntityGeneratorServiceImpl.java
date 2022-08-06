@@ -23,7 +23,7 @@ public class EntityGeneratorServiceImpl implements EntityGeneratorService {
 
 	@Override
 	public void generateEntities() {
-		// generateCertificatesWithTags();
+		 generateCertificatesWithTags();
 		// generateUsers();
 		// addPurchasesToUsers();
 	}
@@ -31,14 +31,14 @@ public class EntityGeneratorServiceImpl implements EntityGeneratorService {
 	private void generateCertificatesWithTags() {
 		// for (int i = 1; i <= 1_004; i++){
 		// for (int i = 5_990; i <= 6_000; i++){
+		int counterTo1000 = 0;
 		for (int i = 9_990; i <= 10_000; i++) {
-			int from1to1000 = 0;
-			if (i % 1_000 != 0) {
-				from1to1000 = i % 1000;
-			} else {
-				from1to1000 = 1000;
+			counterTo1000++;
+			if(counterTo1000 == 1001){
+				counterTo1000 = 1;
 			}
-			TagDto tag = new TagDto(null, "Tag name " + from1to1000);
+
+			TagDto tag = new TagDto(null, "Tag name " + counterTo1000);
 
 			Random random = new Random();
 			int randomPrice = random.nextInt(50) + 1;
@@ -51,7 +51,7 @@ public class EntityGeneratorServiceImpl implements EntityGeneratorService {
 		}
 	}
 
-	// /* OT GREHA PODALSHE :) */
+	// /* OT GPEXA PODALSHE :) */
 	// private void generateUsers(){
 	//
 	// for (int i = 1; i <= 1000; i++){

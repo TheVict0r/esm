@@ -43,9 +43,7 @@ public class CertificateServiceImpl implements CertificateService {
 				"Searching the Certificate. Tag name '{}', Certificate name '{}', Certificate"
 						+ " description '{}', sort '{}', page № - '{}', size - '{}'",
 				tagNames, name, description, sort, page, size);
-
 		List<Certificate> searchResult = certificateDao.getCertificates(tagNames, name, description, sort, page, size);
-
 		return searchResult.stream().map(certificateMapper::convertToDto).toList();
 	}
 

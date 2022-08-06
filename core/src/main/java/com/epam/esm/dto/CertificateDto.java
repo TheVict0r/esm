@@ -58,4 +58,5 @@ public class CertificateDto extends RepresentationModel<CertificateDto> implemen
 	private LocalDateTime lastUpdateDate;
 
 	private Set<@Valid TagDto> tags;
+
 }
