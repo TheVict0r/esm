@@ -1,17 +1,20 @@
 package com.epam.esm.dao.impl;
 
-import com.epam.esm.TestConfig;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.epam.esm.TestEntityProvider;
 import com.epam.esm.dao.TagDao;
-import org.junit.jupiter.api.extension.ExtendWith;
+import com.epam.esm.dao.entity.Tag;
+import java.util.Optional;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = TestConfig.class)
+//@ExtendWith(SpringExtension.class)
+//@ContextConfiguration(classes = TestConfig.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@SpringBootTest
 class TagDaoImplTest {
 
 	@Autowired
@@ -20,20 +23,20 @@ class TagDaoImplTest {
 	@Autowired
 	TagDao tagDao;
 
-	// @Test
-	// void readByIdShouldReturnOptionalOfTagEntity() {
-	// long tagId = 1L;
-	// Optional<Tag> tag1Expected = Optional.of(entityProvider.getTag1());
-	// assertEquals(tag1Expected, tagDao.getById(tagId));
-	// }
-	//
-	// @Test
-	// void readByNonexistentIdShouldReturnEmptyOptional() {
-	// long nonexistentId = 100_500L;
-	// Optional<Tag> tag1Expected = Optional.empty();
-	// assertEquals(tag1Expected, tagDao.getById(nonexistentId));
-	// }
-	//
+	@Test
+	void readByIdShouldReturnOptionalOfTagEntity() {
+		long tagId = 1L;
+		Optional<Tag> tag1Expected = Optional.of(entityProvider.getTag1());
+		assertEquals(tag1Expected, tagDao.getById(tagId));
+	}
+
+	@Test
+	void readByNonexistentIdShouldReturnEmptyOptional() {
+		long nonexistentId = 100_500L;
+		Optional<Tag> tag1Expected = Optional.empty();
+		assertEquals(tag1Expected, tagDao.getById(nonexistentId));
+	}
+
 	// @Test
 	// void searchAllShouldReturnAllTagsAsList() {
 	// List<Tag> tagListExpected = entityProvider.getAllTagsList();

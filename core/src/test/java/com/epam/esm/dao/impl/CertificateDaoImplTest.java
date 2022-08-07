@@ -1,29 +1,34 @@
 package com.epam.esm.dao.impl;
 
-import com.epam.esm.TestConfig;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = TestConfig.class)
+import com.epam.esm.TestEntityProvider;
+import com.epam.esm.dao.CertificateDao;
+import com.epam.esm.dao.entity.Certificate;
+import java.util.Optional;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
+
+//@ExtendWith(SpringExtension.class)
+//@ContextConfiguration(classes = TestConfig.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@SpringBootTest
 class CertificateDaoImplTest {
 
-	// @Autowired
-	// private TestEntityProvider entityProvider;
-	//
-	// @Autowired
-	// private CertificateDao certificateDao;
+	@Autowired
+	private TestEntityProvider entityProvider;
 
-	// @Test
-	// void readByIdShouldReturnCertificateEntity() {
-	// long certificateId = 4L;
-	// Optional<Certificate> certificateExpected =
-	// Optional.of(entityProvider.getCertificate4());
-	// assertEquals(certificateExpected, certificateDao.getById(certificateId));
-	// }
+	@Autowired
+	private CertificateDao certificateDao;
+
+	@Test
+	void readByIdShouldReturnCertificateEntity() {
+		long certificateId = 4L;
+		Optional<Certificate> certificateExpected = Optional.of(entityProvider.getCertificate4());
+		assertEquals(certificateExpected, certificateDao.getById(certificateId));
+	}
 
 	// @Test
 	// void readByNonexistentIdShouldReturnEmptyOptional() {

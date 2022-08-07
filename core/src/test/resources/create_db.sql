@@ -4,8 +4,8 @@ CREATE TABLE IF NOT EXISTS gift_certificate(
     description VARCHAR(1500),
     price INT NOT NULL,
     duration INT NOT NULL,
-    createDate TIMESTAMP(3) NOT NULL,
-    lastUpdateDate TIMESTAMP(3) NOT NULL);
+    create_date TIMESTAMP(3) NOT NULL,
+    last_update_date TIMESTAMP(3) NOT NULL);
 
 CREATE TABLE IF NOT EXISTS tag (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
