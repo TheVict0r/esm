@@ -63,7 +63,6 @@ public class PurchaseServiceImpl implements PurchaseService {
 		} else {
 			throw new ResourceNotFoundException(userId);
 		}
-
 		return purchaseMapper.convertToDto(purchase);
 	}
 

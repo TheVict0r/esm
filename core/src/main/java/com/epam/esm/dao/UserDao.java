@@ -14,5 +14,5 @@ public interface UserDao extends BaseDao<User> {
 	 *            amount of {@code Users} per page
 	 * @return the list containing all {@code Users} existing in the datasource
 	 */
-	List<User> searchAll(int page, int size);
+	List<User> getAll(int page, int size);
 }

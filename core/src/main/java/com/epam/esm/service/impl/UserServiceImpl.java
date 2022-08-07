@@ -8,7 +8,6 @@ import com.epam.esm.exception.InappropriateBodyContentException;
 import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.mapper.impl.UserMapperImpl;
 import com.epam.esm.service.UserService;
-import com.epam.esm.service.validation.InputDataValidator;
 import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
@@ -22,13 +21,12 @@ public class UserServiceImpl implements UserService {
 
 	private final UserDao userDao;
 	private final UserMapperImpl userMapper;
-	private final InputDataValidator validator;
 
 	@Override
 	public List<UserDto> getAll(int page, int size) {
 		log.debug("Reading all Users. Page № - {}, size - {}", page, size);
-		List<User> userList = userDao.searchAll(page, size);
-		return userList.stream().map(user -> userMapper.convertToDto(user)).toList();
+		List<User> userList = userDao.getAll(page, size);
+		return userList.stream().map(userMapper::convertToDto).toList();
 	}
 
 	@Override

@@ -30,7 +30,7 @@ public class PurchaseDto extends RepresentationModel<PurchaseDto> implements Ser
 
 	private Set<CertificateDto> certificates;
 
-	public PurchaseDto(Long userId, Set<CertificateDto> certificates){
+	public PurchaseDto(Long userId, Set<CertificateDto> certificates) {
 		this.userId = userId;
 		this.certificates = certificates;
 	}

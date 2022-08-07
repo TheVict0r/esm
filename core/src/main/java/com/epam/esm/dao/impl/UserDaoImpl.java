@@ -30,7 +30,7 @@ public class UserDaoImpl extends AbstractBaseDao<User> implements UserDao {
 	}
 
 	@Override
-	public List<User> searchAll(int page, int size) {
+	public List<User> getAll(int page, int size) {
 		log.debug("Reading all Users. Page № - {}, size - {}", page, size);
 		TypedQuery<User> query = entityManager.createQuery(FROM_USER, User.class);
 		paginationProvider.providePagination(query, page, size);

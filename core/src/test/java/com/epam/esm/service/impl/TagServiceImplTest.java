@@ -7,7 +7,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import com.epam.esm.TestEntityProvider;
 import com.epam.esm.dao.TagDao;
 import com.epam.esm.dao.entity.Tag;
 import com.epam.esm.dto.TagDto;

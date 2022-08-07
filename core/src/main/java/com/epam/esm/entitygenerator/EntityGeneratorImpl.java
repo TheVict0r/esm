@@ -1,9 +1,8 @@
-package com.epam.esm.service.impl;
+package com.epam.esm.entitygenerator;
 
 import com.epam.esm.dto.CertificateDto;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.service.CertificateService;
-import com.epam.esm.service.EntityGeneratorService;
 import com.epam.esm.service.PurchaseService;
 import com.epam.esm.service.TagService;
 import com.epam.esm.service.UserService;
@@ -14,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
-public class EntityGeneratorServiceImpl implements EntityGeneratorService {
+public class EntityGeneratorImpl implements EntityGenerator {
 
 	private final TagService tagService;
 	private final CertificateService certificateService;
@@ -23,7 +22,7 @@ public class EntityGeneratorServiceImpl implements EntityGeneratorService {
 
 	@Override
 	public void generateEntities() {
-		 generateCertificatesWithTags();
+		generateCertificatesWithTags();
 		// generateUsers();
 		// addPurchasesToUsers();
 	}
@@ -34,7 +33,7 @@ public class EntityGeneratorServiceImpl implements EntityGeneratorService {
 		int counterTo1000 = 0;
 		for (int i = 9_990; i <= 10_000; i++) {
 			counterTo1000++;
-			if(counterTo1000 == 1001){
+			if (counterTo1000 == 1001) {
 				counterTo1000 = 1;
 			}
 
