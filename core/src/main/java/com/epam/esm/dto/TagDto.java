@@ -22,7 +22,6 @@ public class TagDto extends RepresentationModel<TagDto> implements Serializable 
 	@NotBlank(message = "message.validation.tag.name.not_blank", groups = BasicInfo.class)
 	@Size(min = 3, max = 30, message = "message.validation.tag.name.size", groups = BasicInfo.class)
 	@Pattern(regexp = "^[a-zA-Z0-9\\s-]*$",
-			// regexp = "[\\w\\s,.'&×()-]{2,}",
 			message = "message.validation.tag.name.pattern", groups = BasicInfo.class)
 	private String name;
 
