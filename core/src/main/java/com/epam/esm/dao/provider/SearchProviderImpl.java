@@ -76,7 +76,7 @@ public class SearchProviderImpl implements SearchProvider {
 			builder.append(sortFactoryProvider.provideSortQueryFragment(sort));
 		}
 
-		return  builder.toString();
+		return builder.toString();
 	}
 
 	@Override

@@ -39,15 +39,13 @@ class SearchProviderImplTest {
 	@Test
 	void provideQueryStringWithTagNameAndCertificateNameShouldReturnValidQuery() {
 		String queryStringExpected = "SELECT DISTINCT c FROM Certificate c JOIN c.tags t WHERE t.name IN (:tagNameProvided1, :tagNameProvided2)  AND c.name=:certificateNameProvided GROUP BY c.id HAVING COUNT(t.id) = 2";
-		assertEquals(queryStringExpected,
-				searchProvider.provideQueryString(tagNames, certificateName, null, null));
+		assertEquals(queryStringExpected, searchProvider.provideQueryString(tagNames, certificateName, null, null));
 	}
 
 	@Test
 	void provideQueryStringWithTagNameAndDescriptionShouldReturnValidQuery() {
 		String queryStringExpected = "SELECT DISTINCT c FROM Certificate c JOIN c.tags t WHERE t.name IN (:tagNameProvided1, :tagNameProvided2)  AND c.description=:descriptionProvided GROUP BY c.id HAVING COUNT(t.id) = 2";
-		assertEquals(queryStringExpected,
-				searchProvider.provideQueryString(tagNames, null, description, null));
+		assertEquals(queryStringExpected, searchProvider.provideQueryString(tagNames, null, description, null));
 	}
 
 	@Test
@@ -59,15 +57,13 @@ class SearchProviderImplTest {
 	@Test
 	void provideQueryStringWithCertificateNameAndDescriptionShouldReturnValidQuery() {
 		String queryStringExpected = "SELECT DISTINCT c FROM Certificate c WHERE c.name=:certificateNameProvided AND c.description=:descriptionProvided";
-		assertEquals(queryStringExpected,
-				searchProvider.provideQueryString(null, certificateName, description, null));
+		assertEquals(queryStringExpected, searchProvider.provideQueryString(null, certificateName, description, null));
 	}
 
 	@Test
 	void provideQueryStringWithCertificateNameOnlyShouldReturnValidQuery() {
 		String queryStringExpected = "SELECT DISTINCT c FROM Certificate c WHERE c.name=:certificateNameProvided";
-		assertEquals(queryStringExpected,
-				searchProvider.provideQueryString(null, certificateName, null, null));
+		assertEquals(queryStringExpected, searchProvider.provideQueryString(null, certificateName, null, null));
 	}
 
 	@Test

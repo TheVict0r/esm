@@ -41,10 +41,11 @@ public interface SearchProvider {
 	 *            {@code Certificate's} name
 	 * @param description
 	 *            {@code Certificate's} description
-	 * @param queryString string representation of SQL query
+	 * @param queryString
+	 *            string representation of SQL query
 	 * @return TypedQuery ready to execute
 	 */
 	TypedQuery<Certificate> setParametersToQuery(List<String> tagNames, String name, String description,
-												 String queryString);
+			String queryString);
 
 }
