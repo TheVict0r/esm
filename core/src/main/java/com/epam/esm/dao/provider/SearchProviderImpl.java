@@ -21,7 +21,7 @@ public class SearchProviderImpl implements SearchProvider {
 	public static final String TAG_NAME = "tagNameProvided";
 	public static final String CERTIFICATE_NAME = "certificateNameProvided";
 	public static final String DESCRIPTION = "descriptionProvided";
-	public static final String GROUP_BY_AND_HAVING = "GROUP BY c.id HAVING COUNT(t.id) = ";
+	public static final String GROUP_BY_AND_HAVING = " GROUP BY c.id HAVING COUNT(t.id) = ";
 	public static final String COMMA = ", ";
 	private SortFactoryProvider sortFactoryProvider;
 
@@ -34,7 +34,7 @@ public class SearchProviderImpl implements SearchProvider {
 	}
 
 	@Override
-	public TypedQuery<Certificate> provideQuery(List<String> tagNames, String name, String description, String sort) {
+	public String provideQueryString(List<String> tagNames, String name, String description, String sort) {
 		log.debug("Providing query string for prepared statement. Tag names - {}, Certificate name -"
 				+ " {}, Certificate description - {}, Sort - {}", tagNames, name, description, sort);
 
@@ -76,10 +76,11 @@ public class SearchProviderImpl implements SearchProvider {
 			builder.append(sortFactoryProvider.provideSortQueryFragment(sort));
 		}
 
-		return setParametersToQuery(tagNames, name, description, builder.toString());
+		return  builder.toString();
 	}
 
-	private TypedQuery<Certificate> setParametersToQuery(List<String> tagNames, String name, String description,
+	@Override
+	public TypedQuery<Certificate> setParametersToQuery(List<String> tagNames, String name, String description,
 			String queryString) {
 		log.debug("Setting params to query - {}. Tag names - {}, Certificate name - {}, Certificate"
 				+ " description - {}", queryString, tagNames, name, description);

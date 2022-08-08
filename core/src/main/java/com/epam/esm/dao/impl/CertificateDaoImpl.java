@@ -38,8 +38,8 @@ public class CertificateDaoImpl extends AbstractBaseDao<Certificate> implements 
 				"Searching Certificate. Tag name - {}, Certificate name - {}, Certificate"
 						+ " description - {}, sort - {}, page № - {}, size - {}",
 				tagNames, name, description, sort, page, size);
-
-		TypedQuery<Certificate> query = searchProvider.provideQuery(tagNames, name, description, sort);
+		String queryString = searchProvider.provideQueryString(tagNames, name, description, sort);
+		TypedQuery<Certificate> query = searchProvider.setParametersToQuery(tagNames, name, description, queryString);
 		paginationProvider.providePagination(query, page, size);
 		return query.getResultList();
 	}

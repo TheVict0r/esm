@@ -21,7 +21,7 @@ public interface SearchProvider {
 	 * not used, null value is passed instead.
 	 *
 	 * @param tagNames
-	 *            {@code Tag's} name
+	 *            list with {@code Tags} names
 	 * @param name
 	 *            {@code Certificate's} name
 	 * @param description
@@ -30,5 +30,21 @@ public interface SearchProvider {
 	 *            sort by some {@code Certificate's} parameter
 	 * @return SQL query for prepared statement
 	 */
-	TypedQuery<Certificate> provideQuery(List<String> tagNames, String name, String description, String sort);
+	String provideQueryString(List<String> tagNames, String name, String description, String sort);
+
+	/**
+	 * Makes typed query and sets all necessary parameters provided.
+	 *
+	 * @param tagNames
+	 *            list with {@code Tags} names
+	 * @param name
+	 *            {@code Certificate's} name
+	 * @param description
+	 *            {@code Certificate's} description
+	 * @param queryString string representation of SQL query
+	 * @return TypedQuery ready to execute
+	 */
+	TypedQuery<Certificate> setParametersToQuery(List<String> tagNames, String name, String description,
+												 String queryString);
+
 }
