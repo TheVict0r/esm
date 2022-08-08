@@ -35,19 +35,45 @@ public class UserHateoasProvider {
 		addLinksToMultiplePurchases(userDto.getPurchases());
 	}
 
+	/**
+	 * Adds HATEOAS links to UserDtos returned from <i>getAll()</i> method.
+	 *
+	 * @param userDtoList
+	 *            list of UserDtos
+	 */
 	public void addLinksForGetAll(List<UserDto> userDtoList) {
 		userDtoList.forEach(this::addLinksForSingleUser);
 	}
 
+	/**
+	 * Adds HATEOAS links to PurchaseDto
+	 *
+	 * @param purchaseDto
+	 *            PurchaseDto object
+	 */
 	public void addLinksForSinglePurchase(PurchaseDto purchaseDto) {
 		addForGetPurchaseForUserSelf(purchaseDto);
 		handleSinglePurchase(purchaseDto);
 	}
 
+	/**
+	 * Adds HATEOAS links to PurchaseDtos returned from <i>getUserAllPurchases()</i>
+	 * method.
+	 *
+	 * @param purchases
+	 *            set of PurchaseDtos
+	 */
 	public void addLinksForGetUserAllPurchases(Set<PurchaseDto> purchases) {
 		addLinksToMultiplePurchases(purchases);
 	}
 
+	/**
+	 * Adds HATEOAS links to PurchaseDto returned from <i>createPurchase()</i>
+	 * method.
+	 *
+	 * @param purchaseDto
+	 *            PurchaseDto object
+	 */
 	public void addLinksForCreatePurchase(PurchaseDto purchaseDto) {
 		addForCreatePurchaseSelf(purchaseDto);
 		handleSinglePurchase(purchaseDto);

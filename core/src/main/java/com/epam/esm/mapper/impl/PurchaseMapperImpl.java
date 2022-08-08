@@ -6,6 +6,7 @@ import com.epam.esm.mapper.AbstractEntityDtoMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
+/** Mapper for Purchase <-> PurchaseDto operations */
 @Component
 public class PurchaseMapperImpl extends AbstractEntityDtoMapper<Purchase, PurchaseDto> {
 	public PurchaseMapperImpl(ModelMapper mapper) {

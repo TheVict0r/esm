@@ -12,9 +12,7 @@ import org.springframework.stereotype.Component;
 @NoArgsConstructor
 @Log4j2
 class SortFactoryProviderImpl implements SortFactoryProvider {
-
 	private static final Map<String, String> sortQueryFragments = new HashMap<>();
-
 	static {
 		sortQueryFragments.put("DATE_ASC", " ORDER BY c.createDate ASC");
 		sortQueryFragments.put("DATE_DESC", " ORDER BY c.createDate DESC");

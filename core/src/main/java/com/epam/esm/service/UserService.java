@@ -5,6 +5,7 @@ import com.epam.esm.dto.UserDto;
 import java.util.List;
 import java.util.Set;
 
+/** Service operations with the {@code User}. */
 public interface UserService {
 
 	/**

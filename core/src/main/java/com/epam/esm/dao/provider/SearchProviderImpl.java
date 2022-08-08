@@ -92,7 +92,6 @@ public class SearchProviderImpl implements SearchProvider {
 			for (int i = 1; i <= tagsAmount; i++) {
 				query.setParameter(TAG_NAME + i, tagNames.get(i - 1));
 			}
-
 		}
 		if (name != null) {
 			query.setParameter(CERTIFICATE_NAME, name);
@@ -100,7 +99,6 @@ public class SearchProviderImpl implements SearchProvider {
 		if (description != null) {
 			query.setParameter(DESCRIPTION, description);
 		}
-
 		return query;
 	}
 }

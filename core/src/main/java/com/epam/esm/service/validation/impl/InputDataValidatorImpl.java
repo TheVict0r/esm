@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 @Log4j2
 @Component
 public class InputDataValidatorImpl implements InputDataValidator {
-
 	@Override
 	public void pathAndBodyIdsCheck(Long pathId, Long bodyId) {
 		if (!pathId.equals(bodyId)) {
@@ -16,4 +15,5 @@ public class InputDataValidatorImpl implements InputDataValidator {
 			throw new MismatchedIdValuesException(pathId, bodyId);
 		}
 	}
+
 }

@@ -18,6 +18,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/** Entity class for creating {@code Purchase} objects. */
+
 @Getter
 @Setter
 @NoArgsConstructor

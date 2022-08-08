@@ -24,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional
 public class CertificateServiceImpl implements CertificateService {
-
 	private final CertificateDao certificateDao;
 	private final CertificateMapperImpl certificateMapper;
 	private final TagDao tagDao;

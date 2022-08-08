@@ -12,7 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 class InputDataValidatorImplTest {
-
 	@Autowired
 	InputDataValidator dataValidator;
 

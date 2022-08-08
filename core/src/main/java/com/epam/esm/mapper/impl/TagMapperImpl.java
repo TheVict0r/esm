@@ -6,6 +6,7 @@ import com.epam.esm.mapper.AbstractEntityDtoMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
+/** Mapper for Tag <-> TagDto operations */
 @Component
 public class TagMapperImpl extends AbstractEntityDtoMapper<Tag, TagDto> {
 	public TagMapperImpl(ModelMapper mapper) {

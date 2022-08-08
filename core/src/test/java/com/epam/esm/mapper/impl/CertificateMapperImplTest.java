@@ -12,10 +12,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 class CertificateMapperImplTest {
-
 	@Autowired
 	CertificateMapperImpl certificateMapper;
-
 	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
 
 	@Test
@@ -46,4 +44,5 @@ class CertificateMapperImplTest {
 
 		assertEquals(expectedCertificateDto, certificateMapper.convertToDto(certificate));
 	}
+
 }

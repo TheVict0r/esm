@@ -185,8 +185,8 @@ class TagServiceImplTest {
 
 	@Test
 	void deleteByIdShouldThrowResourceNotFoundExceptionWhenNonexistentId() {
-		long id = 9999999999L;
-		long paramExpected = 9999999999L;
+		long id = 9_999_999_999L;
+		long paramExpected = 9_999_999_999L;
 		String errorMessageKeyExpected = "message.resource_not_found";
 		when(tagDao.getById(id)).thenReturn(Optional.empty());
 		AbstractLocalizedCustomException exception = assertThrows(ResourceNotFoundException.class,

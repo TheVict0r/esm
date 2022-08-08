@@ -17,8 +17,8 @@ public class CertificateHateoasProvider {
 	private final TagHateoasProvider tagHateoasProvider;
 
 	/**
-	 * Adds HATEOAS links to CertificateDto after it has been read from the
-	 * datasource.
+	 * Adds HATEOAS links to CertificateDto with Tags after it has been read from
+	 * the datasource.
 	 *
 	 * @param certificateDto
 	 *            CertificateDto instance
@@ -28,6 +28,13 @@ public class CertificateHateoasProvider {
 		addLinksForTags(certificateDto);
 	}
 
+	/**
+	 * Adds HATEOAS links to CertificateDto without Tags after it has been read from
+	 * the datasource.
+	 *
+	 * @param certificateDto
+	 *            CertificateDto instance
+	 */
 	public void addLinksForSingleCertificateNoTags(CertificateDto certificateDto) {
 		addForGetByIdSelf(certificateDto);
 		addForReplaceById(certificateDto);

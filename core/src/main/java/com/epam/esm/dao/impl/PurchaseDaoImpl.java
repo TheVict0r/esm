@@ -12,9 +12,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 @Log4j2
 public class PurchaseDaoImpl extends AbstractBaseDao<Purchase> implements PurchaseDao {
-
 	public static final String FROM_PURCHASE_BY_USER_ID_AND_PURCHASE_ID = "from Purchase p where p.userId = :userId and p.id = :purchaseId";
-
 	@PersistenceContext
 	private EntityManager entityManager;
 

@@ -18,7 +18,6 @@ import org.springframework.test.annotation.DirtiesContext;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest
 class TagDaoImplTest {
-
 	@Autowired
 	TestEntityProvider entityProvider;
 

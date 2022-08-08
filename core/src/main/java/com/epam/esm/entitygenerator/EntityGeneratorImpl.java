@@ -25,8 +25,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 public class EntityGeneratorImpl implements EntityGenerator {
-
-	private final TagService tagService;
 	private final CertificateService certificateService;
 	private final PurchaseService purchaseService;
 	private final UserService userService;

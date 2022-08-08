@@ -41,7 +41,7 @@ public interface TagDao extends BaseDao<Tag> {
 	boolean isExist(Tag tag);
 
 	/**
-	 * Finds {@code Tag's} <b>ID</b> for {@code Tag} that do not contain <b>ID</b>
+	 * Finds {@code Tag's} <b>ID</b> for {@code Tag} that does not contain <b>ID</b>
 	 * data.
 	 *
 	 * @param tag

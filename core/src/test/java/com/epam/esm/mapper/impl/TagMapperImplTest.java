@@ -10,7 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 class TagMapperImplTest {
-
 	@Autowired
 	private TagMapperImpl tagMapper;
 
@@ -27,4 +26,5 @@ class TagMapperImplTest {
 		TagDto expectedTagDto = new TagDto(1L, "Tag 1 test");
 		assertEquals(expectedTagDto, tagMapper.convertToDto(tag));
 	}
+
 }

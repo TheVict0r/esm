@@ -6,6 +6,7 @@ import com.epam.esm.mapper.AbstractEntityDtoMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
+/** Mapper for Certificate <-> CertificateDto operations */
 @Component
 public class CertificateMapperImpl extends AbstractEntityDtoMapper<Certificate, CertificateDto> {
 	public CertificateMapperImpl(ModelMapper mapper) {

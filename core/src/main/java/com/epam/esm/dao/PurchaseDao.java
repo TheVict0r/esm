@@ -4,6 +4,7 @@ import com.epam.esm.dao.entity.Purchase;
 import java.util.Optional;
 import org.springframework.stereotype.Repository;
 
+/** Data access operations with the {@code Purchase}. */
 @Repository
 public interface PurchaseDao extends BaseDao<Purchase> {
 	/**

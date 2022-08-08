@@ -6,7 +6,7 @@ import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Component;
 
 /**
- * Basic interface for search methods used to provide complex Certificate search
+ * Interface for search methods used to provide complex Certificate search
  * by various parameters
  */
 @Component
@@ -28,7 +28,7 @@ public interface SearchProvider {
 	 *            {@code Certificate's} description
 	 * @param sort
 	 *            sort by some {@code Certificate's} parameter
-	 * @return SQL query for prepared statement
+	 * @return String representation of SQL query for prepared statement
 	 */
 	String provideQueryString(List<String> tagNames, String name, String description, String sort);
 

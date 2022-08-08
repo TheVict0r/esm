@@ -1,18 +1,17 @@
 package com.epam.esm.dto;
 
+import com.epam.esm.service.validation.BasicInfo;
 import java.io.Serializable;
 import java.util.Set;
-
-import com.epam.esm.service.validation.BasicInfo;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.hateoas.RepresentationModel;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.PositiveOrZero;
-import javax.validation.constraints.Size;
+/** Basic DTO class for User entity */
 
 @Data
 @NoArgsConstructor

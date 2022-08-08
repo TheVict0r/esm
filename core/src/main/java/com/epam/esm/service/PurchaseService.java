@@ -3,6 +3,7 @@ package com.epam.esm.service;
 import com.epam.esm.dto.PurchaseDto;
 import org.springframework.stereotype.Service;
 
+/** Service operations with the {@code Purchase}. */
 @Service
 public interface PurchaseService {
 

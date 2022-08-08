@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
-
 	private final UserDao userDao;
 	private final UserMapperImpl userMapper;
 

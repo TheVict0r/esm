@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 public class PurchaseServiceImpl implements PurchaseService {
-
 	private final PurchaseDao purchaseDao;
 	private final UserService userService;
 	private final CertificateService certificateService;

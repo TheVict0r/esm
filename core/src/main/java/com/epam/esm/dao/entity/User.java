@@ -16,6 +16,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/** Entity class for creating {@code User} objects. */
 @Getter
 @Setter
 @NoArgsConstructor

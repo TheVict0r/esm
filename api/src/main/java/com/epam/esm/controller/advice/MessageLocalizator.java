@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
+/** Helper for building localized messages for exceptions */
 @Component
 public class MessageLocalizator {
 

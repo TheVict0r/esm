@@ -19,7 +19,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/** Major entity class for creating {@code Gift Certificate} objects. */
+/** Entity class for creating {@code Certificate} objects. */
 @Getter
 @Setter
 @Builder
