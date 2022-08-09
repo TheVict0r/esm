@@ -15,7 +15,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/** Entity class for creating {@code Tag} objects. */
+/**
+ * Entity class for creating {@code Tag} objects.
+ */
 @Getter
 @Setter
 @NoArgsConstructor
@@ -45,13 +47,13 @@ public class Tag implements Serializable {
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o)
+		if (this == o) {
 			return true;
-		if (o == null || getClass() != o.getClass())
+		}
+		if (o == null || getClass() != o.getClass()) {
 			return false;
-
+		}
 		Tag tag = (Tag) o;
-
 		return name.equals(tag.name);
 	}
 

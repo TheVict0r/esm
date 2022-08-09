@@ -16,10 +16,11 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 /** Helper for building localized messages for exceptions */
 @Component
 public class MessageLocalizator {
+	public static final String BASE_NAME = "messages";
+	public static final String MESSAGE_VALIDATION_INTRO = "message.validation.intro";
 
 	public String getLocalisedMessageFromBundle(String messageKey, Locale locale) {
-		String baseName = "messages";
-		return ResourceBundle.getBundle(baseName, locale).getString(messageKey);
+		return ResourceBundle.getBundle(BASE_NAME, locale).getString(messageKey);
 	}
 
 	public String getLocalizedMessage(AbstractLocalizedCustomException exception, Locale locale) {
@@ -35,8 +36,7 @@ public class MessageLocalizator {
 	}
 
 	public String getLocalizedMessage(ConstraintViolationException exception, Locale locale) {
-		String messageKey = "message.validation.intro";
-		StringBuilder builder = new StringBuilder(getLocalisedMessageFromBundle(messageKey, locale));
+		StringBuilder builder = new StringBuilder(getLocalisedMessageFromBundle(MESSAGE_VALIDATION_INTRO, locale));
 		Set<ConstraintViolation<?>> constraintViolations = exception.getConstraintViolations();
 		constraintViolations.forEach(violation -> {
 			builder.append("(").append(violation.getInvalidValue()).append(") - ")
@@ -46,8 +46,7 @@ public class MessageLocalizator {
 	}
 
 	public String getLocalizedMessage(MethodArgumentNotValidException exception, Locale locale) {
-		String messageKey = "message.validation.intro";
-		StringBuilder builder = new StringBuilder(getLocalisedMessageFromBundle(messageKey, locale));
+		StringBuilder builder = new StringBuilder(getLocalisedMessageFromBundle(MESSAGE_VALIDATION_INTRO, locale));
 		List<FieldError> fieldErrors = exception.getFieldErrors();
 		fieldErrors.forEach(error -> {
 			builder.append(error.getField()).append(" = '").append(error.getRejectedValue()).append("' - ")

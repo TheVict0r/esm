@@ -32,7 +32,8 @@ public interface CertificateDao extends BaseDao<Certificate> {
 			int size);
 
 	/**
-	 * Retrieves all {@code Certificates} which contain the {@code Tag} with provided ID.
+	 * Retrieves all {@code Certificates} which contain the {@code Tag} with
+	 * provided ID.
 	 *
 	 * @param tagId
 	 *            <b>ID</b> of the {@code Tag}

@@ -6,8 +6,8 @@ import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Component;
 
 /**
- * Interface for search methods used to provide complex Certificate search
- * by various parameters
+ * Interface for search methods used to provide complex Certificate search by
+ * various parameters
  */
 @Component
 public interface SearchProvider {

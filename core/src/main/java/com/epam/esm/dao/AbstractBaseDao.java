@@ -10,7 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * Abstract class for CRUD operations with the datasource.
  *
- * @param <T> entity for CRUD operations.
+ * @param <T>
+ *            entity for CRUD operations.
  */
 @Log4j2
 public abstract class AbstractBaseDao<T extends Serializable> implements BaseDao<T> {

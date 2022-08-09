@@ -6,7 +6,6 @@ import com.epam.esm.dto.TagDto;
 import com.epam.esm.dto.UserDto;
 import com.epam.esm.service.CertificateService;
 import com.epam.esm.service.PurchaseService;
-import com.epam.esm.service.TagService;
 import com.epam.esm.service.UserService;
 import java.util.Random;
 import java.util.Set;
