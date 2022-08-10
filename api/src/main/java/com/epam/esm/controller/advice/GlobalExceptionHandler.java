@@ -58,6 +58,29 @@ public class GlobalExceptionHandler {
 	 * data in body of request (like ID while creating a new entity).
 	 * <li>{@code MismatchedPathAndBodyValuesException} - when ID values in URL path
 	 * and body
+	 * </ul>
+	 *
+	 * @param abstractLocalizedCustomException
+	 *            the instance of CustomException
+	 * @return IncorrectData object containing original error message and custom
+	 *         error code
+	 */
+	@ExceptionHandler({InvalidRequestSortParamValueException.class, InappropriateBodyContentException.class,
+			MismatchedIdValuesException.class})
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public IncorrectData handleException(AbstractLocalizedCustomException abstractLocalizedCustomException,
+			Locale locale) {
+		String localizedMessage = localizator.getLocalizedMessage(abstractLocalizedCustomException, locale);
+		return new IncorrectData(abstractLocalizedCustomException, localizedMessage);
+	}
+
+	/**
+	 * Handler for multiple custom exceptions with "Not Found" response status.
+	 *
+	 * <p>
+	 * Handles these exceptions:
+	 *
+	 * <ul>
 	 * <li>{@code MismatchedUserAndPurchaseException} - when ID when User have no
 	 * requested Purchase
 	 * <li>{@code NonexistentLocaleException} - when language request is not
@@ -69,11 +92,9 @@ public class GlobalExceptionHandler {
 	 * @return IncorrectData object containing original error message and custom
 	 *         error code
 	 */
-	@ExceptionHandler({InvalidRequestSortParamValueException.class, InappropriateBodyContentException.class,
-			MismatchedIdValuesException.class, MismatchedUserAndPurchaseException.class,
-			NonExistentLocaleException.class})
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public IncorrectData handleException(AbstractLocalizedCustomException abstractLocalizedCustomException,
+	@ExceptionHandler({MismatchedUserAndPurchaseException.class, NonExistentLocaleException.class})
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	public IncorrectData handleNotFoundException(AbstractLocalizedCustomException abstractLocalizedCustomException,
 			Locale locale) {
 		String localizedMessage = localizator.getLocalizedMessage(abstractLocalizedCustomException, locale);
 		return new IncorrectData(abstractLocalizedCustomException, localizedMessage);
@@ -181,9 +202,9 @@ public class GlobalExceptionHandler {
 			allCustomErrorCodes.put(MethodArgumentNotValidException.class, 40006);
 			allCustomErrorCodes.put(SQLIntegrityConstraintViolationException.class, 40007);
 			allCustomErrorCodes.put(HttpMessageNotReadableException.class, 40008);
-			allCustomErrorCodes.put(MismatchedUserAndPurchaseException.class, 40009);
 			allCustomErrorCodes.put(NonExistentLocaleException.class, 40401);
 			allCustomErrorCodes.put(ResourceNotFoundException.class, 40402);
+			allCustomErrorCodes.put(MismatchedUserAndPurchaseException.class, 40403);
 			allCustomErrorCodes.put(ResourceNotCreatedException.class, 50001);
 		}
 
