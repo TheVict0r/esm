@@ -7,6 +7,7 @@ INSERT INTO gift_certificate (id, name, description, price, duration, create_dat
 INSERT INTO gift_certificate (id, name, description, price, duration, create_date, last_update_date) VALUES (default, 'name 7 test', 'description 7', '60', '75', '2022-04-27 15:15:03.635', '2022-04-27 15:16:03.636');
 INSERT INTO gift_certificate (id, name, description, price, duration, create_date, last_update_date) VALUES (default, 'name 8 test', 'description 8', '20', '15', '2022-04-28 17:17:03.635', '2022-04-28 17:18:03.636');
 INSERT INTO gift_certificate (id, name, description, price, duration, create_date, last_update_date) VALUES (default, 'name 9 test', 'description 9', '10',  '8', '2022-04-29 19:19:03.635', '2022-04-29 19:20:03.636');
+
 INSERT INTO tag (id, name) VALUES (default, 'Tag 1 test');
 INSERT INTO tag (id, name) VALUES (default, 'Tag 2 test');
 INSERT INTO tag (id, name) VALUES (default, 'Tag 3 test');

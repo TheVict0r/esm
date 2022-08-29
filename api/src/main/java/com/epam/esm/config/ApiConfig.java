@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Configuration;
 /** Module "api" Spring configuration */
 @Configuration
 public class ApiConfig {
-
 	@Bean
 	public ObjectMapper objectMapper() {
 		return new ObjectMapper().findAndRegisterModules();
