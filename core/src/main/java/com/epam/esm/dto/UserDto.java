@@ -1,11 +1,14 @@
 package com.epam.esm.dto;
 
+import com.epam.esm.dao.entity.Role;
 import com.epam.esm.service.validation.BasicInfo;
 import java.io.Serializable;
 import java.util.Set;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,6 +25,9 @@ public class UserDto extends RepresentationModel<UserDto> implements Serializabl
 	@NotBlank(message = "message.validation.user.name.not_blank", groups = BasicInfo.class)
 	@Size(min = 3, max = 30, message = "message.validation.user.name.size", groups = BasicInfo.class)
 	private String name;
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	private String password;
+	private Role role;
 	private Set<PurchaseDto> purchases;
 
 }

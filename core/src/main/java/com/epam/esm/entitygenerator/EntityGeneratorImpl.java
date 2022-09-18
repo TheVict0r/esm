@@ -1,5 +1,6 @@
 package com.epam.esm.entitygenerator;
 
+import com.epam.esm.dao.entity.Role;
 import com.epam.esm.dto.CertificateDto;
 import com.epam.esm.dto.PurchaseDto;
 import com.epam.esm.dto.TagDto;
@@ -10,6 +11,7 @@ import com.epam.esm.service.UserService;
 import java.util.Random;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 /**
@@ -27,6 +29,7 @@ public class EntityGeneratorImpl implements EntityGenerator {
 	private final CertificateService certificateService;
 	private final PurchaseService purchaseService;
 	private final UserService userService;
+	private final PasswordEncoder passwordEncoder;
 	private String dataBaseName = " dev";
 	// private String dataBaseName = " prod";
 
@@ -36,9 +39,9 @@ public class EntityGeneratorImpl implements EntityGenerator {
 	public void generateEntities() {
 		/* use by 1 method only - OT GPEXA PODALSHE :) */
 
-		// generateCertificatesWithTags();
-		// generateUsers();
-		// addPurchasesToUsers();
+		//generateCertificatesWithTags();
+		 //generateUsers();
+		 //addPurchasesToUsers();
 	}
 
 	private void generateCertificatesWithTags() {
@@ -63,7 +66,9 @@ public class EntityGeneratorImpl implements EntityGenerator {
 	private void generateUsers() {
 
 		for (int i = 1; i <= 1000; i++) {
-			UserDto userDto = new UserDto(null, "User " + i, null);
+			String userName = "User " + i;
+			String passwordHashed = passwordEncoder.encode(userName);
+			UserDto userDto = new UserDto(null, userName, passwordHashed, Role.ROLE_USER, null);
 			userService.create(userDto);
 		}
 
@@ -78,7 +83,6 @@ public class EntityGeneratorImpl implements EntityGenerator {
 			long certificateId = random.nextLong(10_000) + 1;
 			CertificateDto certificateDto = CertificateDto.builder().id(certificateId).build();
 			purchaseDto.setCertificates(Set.of(certificateDto));
-
 			purchaseService.create(i, purchaseDto);
 		}
 

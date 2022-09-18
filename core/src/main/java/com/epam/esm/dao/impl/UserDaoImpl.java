@@ -5,6 +5,7 @@ import com.epam.esm.dao.UserDao;
 import com.epam.esm.dao.entity.User;
 import com.epam.esm.dao.provider.PaginationProvider;
 import java.util.List;
+import java.util.Optional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -16,7 +17,8 @@ import org.springframework.stereotype.Repository;
 @Log4j2
 public class UserDaoImpl extends AbstractBaseDao<User> implements UserDao {
 
-	private static final String FROM_USER = "FROM User";
+	private static final String FROM_USER = "SELECT u FROM User u";
+	private static final String WHERE_USERNAME = "SELECT u FROM User u where u.name = :name";
 
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -35,5 +37,13 @@ public class UserDaoImpl extends AbstractBaseDao<User> implements UserDao {
 		TypedQuery<User> query = entityManager.createQuery(FROM_USER, User.class);
 		paginationProvider.providePagination(query, page, size);
 		return query.getResultList();
+	}
+
+	@Override
+	public Optional<User> loadUserByUsername(String username) {
+		log.debug("Loading user by username - {}", username);
+		TypedQuery<User> query = entityManager.createQuery(WHERE_USERNAME, User.class);
+		query.setParameter("name", username);
+		return Optional.of(query.getSingleResult());
 	}
 }

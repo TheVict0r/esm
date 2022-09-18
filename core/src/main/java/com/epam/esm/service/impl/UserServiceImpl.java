@@ -7,16 +7,24 @@ import com.epam.esm.dto.UserDto;
 import com.epam.esm.exception.InappropriateBodyContentException;
 import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.mapper.impl.UserMapperImpl;
+import com.epam.esm.security.SecurityUser;
 import com.epam.esm.service.UserService;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Log4j2
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class UserServiceImpl implements UserService {
 	private final UserDao userDao;
 	private final UserMapperImpl userMapper;
@@ -25,6 +33,7 @@ public class UserServiceImpl implements UserService {
 	public List<UserDto> getAll(int page, int size) {
 		log.debug("Reading all Users. Page № - {}, size - {}", page, size);
 		List<User> userList = userDao.getAll(page, size);
+		userList.forEach(user -> user.setPassword(null));
 		return userList.stream().map(userMapper::convertToDto).toList();
 	}
 
@@ -34,6 +43,7 @@ public class UserServiceImpl implements UserService {
 			log.error("There is no User with ID '{}' in the database", id);
 			return new ResourceNotFoundException(id);
 		});
+		user.setPassword(null);
 		return userMapper.convertToDto(user);
 	}
 
@@ -59,5 +69,11 @@ public class UserServiceImpl implements UserService {
 	public boolean isUserExist(Long userId) {
 		log.debug("Checking if user with ID - {} exists", userId);
 		return getById(userId) != null;
+	}
+
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		User user = userDao.loadUserByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User " + username + " not found"));
+		return new SecurityUser(userMapper.convertToDto(user));
 	}
 }

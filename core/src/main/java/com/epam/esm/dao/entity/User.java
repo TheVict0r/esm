@@ -32,6 +32,12 @@ public class User implements Serializable {
 	@Column(name = "name")
 	private String name;
 
+	@Column(name="password")
+	private String password;
+
+	@Column(name = "role")
+	private Role role;
+
 	@OneToMany
 	@JoinColumn(name = "user_id")
 	Set<Purchase> purchases = new HashSet<>();
@@ -59,6 +65,6 @@ public class User implements Serializable {
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + " {id=" + id + ", name='" + name + '\'' + '}';
+		return getClass().getSimpleName() + " {id=" + id + ", name='" + name + '\'' + ", role='" + role +'\'' + '}';
 	}
 }

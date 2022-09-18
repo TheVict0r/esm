@@ -2,6 +2,7 @@ package com.epam.esm.dao;
 
 import com.epam.esm.dao.entity.User;
 import java.util.List;
+import java.util.Optional;
 
 /** Data access operations with the {@code User}. */
 public interface UserDao extends BaseDao<User> {
@@ -16,4 +17,7 @@ public interface UserDao extends BaseDao<User> {
 	 * @return the list containing all {@code Users} existing in the datasource
 	 */
 	List<User> getAll(int page, int size);
+
+	Optional<User> loadUserByUsername(String username);
+
 }
