@@ -3,6 +3,7 @@ package com.epam.esm.dto;
 import com.epam.esm.dao.entity.Role;
 import com.epam.esm.service.validation.BasicInfo;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PositiveOrZero;
@@ -28,6 +29,6 @@ public class UserDto extends RepresentationModel<UserDto> implements Serializabl
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private String password;
 	private Role role;
-	private Set<PurchaseDto> purchases;
+	private Set<PurchaseDto> purchases = new HashSet<>();
 
 }

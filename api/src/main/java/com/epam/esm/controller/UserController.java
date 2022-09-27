@@ -13,6 +13,8 @@ import javax.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,6 +46,7 @@ public class UserController {
 	 * @return UserDto retrieved from the datasource
 	 */
 	@GetMapping(value = {"/{id}"})
+	@PreAuthorize("hasAuthority('ADMIN') or @accessChecker.checkUserId(authentication, #id)")
 	public UserDto getById(@Min(value = 1, message = "message.validation.id.min") @PathVariable("id") Long id) {
 		log.info("Reading the User by ID - {}", id);
 		UserDto userDto = userService.getById(id);
@@ -59,6 +62,7 @@ public class UserController {
 	 * @return list containing all purchases for User
 	 */
 	@GetMapping(value = {"/{userId}/purchases"})
+	@PreAuthorize("hasAuthority('ADMIN') or @accessChecker.checkUserId(authentication, #userId)")
 	public Set<PurchaseDto> getUserAllPurchases(
 			@Min(value = 1, message = "message.validation.id.min") @PathVariable("userId") Long userId) {
 		log.info("Reading Purchases for the User with ID - {}", userId);
@@ -77,6 +81,7 @@ public class UserController {
 	 * @return requested PurchaseDto
 	 */
 	@GetMapping(value = {"/{userId}/purchases/{purchaseId}"})
+	@PreAuthorize("hasAuthority('ADMIN') or @accessChecker.checkUserId(authentication, #userId)")
 	public PurchaseDto getPurchaseForUser(
 			@Min(value = 1, message = "message.validation.id.min") @PathVariable("userId") Long userId,
 			@Min(value = 1, message = "message.validation.id.min") @PathVariable("purchaseId") Long purchaseId) {
@@ -84,6 +89,21 @@ public class UserController {
 		PurchaseDto purchaseDto = purchaseService.getPurchaseForUser(userId, purchaseId);
 		userHateoasProvider.addLinksForSinglePurchase(purchaseDto);
 		return purchaseDto;
+	}
+
+	/**
+	 * Creates a new User.
+	 *
+	 * @param userDto UserDto need to be created
+	 * @return created UserDto
+	 */
+	@PostMapping(value = {"/signup"})
+	@ResponseStatus(HttpStatus.CREATED)
+	public UserDto createUser(@RequestBody @Validated(BasicInfo.class) UserDto userDto){
+		log.info("Creating user - {}", userDto.getName());
+		UserDto userDtoCreated = userService.create(userDto);
+		userHateoasProvider.addLinksForSingleUser(userDtoCreated);
+		return userDtoCreated;
 	}
 
 	/**
@@ -97,6 +117,7 @@ public class UserController {
 	 */
 	@PostMapping(value = {"/{userId}/purchases/"})
 	@ResponseStatus(HttpStatus.CREATED)
+	@PreAuthorize("hasAuthority('ADMIN') or @accessChecker.checkUserId(authentication, #userId)")
 	public PurchaseDto createPurchase(
 			@Min(value = 1, message = "message.validation.id.min") @PathVariable("userId") Long userId,
 			@RequestBody @Validated(BasicInfo.class) PurchaseDto purchaseDto) {
@@ -114,6 +135,7 @@ public class UserController {
 	 *         method.
 	 */
 	@GetMapping
+	@PreAuthorize("hasAuthority('ADMIN')")
 	public List<UserDto> getAll(
 			@Min(value = 1, message = "message.validation.page.min") @RequestParam(value = "page", defaultValue = "1") Integer page,
 			@Min(value = 1, message = "message.validation.page.size") @Max(value = 50, message = "message.validation.page.size") @RequestParam(value = "size", defaultValue = "10") Integer size) {

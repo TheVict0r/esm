@@ -10,9 +10,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 @Log4j2
 @RequiredArgsConstructor
 public class UserAuthenticationProvider implements AuthenticationProvider {
@@ -25,18 +25,18 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
         String nameProvided = authentication.getName();
         String passwordProvided = authentication.getCredentials().toString();
         UserDetails userDetails = userService.loadUserByUsername(nameProvided);
-        //todo think about using null instead of password in return value
-        if(passwordEncoder.matches(passwordProvided, userDetails.getPassword())){
-            return new UsernamePasswordAuthenticationToken(nameProvided,
-                    passwordProvided, userDetails.getAuthorities());
+        SecurityUser securityUser = (SecurityUser)userDetails;
+
+        if (passwordEncoder.matches(passwordProvided, userDetails.getPassword())) {
+            return new CustomUsernamePasswordAuthenticationToken(nameProvided,
+                    null, userDetails.getAuthorities(), securityUser.getUserDto().getId());
         } else {
             throw new BadCredentialsException("The password does not match");
         }
     }
 
-    //todo check this true in return
     @Override
     public boolean supports(Class<?> authentication) {
-        return true;
+        return UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication);
     }
 }

@@ -32,6 +32,7 @@ public class UserHateoasProvider {
 		addForGetByIdSelf(userDto);
 		addForGetAllUserPurchases(userDto);
 		addForGetAll(userDto);
+		addForCreateUser(userDto);
 		addLinksToMultiplePurchases(userDto.getPurchases());
 	}
 
@@ -129,6 +130,14 @@ public class UserHateoasProvider {
 	private void addForCreatePurchase(PurchaseDto purchaseDto) {
 		purchaseDto.add(linkTo((methodOn(UserController.class).createPurchase(purchaseDto.getUserId(), purchaseDto)))
 				.withRel("createPurchase"));
+	}
+
+	private void addForCreateUserSelf(UserDto userDto){
+		userDto.add(linkTo((methodOn(UserController.class).createUser(userDto))).withSelfRel());
+	}
+
+	private void addForCreateUser(UserDto userDto){
+		userDto.add(linkTo((methodOn(UserController.class).createUser(userDto))).withRel("createUser"));
 	}
 
 	private void addLinksToMultiplePurchases(Set<PurchaseDto> purchaseDtoSet) {

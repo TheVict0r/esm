@@ -11,7 +11,6 @@ import com.epam.esm.service.UserService;
 import java.util.Random;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 /**
@@ -21,7 +20,7 @@ import org.springframework.stereotype.Service;
  * (should be linked with tags and users) All values should look like more
  * -or-less meaningful: random words, but not random letters
  *
- * For private use only :)
+ * Not for the code review - for private use only :)
  */
 @RequiredArgsConstructor
 @Service
@@ -29,7 +28,6 @@ public class EntityGeneratorImpl implements EntityGenerator {
 	private final CertificateService certificateService;
 	private final PurchaseService purchaseService;
 	private final UserService userService;
-	private final PasswordEncoder passwordEncoder;
 	private String dataBaseName = " dev";
 	// private String dataBaseName = " prod";
 
@@ -39,9 +37,10 @@ public class EntityGeneratorImpl implements EntityGenerator {
 	public void generateEntities() {
 		/* use by 1 method only - OT GPEXA PODALSHE :) */
 
-		//generateCertificatesWithTags();
-		 //generateUsers();
-		 //addPurchasesToUsers();
+		   //generateCertificatesWithTags();
+		  //generateUsers();
+		 //addPurchasesToUsers(); //don't forget to block role check in UserServiceImpl.create()
+		//generateAdmins(); //don't forget to block role check in UserServiceImpl.create()
 	}
 
 	private void generateCertificatesWithTags() {
@@ -64,15 +63,28 @@ public class EntityGeneratorImpl implements EntityGenerator {
 	}
 
 	private void generateUsers() {
-
 		for (int i = 1; i <= 1000; i++) {
-			String userName = "User " + i;
-			String passwordHashed = passwordEncoder.encode(userName);
-			UserDto userDto = new UserDto(null, userName, passwordHashed, Role.ROLE_USER, null);
-			userService.create(userDto);
+			generateOneUserEntity("User ", i, Role.USER);
 		}
 
 	}
+
+	private void generateAdmins() {
+		for (int i = 1; i <= 10; i++) {
+			generateOneUserEntity("Admin ", i, Role.ADMIN);
+		}
+
+	}
+
+	private void generateOneUserEntity(String namePrefix, int namePostfix, Role role) {
+		String userName = namePrefix + namePostfix;
+		String rawPassword = userName;
+		UserDto userDto = new UserDto(null, userName, rawPassword, role, null);
+		userService.create(userDto);
+	}
+
+
+
 
 	private void addPurchasesToUsers() {
 
