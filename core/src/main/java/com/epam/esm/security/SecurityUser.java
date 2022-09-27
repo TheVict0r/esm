@@ -1,14 +1,22 @@
 package com.epam.esm.security;
 
 import com.epam.esm.dto.UserDto;
-import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * {@link org.springframework.security.core.userdetails.UserDetails} implementation used for authentication and authorisation.
+ *
+ * Wrapper on {@link com.epam.esm.dto.UserDto} object.
+ *
+ */
 public class SecurityUser implements UserDetails {
+    /**
+     * Inner {@link com.epam.esm.dto.UserDto} key object.
+     */
     private final UserDto userDto;
 
     public SecurityUser(UserDto userDto){

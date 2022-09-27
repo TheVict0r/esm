@@ -12,6 +12,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+/**
+ * Indicates a class can process a specific {@link org.springframework.security.core.Authentication} implementation.
+ *
+ */
 @Service
 @Log4j2
 @RequiredArgsConstructor
