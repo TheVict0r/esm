@@ -18,7 +18,8 @@ public class AccessChecker {
 
     public boolean checkUserId(Authentication authentication, Long userId){
         log.debug("checking user ID - {} and Authentication - {}", userId, authentication);
-        CustomUsernamePasswordAuthenticationToken customUsernamePasswordAuthenticationToken = (CustomUsernamePasswordAuthenticationToken) authentication;
-        return customUsernamePasswordAuthenticationToken.getUserId().equals(userId);
+        SecurityUser securityUser = (SecurityUser) authentication.getPrincipal();
+        return securityUser.getUserDto().getId().equals(userId);
+
     }
 }
