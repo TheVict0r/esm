@@ -31,17 +31,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.httpBasic();
-        //http.formLogin();
+        http.csrf().disable();
         http.authorizeRequests()
                 .mvcMatchers(HttpMethod.GET, "/certificates/**").permitAll()
                 .mvcMatchers("/users/signup", "/locales/**").permitAll()
                 .mvcMatchers(HttpMethod.GET, "/users/**", "/certificates/**", "/tags/**").hasAnyAuthority(Role.USER.getAuthority(), Role.ADMIN.getAuthority())
                 .mvcMatchers(HttpMethod.POST, "/users/{userId}/purchases/").hasAnyAuthority(Role.USER.getAuthority(), Role.ADMIN.getAuthority())
                 .mvcMatchers("/users/**", "/certificates/**", "/tags/**", "/generator/**").hasAuthority(Role.ADMIN.getAuthority())
-
-               .anyRequest().authenticated();
-//                .anyRequest().permitAll();
-        http.csrf().disable();
+                .anyRequest().authenticated();
         return http.build();
     }
 

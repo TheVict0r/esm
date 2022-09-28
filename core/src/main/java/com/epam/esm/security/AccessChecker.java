@@ -29,7 +29,7 @@ public class AccessChecker {
      */
     public boolean checkUserId(Authentication authentication, Long userId){
         log.debug("checking user ID - {} and Authentication - {}", userId, authentication);
-        SecurityUser securityUser = (SecurityUser) authentication.getPrincipal();
+        SecurityUser securityUser = (SecurityUser)authentication.getPrincipal();
         return securityUser.getUserDto().getId().equals(userId);
     }
 }

@@ -31,7 +31,9 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
         UserDetails userDetails = userService.loadUserByUsername(nameProvided);
 
         if (passwordEncoder.matches(passwordProvided, userDetails.getPassword())) {
-            return new UsernamePasswordAuthenticationToken(userDetails,
+            SecurityUser securityUser = (SecurityUser)userDetails;
+            securityUser.getUserDto().setPassword(null);
+            return new UsernamePasswordAuthenticationToken(securityUser,
                     null, userDetails.getAuthorities());
         } else {
             throw new BadCredentialsException("The password does not match");
