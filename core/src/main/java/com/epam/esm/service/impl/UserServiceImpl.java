@@ -3,11 +3,14 @@ package com.epam.esm.service.impl;
 import com.epam.esm.dao.UserDao;
 import com.epam.esm.dao.entity.Role;
 import com.epam.esm.dao.entity.User;
+import com.epam.esm.dao.repositories.UserRepository;
 import com.epam.esm.dto.PurchaseDto;
 import com.epam.esm.dto.UserDto;
+import com.epam.esm.dto.UserNoPasswordDto;
 import com.epam.esm.exception.InappropriateBodyContentException;
 import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.mapper.impl.UserMapperImpl;
+import com.epam.esm.mapper.impl.UserNoPasswordMapperImpl;
 import com.epam.esm.security.SecurityUser;
 import com.epam.esm.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -26,29 +29,29 @@ import java.util.Set;
 @Service
 public class UserServiceImpl implements UserService {
 	private final UserDao userDao;
+	private final UserRepository userRepository;
 	private final UserMapperImpl userMapper;
+	private final UserNoPasswordMapperImpl userNoPasswordMapper;
 	private final PasswordEncoder passwordEncoder;
 
 	@Override
-	public List<UserDto> getAll(int page, int size) {
+	public List<UserNoPasswordDto> getAll(int page, int size) {
 		log.debug("Reading all Users. Page № - {}, size - {}", page, size);
 		List<User> userList = userDao.getAll(page, size);
-		userList.forEach(user -> user.setPassword(null));
-		return userList.stream().map(userMapper::convertToDto).toList();
+		return userList.stream().map(userNoPasswordMapper::convertToDto).toList();
 	}
 
 	@Override
-	public UserDto getById(Long id) {
-		User user = userDao.getById(id).orElseThrow(() -> {
+	public UserNoPasswordDto getById(Long id) {
+		User user = userRepository.findById(id).orElseThrow(() -> {
 			log.error("There is no User with ID '{}' in the database", id);
 			return new ResourceNotFoundException(id);
 		});
-		user.setPassword(null);
-		return userMapper.convertToDto(user);
+		return userNoPasswordMapper.convertToDto(user);
 	}
 
 	@Override
-	public UserDto create(UserDto userDto) {
+	public UserNoPasswordDto create(UserDto userDto) {
 		log.debug("Creating the User {}", userDto);
 		if (userDto.getId() != null) {
 			log.error("When creating a new User, you should not specify the ID. Current input data has"
@@ -64,9 +67,8 @@ public class UserServiceImpl implements UserService {
 		userDto.setRole(Role.USER);
 		String passwordEncoded = passwordEncoder.encode(userDto.getPassword());
 		userDto.setPassword(passwordEncoded);
-		User userCreated = userDao.create(userMapper.convertToEntity(userDto));
-		userCreated.setPassword(null);
-		return userMapper.convertToDto(userCreated);
+		User userCreated = userRepository.save(userMapper.convertToEntity(userDto));
+		return userNoPasswordMapper.convertToDto(userCreated);
 	}
 
 	@Override
@@ -84,7 +86,8 @@ public class UserServiceImpl implements UserService {
 	@Override
 	@Transactional
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = userDao.loadUserByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User " + username + " not found"));
+		User user = userRepository.findByName(username).orElseThrow(() -> new UsernameNotFoundException("User " + username + " not found"));
 		return new SecurityUser(userMapper.convertToDto(user));
 	}
+
 }

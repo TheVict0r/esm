@@ -2,6 +2,7 @@ package com.epam.esm.service;
 
 import com.epam.esm.dto.PurchaseDto;
 import com.epam.esm.dto.UserDto;
+import com.epam.esm.dto.UserNoPasswordDto;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public interface UserService extends UserDetailsService {
 	 * @return the list containing all {@code UserDto} objects converted from all
 	 *         {@code Users} existing in the datasource
 	 */
-	List<UserDto> getAll(int page, int size);
+	List<UserNoPasswordDto> getAll(int page, int size);
 
 	/**
 	 * Finds the User by its <b>ID</b> in the datasource.
@@ -30,7 +31,7 @@ public interface UserService extends UserDetailsService {
 	 * @return <b>UserDto</b>, returned by the corresponding {@code DAO level}
 	 *         method
 	 */
-	UserDto getById(Long id);
+	UserNoPasswordDto getById(Long id);
 
 	/**
 	 * Creates a new User in the datasource.
@@ -40,7 +41,7 @@ public interface UserService extends UserDetailsService {
 	 * @return DTO object of created User entity
 	 */
 
-	UserDto create(UserDto userDto);
+	UserNoPasswordDto create(UserDto userDto);
 
 	/**
 	 * Provides all purchases for User by its ID

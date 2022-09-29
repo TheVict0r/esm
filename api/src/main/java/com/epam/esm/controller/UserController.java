@@ -3,6 +3,7 @@ package com.epam.esm.controller;
 import com.epam.esm.controller.hateoas.UserHateoasProvider;
 import com.epam.esm.dto.PurchaseDto;
 import com.epam.esm.dto.UserDto;
+import com.epam.esm.dto.UserNoPasswordDto;
 import com.epam.esm.service.PurchaseService;
 import com.epam.esm.service.UserService;
 import com.epam.esm.service.validation.BasicInfo;
@@ -13,9 +14,7 @@ import javax.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -47,11 +46,11 @@ public class UserController {
 	 */
 	@GetMapping(value = {"/{id}"})
 	@PreAuthorize("hasAuthority('ADMIN') or @accessChecker.checkUserId(authentication, #id)")
-	public UserDto getById(@Min(value = 1, message = "message.validation.id.min") @PathVariable("id") Long id) {
+	public UserNoPasswordDto getById(@Min(value = 1, message = "message.validation.id.min") @PathVariable("id") Long id) {
 		log.info("Reading the User by ID - {}", id);
-		UserDto userDto = userService.getById(id);
-		userHateoasProvider.addLinksForSingleUser(userDto);
-		return userDto;
+		UserNoPasswordDto userNoPasswordDto = userService.getById(id);
+		userHateoasProvider.addLinksForSingleUser(userNoPasswordDto);
+		return userNoPasswordDto;
 	}
 
 	/**
@@ -99,11 +98,11 @@ public class UserController {
 	 */
 	@PostMapping(value = {"/signup"})
 	@ResponseStatus(HttpStatus.CREATED)
-	public UserDto createUser(@RequestBody @Validated(BasicInfo.class) UserDto userDto){
+	public UserNoPasswordDto createUser(@RequestBody @Validated(BasicInfo.class) UserDto userDto){
 		log.info("Creating user - {}", userDto.getName());
-		UserDto userDtoCreated = userService.create(userDto);
-		userHateoasProvider.addLinksForSingleUser(userDtoCreated);
-		return userDtoCreated;
+		UserNoPasswordDto userNoPasswordDtoCreated = userService.create(userDto);
+		userHateoasProvider.addLinksForSingleUser(userNoPasswordDtoCreated);
+		return userNoPasswordDtoCreated;
 	}
 
 	/**
@@ -136,12 +135,12 @@ public class UserController {
 	 */
 	@GetMapping
 	@PreAuthorize("hasAuthority('ADMIN')")
-	public List<UserDto> getAll(
+	public List<UserNoPasswordDto> getAll(
 			@Min(value = 1, message = "message.validation.page.min") @RequestParam(value = "page", defaultValue = "1") Integer page,
 			@Min(value = 1, message = "message.validation.page.size") @Max(value = 50, message = "message.validation.page.size") @RequestParam(value = "size", defaultValue = "10") Integer size) {
 		log.info("Reading all Users. Page № - {}, size - {}", page, size);
-		List<UserDto> userDtoList = userService.getAll(page, size);
-		userHateoasProvider.addLinksForGetAll(userDtoList);
-		return userDtoList;
+		List<UserNoPasswordDto> userNoPasswordDtoList = userService.getAll(page, size);
+		userHateoasProvider.addLinksForGetAll(userNoPasswordDtoList);
+		return userNoPasswordDtoList;
 	}
 }
