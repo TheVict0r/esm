@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 /** Module CORE Spring configuration */
 @Configuration
-@EnableJpaRepositories("com.epam.esm.dao.repositories")
 public class CoreConfig {
 
 	@Bean

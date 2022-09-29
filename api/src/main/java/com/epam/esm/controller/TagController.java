@@ -59,8 +59,8 @@ public class TagController {
 	 */
 	@GetMapping
 	public List<TagDto> getAll(
-			@Min(value = 1, message = "message.validation.page.min") @RequestParam(value = "page", defaultValue = "1") Integer page,
-			@Min(value = 1, message = "message.validation.page.size") @Max(value = 50, message = "message.validation.page.size") @RequestParam(value = "size", defaultValue = "10") Integer size) {
+			@Min(value = 0, message = "message.validation.page.min") @RequestParam(value = "page", defaultValue = "0") Integer page,
+			@Min(value = 0, message = "message.validation.page.size") @Max(value = 50, message = "message.validation.page.size") @RequestParam(value = "size", defaultValue = "10") Integer size) {
 		log.info("Reading all Tags. Page № - {}, size - {}", page, size);
 		List<TagDto> tagDtoList = tagService.getAll(page, size);
 		tagDtoList.forEach(hateoasProvider::addLinksForSingleTag);
@@ -113,20 +113,6 @@ public class TagController {
 		log.info("Deleting Tag by ID - {}", id);
 		tagService.deleteById(id);
 		return ResponseEntity.noContent().build();
-	}
-
-	/**
-	 * Gets the most widely used tag of a user with the highest cost of all orders.
-	 *
-	 * @return the list of the most widely used TagDto or TagDtos of a user with the
-	 *         highest cost of all orders.
-	 */
-	@GetMapping(path = "/most-used-tag")
-	public List<TagDto> getMostUsedTag() {
-		log.info("Getting the most widely used tag of a user with the highest cost of all orders.");
-		List<TagDto> tags = tagService.getMostUsedTag();
-		hateoasProvider.addLinksForMultipleTags(tags);
-		return tags;
 	}
 
 }

@@ -1,5 +1,6 @@
 package com.epam.esm.service;
 
+import com.epam.esm.dao.entity.Tag;
 import com.epam.esm.dto.TagDto;
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -30,10 +31,22 @@ public interface TagService extends BaseService<TagDto> {
 	List<TagDto> getTagsByCertificateId(Long certificateId);
 
 	/**
-	 * Gets the most widely used tag of a user with the highest cost of all orders.
+	 * Checks is {@code Tag} presented in the datasource.
 	 *
-	 * @return the list of the most widely used TagDto or TagDtos of a user with the
-	 *         highest cost of all orders.
+	 * @param tag
+	 *            the {@code Tag} need to be checked
+	 * @return {@code true} if {@code Tag} presented in the datasource,
+	 *         {@code false} if not
 	 */
-	List<TagDto> getMostUsedTag();
+    boolean isExist(Tag tag);
+
+	/**
+	 * Finds {@code Tag's} <b>ID</b> for {@code Tag} that does not contain <b>ID</b>
+	 * data.
+	 *
+	 * @param tag
+	 *            - the {@code Tag} that does not contain <b>ID</b> data
+	 * @return - {@code Tag's} <b>ID</b>
+	 */
+	long getId(Tag tag);
 }

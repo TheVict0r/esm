@@ -44,10 +44,4 @@ public class CertificateDaoImpl extends AbstractBaseDao<Certificate> implements 
 		return query.getResultList();
 	}
 
-	@Override
-	public List<Certificate> getCertificatesByTagId(long tagId) {
-		log.debug("Retrieving the List of Certificates by Tag's ID - {}", tagId);
-		return entityManager.createQuery(SELECT_CERTIFICATES_BY_TAG_ID, Certificate.class).setParameter("id", tagId)
-				.getResultList();
-	}
 }

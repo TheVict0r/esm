@@ -136,8 +136,8 @@ public class UserController {
 	@GetMapping
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public List<UserNoPasswordDto> getAll(
-			@Min(value = 1, message = "message.validation.page.min") @RequestParam(value = "page", defaultValue = "1") Integer page,
-			@Min(value = 1, message = "message.validation.page.size") @Max(value = 50, message = "message.validation.page.size") @RequestParam(value = "size", defaultValue = "10") Integer size) {
+			@Min(value = 0, message = "message.validation.page.min") @RequestParam(value = "page", defaultValue = "0") Integer page,
+			@Min(value = 0, message = "message.validation.page.size") @Max(value = 50, message = "message.validation.page.size") @RequestParam(value = "size", defaultValue = "10") Integer size) {
 		log.info("Reading all Users. Page № - {}, size - {}", page, size);
 		List<UserNoPasswordDto> userNoPasswordDtoList = userService.getAll(page, size);
 		userHateoasProvider.addLinksForGetAll(userNoPasswordDtoList);

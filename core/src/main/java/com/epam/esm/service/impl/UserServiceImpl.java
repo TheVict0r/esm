@@ -1,6 +1,5 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.dao.UserDao;
 import com.epam.esm.dao.entity.Role;
 import com.epam.esm.dao.entity.User;
 import com.epam.esm.dao.repositories.UserRepository;
@@ -15,6 +14,8 @@ import com.epam.esm.security.SecurityUser;
 import com.epam.esm.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,7 +29,6 @@ import java.util.Set;
 @RequiredArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
-	private final UserDao userDao;
 	private final UserRepository userRepository;
 	private final UserMapperImpl userMapper;
 	private final UserNoPasswordMapperImpl userNoPasswordMapper;
@@ -37,8 +37,8 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public List<UserNoPasswordDto> getAll(int page, int size) {
 		log.debug("Reading all Users. Page № - {}, size - {}", page, size);
-		List<User> userList = userDao.getAll(page, size);
-		return userList.stream().map(userNoPasswordMapper::convertToDto).toList();
+		Page<User> allUsers = userRepository.findAll(PageRequest.of(page, size));
+		return allUsers.stream().map(userNoPasswordMapper::convertToDto).toList();
 	}
 
 	@Override

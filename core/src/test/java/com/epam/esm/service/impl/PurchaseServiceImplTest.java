@@ -7,10 +7,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import com.epam.esm.dao.PurchaseDao;
 import com.epam.esm.dao.entity.Certificate;
 import com.epam.esm.dao.entity.Purchase;
 import com.epam.esm.dao.entity.Tag;
+import com.epam.esm.dao.repositories.PurchaseRepository;
 import com.epam.esm.dto.CertificateDto;
 import com.epam.esm.dto.PurchaseDto;
 import com.epam.esm.dto.TagDto;
@@ -33,7 +33,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 @SpringBootTest
 class PurchaseServiceImplTest {
 	@MockBean
-	private PurchaseDao purchaseDao;
+	private PurchaseRepository purchaseRepository;
 	@MockBean
 	private UserService userService;
 	@MockBean
@@ -58,16 +58,16 @@ class PurchaseServiceImplTest {
 		UserDto userDto = new UserDto(userId, "User 1", Set.of(purchaseDtoExpected));
 
 		when(userService.getById(userId)).thenReturn(userDto);
-		when(purchaseDao.getPurchaseForUser(userId, purchaseId)).thenReturn(Optional.of(purchase));
+		when(purchaseRepository.getPurchaseForUser(userId, purchaseId)).thenReturn(Optional.of(purchase));
 		when(purchaseMapper.convertToDto(purchase)).thenReturn(purchaseDtoExpected);
 
 		assertEquals(purchaseDtoExpected, purchaseService.getPurchaseForUser(userId, purchaseId));
 
 		verify(userService).getById(userId);
-		verify(purchaseDao).getPurchaseForUser(userId, purchaseId);
+		verify(purchaseRepository).getPurchaseForUser(userId, purchaseId);
 		verify(purchaseMapper).convertToDto(purchase);
 		verifyNoMoreInteractions(userService);
-		verifyNoMoreInteractions(purchaseDao);
+		verifyNoMoreInteractions(purchaseRepository);
 		verifyNoMoreInteractions(purchaseMapper);
 	}
 
@@ -79,7 +79,7 @@ class PurchaseServiceImplTest {
 		String errorMessageKey = "message.mismatched_user_and_purchase";
 
 		when(userService.getById(userId)).thenReturn(userDto);
-		when(purchaseDao.getPurchaseForUser(userId, purchaseId)).thenReturn(Optional.empty());
+		when(purchaseRepository.getPurchaseForUser(userId, purchaseId)).thenReturn(Optional.empty());
 
 		AbstractLocalizedCustomException exception = assertThrows(MismatchedUserAndPurchaseException.class,
 				() -> purchaseService.getPurchaseForUser(userId, purchaseId));
@@ -88,9 +88,9 @@ class PurchaseServiceImplTest {
 		assertEquals(purchaseId, exception.getParams()[1]);
 
 		verify(userService).getById(userId);
-		verify(purchaseDao).getPurchaseForUser(userId, purchaseId);
+		verify(purchaseRepository).getPurchaseForUser(userId, purchaseId);
 		verifyNoMoreInteractions(userService);
-		verifyNoMoreInteractions(purchaseDao);
+		verifyNoMoreInteractions(purchaseRepository);
 	}
 
 	@Test
@@ -124,7 +124,7 @@ class PurchaseServiceImplTest {
 		doNothing().when(validator).pathAndBodyIdsCheck(userId, purchaseDtoFromController.getUserId());
 		when(userService.isUserExist(userId)).thenReturn(true);
 		when(certificateService.getById(certificateDtoIdOnly.getId())).thenReturn(certificateDtoFullData);
-		when(purchaseDao.create(purchaseForCreation)).thenReturn(purchaseCreated);
+		when(purchaseRepository.save(purchaseForCreation)).thenReturn(purchaseCreated);
 		when(purchaseMapper.convertToEntity(purchaseDtoForCreation)).thenReturn(purchaseForCreation);
 		when(purchaseMapper.convertToDto(purchaseCreated)).thenReturn(purchaseDtoCreated);
 
@@ -133,13 +133,13 @@ class PurchaseServiceImplTest {
 		verify(validator).pathAndBodyIdsCheck(userId, purchaseDtoFromController.getUserId());
 		verify(userService).isUserExist(userId);
 		verify(certificateService).getById(certificateDtoIdOnly.getId());
-		verify(purchaseDao).create(purchaseForCreation);
+		verify(purchaseRepository).save(purchaseForCreation);
 		verify(purchaseMapper).convertToEntity(purchaseDtoForCreation);
 		verify(purchaseMapper).convertToDto(purchaseCreated);
 		verifyNoMoreInteractions(validator);
 		verifyNoMoreInteractions(userService);
 		verifyNoMoreInteractions(certificateService);
-		verifyNoMoreInteractions(purchaseDao);
+		verifyNoMoreInteractions(purchaseRepository);
 		verifyNoMoreInteractions(purchaseMapper);
 	}
 

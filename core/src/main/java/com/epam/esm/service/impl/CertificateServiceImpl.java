@@ -1,7 +1,6 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.CertificateDao;
-import com.epam.esm.dao.TagDao;
 import com.epam.esm.dao.entity.Certificate;
 import com.epam.esm.dao.entity.Tag;
 import com.epam.esm.dao.repositories.CertificateRepository;
@@ -11,6 +10,7 @@ import com.epam.esm.exception.InappropriateBodyContentException;
 import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.mapper.impl.CertificateMapperImpl;
 import com.epam.esm.service.CertificateService;
+import com.epam.esm.service.TagService;
 import com.epam.esm.service.validation.InputDataValidator;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,7 +29,7 @@ public class CertificateServiceImpl implements CertificateService {
 	private final CertificateDao certificateDao;
 	private final CertificateRepository certificateRepository;
 	private final CertificateMapperImpl certificateMapper;
-	private final TagDao tagDao;
+	private final TagService tagService;
 	private final TagRepository tagRepository;
 	private final InputDataValidator validator;
 
@@ -61,7 +61,6 @@ public class CertificateServiceImpl implements CertificateService {
 		Certificate certificate = certificateMapper.convertToEntity(certificateDto);
 		certificate.setCreateDate(LocalDateTime.now());
 		certificate.setLastUpdateDate(LocalDateTime.now());
-		//Certificate certificateCreated = certificateDao.create(certificate);
 		Certificate certificateCreated = certificateRepository.save(certificate);
 
 		Set<Tag> tagsWithId = saveCurrentCertificateTags(certificate, certificateCreated.getId());
@@ -83,7 +82,6 @@ public class CertificateServiceImpl implements CertificateService {
 		Set<Tag> tagsWithId = saveCurrentCertificateTags(certificateForUpdate, certificateId);
 		certificateForUpdate.setTags(tagsWithId);
 
-		//Certificate certificateUpdated = certificateDao.update(certificateForUpdate);
 		Certificate certificateUpdated = certificateRepository.save(certificateForUpdate);
 
 		deleteOrphanTags(certificateFromDatasourceTags);
@@ -103,7 +101,6 @@ public class CertificateServiceImpl implements CertificateService {
 		log.debug("Deleting the Certificate with ID '{}'", id);
 		Certificate certificate = safeGetById(id);
 		Set<Tag> certificateTags = Set.copyOf(certificate.getTags());
-		//certificateDao.delete(certificate);
 		certificateRepository.delete(certificate);
 		deleteOrphanTags(certificateTags);
 		return id;
@@ -112,7 +109,7 @@ public class CertificateServiceImpl implements CertificateService {
 	private void deleteOrphanTags(Set<Tag> tagSet) {
 		log.debug("Deleting orphan tags - {}", tagSet);
 		tagSet.forEach(tag -> {
-			List<Certificate> certificateByTagId = certificateDao.getCertificatesByTagId(tag.getId());
+			List<Certificate> certificateByTagId = certificateRepository.getCertificatesByTagId(tag.getId());
 			if (certificateByTagId.isEmpty()) {
 				tagRepository.delete(tag);
 			}
@@ -124,10 +121,9 @@ public class CertificateServiceImpl implements CertificateService {
 		Set<Tag> tags = certificate.getTags();
 		tags.forEach(tag -> {
 			long tagId;
-			if (tagDao.isExist(tag)) {
-				tagId = tagDao.getId(tag);
+			if (tagService.isExist(tag)) {
+				tagId = tagService.getId(tag);
 			} else {
-				//tagId = tagDao.create(tag).getId();
 				tagId = tagRepository.save(tag).getId();
 			}
 			tag.setId(tagId);
@@ -136,7 +132,6 @@ public class CertificateServiceImpl implements CertificateService {
 	}
 
 	private Certificate safeGetById(Long id) {
-		//Optional<Certificate> certificateOptional = certificateDao.getById(id);
 		Optional<Certificate> certificateOptional = certificateRepository.findById(id);
 		return certificateOptional.orElseThrow(() -> {
 			log.error("There is no Certificate with ID '{}' in the database", id);

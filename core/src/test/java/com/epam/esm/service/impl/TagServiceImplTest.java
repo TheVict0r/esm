@@ -7,8 +7,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import com.epam.esm.dao.TagDao;
 import com.epam.esm.dao.entity.Tag;
+import com.epam.esm.dao.repositories.TagRepository;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.exception.AbstractLocalizedCustomException;
 import com.epam.esm.exception.InappropriateBodyContentException;
@@ -23,11 +23,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageRequest;
 
 @SpringBootTest
 class TagServiceImplTest {
 	@MockBean
-	private TagDao tagDao;
+	private TagRepository tagDao;
 	@MockBean
 	private InputDataValidator validator;
 	@MockBean
@@ -40,10 +41,10 @@ class TagServiceImplTest {
 		Tag tag1 = new Tag(1L, "Tag 1 test");
 		TagDto tagDtoExpected = new TagDto(1L, "Tag 1 test");
 		Long id = 1L;
-		when(tagDao.getById(id)).thenReturn(Optional.of(tag1));
+		when(tagDao.findById(id)).thenReturn(Optional.of(tag1));
 		when(tagMapper.convertToDto(tag1)).thenReturn(tagDtoExpected);
 		assertEquals(tagDtoExpected, tagService.getById(id));
-		verify(tagDao).getById(id);
+		verify(tagDao).findById(id);
 		verify(tagMapper).convertToDto(tag1);
 	}
 
@@ -52,12 +53,12 @@ class TagServiceImplTest {
 		Long nonExistentId = 1_000_000L;
 		String errorMessageKeyExpected = "message.resource_not_found";
 		long paramExpected = 1_000_000L;
-		when(tagDao.getById(nonExistentId)).thenReturn(Optional.empty());
+		when(tagDao.findById(nonExistentId)).thenReturn(Optional.empty());
 		AbstractLocalizedCustomException exception = assertThrows(ResourceNotFoundException.class,
 				() -> tagService.getById(nonExistentId));
 		assertEquals(errorMessageKeyExpected, exception.getMessageKey());
 		assertEquals(paramExpected, exception.getParams()[0]);
-		verify(tagDao).getById(nonExistentId);
+		verify(tagDao).findById(nonExistentId);
 		verifyNoMoreInteractions(tagDao);
 	}
 
@@ -90,7 +91,7 @@ class TagServiceImplTest {
 		int pageNumber = 1;
 		int pageSize = 10;
 
-		when(tagDao.getAll(pageNumber, pageSize)).thenReturn(allTagsFound);
+		when(tagDao.findAll(PageRequest.of(pageNumber, pageSize)).thenReturn(allTagsFound);
 		when(tagMapper.convertToDto(tag1)).thenReturn(tag1dto);
 		when(tagMapper.convertToDto(tag2)).thenReturn(tag2dto);
 		when(tagMapper.convertToDto(tag3)).thenReturn(tag3dto);
@@ -104,7 +105,7 @@ class TagServiceImplTest {
 
 		assertEquals(allTagsDtoExpected, tagService.getAll(pageNumber, pageSize));
 
-		verify(tagDao).getAll(pageNumber, pageSize);
+		verify(tagDao).findAll(PageRequest.of(pageNumber, pageSize);
 		verify(tagMapper).convertToDto(tag1);
 		verify(tagMapper).convertToDto(tag2);
 		verify(tagMapper).convertToDto(tag3);
@@ -126,11 +127,11 @@ class TagServiceImplTest {
 		Tag tagForCreation = new Tag("Tag for create test");
 		Tag tagAfterCreation = new Tag(11L, "Tag for create test");
 		when(tagMapper.convertToEntity(tagForCreationDto)).thenReturn(tagForCreation);
-		when(tagDao.create(tagForCreation)).thenReturn(tagAfterCreation);
+		when(tagDao.save(tagForCreation)).thenReturn(tagAfterCreation);
 		when(tagMapper.convertToDto(tagAfterCreation)).thenReturn(tagDtoAfterCreationExpected);
 		assertEquals(tagDtoAfterCreationExpected, tagService.create(tagForCreationDto));
 		verify(tagMapper).convertToEntity(tagForCreationDto);
-		verify(tagDao).create(tagForCreation);
+		verify(tagDao).save(tagForCreation);
 		verify(tagMapper).convertToDto(tagAfterCreation);
 		verifyNoMoreInteractions(tagMapper);
 		verifyNoMoreInteractions(tagDao);
@@ -155,13 +156,13 @@ class TagServiceImplTest {
 		Long id = 1L;
 		doNothing().when(validator).pathAndBodyIdsCheck(id, tagForUpdateDtoExpected.getId());
 		when(tagMapper.convertToEntity(tagForUpdateDtoExpected)).thenReturn(tagForUpdate);
-		when(tagDao.update(tagForUpdate)).thenReturn(tagForUpdate);
-		when(tagDao.getById(id)).thenReturn(Optional.of(tagForUpdate));
+		when(tagDao.save(tagForUpdate)).thenReturn(tagForUpdate);
+		when(tagDao.findById(id)).thenReturn(Optional.of(tagForUpdate));
 		assertEquals(tagForUpdateDtoExpected, tagService.updateById(id, tagForUpdateDtoExpected));
 		verify(validator).pathAndBodyIdsCheck(id, tagForUpdateDtoExpected.getId());
 		verify(tagMapper).convertToEntity(tagForUpdateDtoExpected);
-		verify(tagDao).getById(id);
-		verify(tagDao).update(tagForUpdate);
+		verify(tagDao).findById(id);
+		verify(tagDao).save(tagForUpdate);
 		verifyNoMoreInteractions(validator);
 		verifyNoMoreInteractions(tagMapper);
 		verifyNoMoreInteractions(tagDao);
@@ -174,6 +175,7 @@ class TagServiceImplTest {
 		Set<Tag> tagSet = Set.of(tag1);
 		List<TagDto> tagDtoListExpected = List.of(tag1dto);
 		long certificateId = 99L;
+		// todo now it's completely new logic
 		when(tagDao.getTagsByCertificateId(certificateId)).thenReturn(tagSet);
 		when(tagMapper.convertToDto(tag1)).thenReturn(tag1dto);
 		assertEquals(tagDtoListExpected, tagService.getTagsByCertificateId(certificateId));
@@ -188,32 +190,14 @@ class TagServiceImplTest {
 		long id = 9_999_999_999L;
 		long paramExpected = 9_999_999_999L;
 		String errorMessageKeyExpected = "message.resource_not_found";
-		when(tagDao.getById(id)).thenReturn(Optional.empty());
+		when(tagDao.findById(id)).thenReturn(Optional.empty());
 		AbstractLocalizedCustomException exception = assertThrows(ResourceNotFoundException.class,
 				() -> tagService.deleteById(id));
 		assertEquals(errorMessageKeyExpected, exception.getMessageKey());
 		assertEquals(paramExpected, exception.getParams()[0]);
-		verify(tagDao).getById(id);
+		verify(tagDao).findById(id);
 		verifyNoMoreInteractions(tagDao);
 	}
 
-	@Test
-	void getMostUsedTagShouldReturnListWithTags() {
-		Tag tag1 = new Tag(1L, "Tag 1 test");
-		Tag tag2 = new Tag(2L, "Tag 2 test");
-		TagDto tag1dto = new TagDto(1L, "Tag 1 test");
-		TagDto tag2dto = new TagDto(2L, "Tag 2 test");
-		List<Tag> tagList = List.of(tag1, tag2);
-		List<TagDto> tagDtoListExpected = List.of(tag1dto, tag2dto);
-		when(tagDao.getMostUsedTag()).thenReturn(tagList);
-		when(tagMapper.convertToDto(tag1)).thenReturn(tag1dto);
-		when(tagMapper.convertToDto(tag2)).thenReturn(tag2dto);
-		assertEquals(tagDtoListExpected, tagService.getMostUsedTag());
-		verify(tagDao).getMostUsedTag();
-		verify(tagMapper).convertToDto(tag1);
-		verify(tagMapper).convertToDto(tag2);
-		verifyNoMoreInteractions(tagDao);
-		verifyNoMoreInteractions(tagMapper);
-	}
 
 }
