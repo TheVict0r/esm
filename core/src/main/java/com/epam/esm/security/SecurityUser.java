@@ -18,7 +18,10 @@ public class SecurityUser implements UserDetails {
 	 * Inner {@link com.epam.esm.dto.UserDto} key object.
 	 */
 	private final UserDto userDto;
-
+	private boolean accountNonExpired = true;
+	private boolean accountNonLocked = true;
+	private boolean credentialsNonExpired = true;
+	private boolean enabled = true;
 	public SecurityUser(UserDto userDto) {
 		this.userDto = userDto;
 	}
@@ -44,21 +47,21 @@ public class SecurityUser implements UserDetails {
 
 	@Override
 	public boolean isAccountNonExpired() {
-		return true;
+		return accountNonExpired;
 	}
 
 	@Override
 	public boolean isAccountNonLocked() {
-		return true;
+		return accountNonLocked;
 	}
 
 	@Override
 	public boolean isCredentialsNonExpired() {
-		return true;
+		return credentialsNonExpired;
 	}
 
 	@Override
 	public boolean isEnabled() {
-		return true;
+		return enabled;
 	}
 }

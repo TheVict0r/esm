@@ -23,7 +23,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 public class TagServiceImpl implements TagService {
-	public static final int ILLEGAL_TAG_ID = -1;
+	public static final long ILLEGAL_TAG_ID = -1L;
 	private final TagRepository tagRepository;
 	private final CertificateRepository certificateRepository;
 	private final TagMapperImpl tagMapper;
@@ -91,11 +91,7 @@ public class TagServiceImpl implements TagService {
 	public long getId(Tag tag) {
 		log.debug("Searching Tag - {} by it's name.", tag);
 		Optional<Tag> tagRetrievedByName = tagRepository.findByName(tag.getName());
-		long tagID = ILLEGAL_TAG_ID;
-		if (tagRetrievedByName.isPresent()) {
-			tagID = tagRetrievedByName.get().getId();
-		}
-		return tagID;
+		return tagRetrievedByName.map(Tag::getId).orElse(ILLEGAL_TAG_ID);
 	}
 
 	private Tag safeGetById(Long id) {

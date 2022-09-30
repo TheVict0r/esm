@@ -7,7 +7,7 @@ import com.epam.esm.controller.UserController;
 import com.epam.esm.dto.CertificateDto;
 import com.epam.esm.dto.PurchaseDto;
 import com.epam.esm.dto.TagDto;
-import com.epam.esm.dto.UserNoPasswordDto;
+import com.epam.esm.dto.UserResponseDto;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -26,26 +26,26 @@ public class UserHateoasProvider {
 	 * Adds HATEOAS links to UserNoPasswordDto after it has been read from the
 	 * datasource.
 	 *
-	 * @param userNoPasswordDto
+	 * @param userResponseDto
 	 *            UserNoPasswordDto instance
 	 */
-	public void addLinksForSingleUser(UserNoPasswordDto userNoPasswordDto) {
-		addForGetByIdSelf(userNoPasswordDto);
-		addForGetAllUserPurchases(userNoPasswordDto);
-		addForGetAll(userNoPasswordDto);
-		addForCreateUser(userNoPasswordDto);
-		addLinksToMultiplePurchases(userNoPasswordDto.getPurchases());
+	public void addLinksForSingleUser(UserResponseDto userResponseDto) {
+		addForGetByIdSelf(userResponseDto);
+		addForGetAllUserPurchases(userResponseDto);
+		addForGetAll(userResponseDto);
+		addForCreateUser(userResponseDto);
+		addLinksToMultiplePurchases(userResponseDto.getPurchases());
 	}
 
 	/**
 	 * Adds HATEOAS links to UserNoPasswordDtos returned from <i>getAll()</i>
 	 * method.
 	 *
-	 * @param userNoPasswordDtoList
+	 * @param userResponseDtoList
 	 *            list of UserNoPasswordDtos
 	 */
-	public void addLinksForGetAll(List<UserNoPasswordDto> userNoPasswordDtoList) {
-		userNoPasswordDtoList.forEach(this::addLinksForSingleUser);
+	public void addLinksForGetAll(List<UserResponseDto> userResponseDtoList) {
+		userResponseDtoList.forEach(this::addLinksForSingleUser);
 	}
 
 	/**
@@ -88,13 +88,13 @@ public class UserHateoasProvider {
 		addLinksForTags(certificates.stream().toList());
 	}
 
-	private void addForGetByIdSelf(UserNoPasswordDto userNoPasswordDto) {
-		userNoPasswordDto.add(linkTo(methodOn(UserController.class).getById(userNoPasswordDto.getId())).withSelfRel());
+	private void addForGetByIdSelf(UserResponseDto userResponseDto) {
+		userResponseDto.add(linkTo(methodOn(UserController.class).getById(userResponseDto.getId())).withSelfRel());
 	}
 
-	private void addForGetById(UserNoPasswordDto userNoPasswordDto) {
-		userNoPasswordDto
-				.add(linkTo(methodOn(UserController.class).getById(userNoPasswordDto.getId())).withRel("getById"));
+	private void addForGetById(UserResponseDto userResponseDto) {
+		userResponseDto
+				.add(linkTo(methodOn(UserController.class).getById(userResponseDto.getId())).withRel("getById"));
 	}
 
 	private void addForGetPurchaseForUserSelf(PurchaseDto purchaseDto) {
@@ -109,22 +109,22 @@ public class UserHateoasProvider {
 						.withRel("getPurchaseForUser"));
 	}
 
-	private void addForGetAllUserPurchasesSelf(UserNoPasswordDto userNoPasswordDto) {
-		userNoPasswordDto.add(
-				linkTo(methodOn(UserController.class).getUserAllPurchases(userNoPasswordDto.getId())).withSelfRel());
+	private void addForGetAllUserPurchasesSelf(UserResponseDto userResponseDto) {
+		userResponseDto.add(
+				linkTo(methodOn(UserController.class).getUserAllPurchases(userResponseDto.getId())).withSelfRel());
 	}
 
-	private void addForGetAllUserPurchases(UserNoPasswordDto userNoPasswordDto) {
-		userNoPasswordDto.add(linkTo(methodOn(UserController.class).getUserAllPurchases(userNoPasswordDto.getId()))
+	private void addForGetAllUserPurchases(UserResponseDto userResponseDto) {
+		userResponseDto.add(linkTo(methodOn(UserController.class).getUserAllPurchases(userResponseDto.getId()))
 				.withRel("getAllUserPurchases"));
 	}
 
-	private void addForGetAllSelf(UserNoPasswordDto userNoPasswordDto) {
-		userNoPasswordDto.add(linkTo(methodOn(UserController.class).getAll(null, null)).withSelfRel().expand());
+	private void addForGetAllSelf(UserResponseDto userResponseDto) {
+		userResponseDto.add(linkTo(methodOn(UserController.class).getAll(null, null)).withSelfRel().expand());
 	}
 
-	private void addForGetAll(UserNoPasswordDto userNoPasswordDto) {
-		userNoPasswordDto
+	private void addForGetAll(UserResponseDto userResponseDto) {
+		userResponseDto
 				.add(linkTo(methodOn(UserController.class).getAll(null, null)).withRel("getAllUsers").expand());
 	}
 
@@ -137,12 +137,12 @@ public class UserHateoasProvider {
 				.withRel("createPurchase"));
 	}
 
-	private void addForCreateUserSelf(UserNoPasswordDto userNoPasswordDto) {
-		userNoPasswordDto.add(linkTo((methodOn(UserController.class).createUser(null))).withSelfRel().expand());
+	private void addForCreateUserSelf(UserResponseDto userResponseDto) {
+		userResponseDto.add(linkTo((methodOn(UserController.class).createUser(null))).withSelfRel().expand());
 	}
 
-	private void addForCreateUser(UserNoPasswordDto userNoPasswordDto) {
-		userNoPasswordDto.add(linkTo((methodOn(UserController.class).createUser(null))).withRel("createUser").expand());
+	private void addForCreateUser(UserResponseDto userResponseDto) {
+		userResponseDto.add(linkTo((methodOn(UserController.class).createUser(null))).withRel("createUser").expand());
 	}
 
 	private void addLinksToMultiplePurchases(Set<PurchaseDto> purchaseDtoSet) {

@@ -4,11 +4,11 @@ import com.epam.esm.dao.entity.User;
 import com.epam.esm.dao.repositories.UserRepository;
 import com.epam.esm.dto.PurchaseDto;
 import com.epam.esm.dto.UserDto;
-import com.epam.esm.dto.UserNoPasswordDto;
+import com.epam.esm.dto.UserResponseDto;
 import com.epam.esm.exception.InappropriateBodyContentException;
 import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.mapper.impl.UserMapperImpl;
-import com.epam.esm.mapper.impl.UserNoPasswordMapperImpl;
+import com.epam.esm.mapper.impl.UserResponseMapperImpl;
 import com.epam.esm.security.Role;
 import com.epam.esm.security.SecurityUser;
 import com.epam.esm.service.UserService;
@@ -30,27 +30,27 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserServiceImpl implements UserService {
 	private final UserRepository userRepository;
 	private final UserMapperImpl userMapper;
-	private final UserNoPasswordMapperImpl userNoPasswordMapper;
+	private final UserResponseMapperImpl userResponseMapper;
 	private final PasswordEncoder passwordEncoder;
 
 	@Override
-	public List<UserNoPasswordDto> getAll(int page, int size) {
+	public List<UserResponseDto> getAll(int page, int size) {
 		log.debug("Reading all Users. Page № - {}, size - {}", page, size);
 		Page<User> allUsers = userRepository.findAll(PageRequest.of(page, size));
-		return allUsers.stream().map(userNoPasswordMapper::convertToDto).toList();
+		return allUsers.stream().map(userResponseMapper::convertToDto).toList();
 	}
 
 	@Override
-	public UserNoPasswordDto getById(Long id) {
+	public UserResponseDto getById(Long id) {
 		User user = userRepository.findById(id).orElseThrow(() -> {
 			log.error("There is no User with ID '{}' in the database", id);
 			return new ResourceNotFoundException(id);
 		});
-		return userNoPasswordMapper.convertToDto(user);
+		return userResponseMapper.convertToDto(user);
 	}
 
 	@Override
-	public UserNoPasswordDto create(UserDto userDto) {
+	public UserResponseDto create(UserDto userDto) {
 		log.debug("Creating the User {}", userDto);
 		if (userDto.getId() != null) {
 			log.error("When creating a new User, you should not specify the ID. Current input data has"
@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
 		String passwordEncoded = passwordEncoder.encode(userDto.getPassword());
 		userDto.setPassword(passwordEncoded);
 		User userCreated = userRepository.save(userMapper.convertToEntity(userDto));
-		return userNoPasswordMapper.convertToDto(userCreated);
+		return userResponseMapper.convertToDto(userCreated);
 	}
 
 	@Override

@@ -36,7 +36,7 @@ class CertificateServiceImplTest {
 	@MockBean
 	private CertificateDao certificateDao;
 	@MockBean
-	private TagRepository tagDao;
+	private TagRepository tagRepository;
 	@MockBean
 	CertificateMapperImpl certificateMapper;
 	@MockBean
@@ -183,27 +183,27 @@ class CertificateServiceImplTest {
 		when(certificateMapper.convertToEntity(certificateDtoForCreation)).thenReturn(certificateForCreation);
 		when(certificateDao.create(certificateForCreation)).thenReturn(certificateCreated);
 		when(certificateMapper.convertToDto(certificateCreated)).thenReturn(certificateDtoCreatedExpected);
-		when(tagDao.isExist(tag1NoId)).thenReturn(true);
-		when(tagDao.isExist(tag2NoId)).thenReturn(true);
-		when(tagDao.isExist(tag3NoId)).thenReturn(true);
-		when(tagDao.getId(tag1NoId)).thenReturn(1L);
-		when(tagDao.getId(tag2NoId)).thenReturn(2L);
-		when(tagDao.getId(tag3NoId)).thenReturn(3L);
+		when(tagRepository.isExist(tag1NoId)).thenReturn(true);
+		when(tagRepository.isExist(tag2NoId)).thenReturn(true);
+		when(tagRepository.isExist(tag3NoId)).thenReturn(true);
+		when(tagRepository.getId(tag1NoId)).thenReturn(1L);
+		when(tagRepository.getId(tag2NoId)).thenReturn(2L);
+		when(tagRepository.getId(tag3NoId)).thenReturn(3L);
 
 		assertEquals(certificateDtoCreatedExpected, certificateService.create(certificateDtoForCreation));
 
 		verify(certificateMapper).convertToEntity(certificateDtoForCreation);
 		verify(certificateDao).create(certificateForCreation);
 		verify(certificateMapper).convertToDto(certificateCreated);
-		verify(tagDao).isExist(tag1NoId);
-		verify(tagDao).isExist(tag2NoId);
-		verify(tagDao).isExist(tag3NoId);
-		verify(tagDao).getId(tag1NoId);
-		verify(tagDao).getId(tag2NoId);
-		verify(tagDao).getId(tag3NoId);
+		verify(tagRepository).isExist(tag1NoId);
+		verify(tagRepository).isExist(tag2NoId);
+		verify(tagRepository).isExist(tag3NoId);
+		verify(tagRepository).getId(tag1NoId);
+		verify(tagRepository).getId(tag2NoId);
+		verify(tagRepository).getId(tag3NoId);
 		verifyNoMoreInteractions(certificateMapper);
 		verifyNoMoreInteractions(certificateDao);
-		verifyNoMoreInteractions(tagDao);
+		verifyNoMoreInteractions(tagRepository);
 	}
 
 	@Test
@@ -251,11 +251,11 @@ class CertificateServiceImplTest {
 		doNothing().when(validator).pathAndBodyIdsCheck(certificateId, certificateDtoForReplacement.getId());
 		when(certificateDao.getById(certificateId)).thenReturn(Optional.of(certificateFromDatasource));
 		when(certificateMapper.convertToEntity(certificateDtoForReplacement)).thenReturn(certificateForReplacement);
-		when(tagDao.isExist(tagNew)).thenReturn(true);
-		when(tagDao.getId(tagNew)).thenReturn(tagId);
+		when(tagRepository.isExist(tagNew)).thenReturn(true);
+		when(tagRepository.getId(tagNew)).thenReturn(tagId);
 		when(certificateDao.update(certificateForReplacement)).thenReturn(certificateAfterReplacement);
 		// when(certificateDao.getCertificatesByTagId(tagOld.getId())).thenReturn(emptyList);
-		doNothing().when(tagDao).delete(tagOld);
+		doNothing().when(tagRepository).delete(tagOld);
 		when(certificateMapper.convertToDto(certificateAfterReplacement))
 				.thenReturn(certificateDtoAfterReplacementExpected);
 
@@ -265,16 +265,16 @@ class CertificateServiceImplTest {
 		verify(validator).pathAndBodyIdsCheck(certificateId, certificateDtoForReplacement.getId());
 		verify(certificateDao).getById(certificateId);
 		verify(certificateMapper).convertToEntity(certificateDtoForReplacement);
-		verify(tagDao).isExist(tagNew);
-		verify(tagDao).getId(tagNew);
+		verify(tagRepository).isExist(tagNew);
+		verify(tagRepository).getId(tagNew);
 		verify(certificateDao).update(certificateForReplacement);
 		// verify(certificateDao).getCertificatesByTagId(tagOld.getId());
-		verify(tagDao).delete(tagOld);
+		verify(tagRepository).delete(tagOld);
 		verify(certificateMapper).convertToDto(certificateAfterReplacement);
 		verifyNoMoreInteractions(validator);
 		verifyNoMoreInteractions(certificateDao);
 		verifyNoMoreInteractions(certificateMapper);
-		verifyNoMoreInteractions(tagDao);
+		verifyNoMoreInteractions(tagRepository);
 	}
 
 	@Test

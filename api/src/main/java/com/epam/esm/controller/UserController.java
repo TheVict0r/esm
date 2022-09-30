@@ -3,7 +3,7 @@ package com.epam.esm.controller;
 import com.epam.esm.controller.hateoas.UserHateoasProvider;
 import com.epam.esm.dto.PurchaseDto;
 import com.epam.esm.dto.UserDto;
-import com.epam.esm.dto.UserNoPasswordDto;
+import com.epam.esm.dto.UserResponseDto;
 import com.epam.esm.service.PurchaseService;
 import com.epam.esm.service.UserService;
 import com.epam.esm.service.validation.BasicInfo;
@@ -46,12 +46,12 @@ public class UserController {
 	 */
 	@GetMapping(value = {"/{id}"})
 	@PreAuthorize("hasAuthority('ADMIN') or @accessChecker.checkUserId(authentication, #id)")
-	public UserNoPasswordDto getById(
+	public UserResponseDto getById(
 			@Min(value = 1, message = "message.validation.id.min") @PathVariable("id") Long id) {
 		log.info("Reading the User by ID - {}", id);
-		UserNoPasswordDto userNoPasswordDto = userService.getById(id);
-		userHateoasProvider.addLinksForSingleUser(userNoPasswordDto);
-		return userNoPasswordDto;
+		UserResponseDto userResponseDto = userService.getById(id);
+		userHateoasProvider.addLinksForSingleUser(userResponseDto);
+		return userResponseDto;
 	}
 
 	/**
@@ -100,11 +100,11 @@ public class UserController {
 	 */
 	@PostMapping(value = {"/signup"})
 	@ResponseStatus(HttpStatus.CREATED)
-	public UserNoPasswordDto createUser(@RequestBody @Validated(BasicInfo.class) UserDto userDto) {
+	public UserResponseDto createUser(@RequestBody @Validated(BasicInfo.class) UserDto userDto) {
 		log.info("Creating user - {}", userDto.getName());
-		UserNoPasswordDto userNoPasswordDtoCreated = userService.create(userDto);
-		userHateoasProvider.addLinksForSingleUser(userNoPasswordDtoCreated);
-		return userNoPasswordDtoCreated;
+		UserResponseDto userResponseDtoCreated = userService.create(userDto);
+		userHateoasProvider.addLinksForSingleUser(userResponseDtoCreated);
+		return userResponseDtoCreated;
 	}
 
 	/**
@@ -137,12 +137,12 @@ public class UserController {
 	 */
 	@GetMapping
 	@PreAuthorize("hasAuthority('ADMIN')")
-	public List<UserNoPasswordDto> getAll(
+	public List<UserResponseDto> getAll(
 			@Min(value = 0, message = "message.validation.page.min") @RequestParam(value = "page", defaultValue = "0") Integer page,
 			@Min(value = 0, message = "message.validation.page.size") @Max(value = 50, message = "message.validation.page.size") @RequestParam(value = "size", defaultValue = "10") Integer size) {
 		log.info("Reading all Users. Page № - {}, size - {}", page, size);
-		List<UserNoPasswordDto> userNoPasswordDtoList = userService.getAll(page, size);
-		userHateoasProvider.addLinksForGetAll(userNoPasswordDtoList);
-		return userNoPasswordDtoList;
+		List<UserResponseDto> userResponseDtoList = userService.getAll(page, size);
+		userHateoasProvider.addLinksForGetAll(userResponseDtoList);
+		return userResponseDtoList;
 	}
 }

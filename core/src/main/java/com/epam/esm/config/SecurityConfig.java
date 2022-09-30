@@ -62,7 +62,7 @@ public class SecurityConfig {
 				.hasAnyAuthority(Role.USER.getAuthority(), Role.ADMIN.getAuthority())
 				.mvcMatchers(HttpMethod.POST, "/users/{userId}/purchases/")
 				.hasAnyAuthority(Role.USER.getAuthority(), Role.ADMIN.getAuthority())
-				.mvcMatchers("/users/**", "/certificates/**", "/tags/**", "/generator/**")
+				.mvcMatchers("/users/**", "/certificates/**", "/tags/**", "/generator")
 				.hasAuthority(Role.ADMIN.getAuthority()).anyRequest().authenticated();
 		return http.build();
 	}

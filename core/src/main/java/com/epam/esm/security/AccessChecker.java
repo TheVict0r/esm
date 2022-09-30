@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
  * Can be used for the method level authorisation.
  */
 @Log4j2
-@RequiredArgsConstructor
 @Component
 public class AccessChecker {
 
