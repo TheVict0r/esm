@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
  * (should be linked with tags and users) All values should look like more
  * -or-less meaningful: random words, but not random letters
  *
- * For private use only :)
+ * Not a part of API. For private use only :)
  */
 @Log4j2
 @RestController
@@ -24,7 +24,7 @@ public class EntityGeneratorController {
 
 	private final EntityGenerator generator;
 
-	@GetMapping(value = "/iddqd")
+	@GetMapping(value = "/start")
 	public String generateEntities() {
 		generator.generateEntities();
 		return "Ready. Check database.";

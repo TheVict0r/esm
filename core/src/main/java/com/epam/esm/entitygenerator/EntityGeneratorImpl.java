@@ -1,10 +1,10 @@
 package com.epam.esm.entitygenerator;
 
-import com.epam.esm.dao.entity.Role;
 import com.epam.esm.dto.CertificateDto;
 import com.epam.esm.dto.PurchaseDto;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.dto.UserDto;
+import com.epam.esm.security.Role;
 import com.epam.esm.service.CertificateService;
 import com.epam.esm.service.PurchaseService;
 import com.epam.esm.service.UserService;
@@ -35,12 +35,16 @@ public class EntityGeneratorImpl implements EntityGenerator {
 
 	@Override
 	public void generateEntities() {
-		/* use by 1 method only - OT GPEXA PODALSHE :) */
+		/* use by 1 method only - all calls are commented for safety reason */
 
-		   //generateCertificatesWithTags();
-		  //generateUsers();
-		 //addPurchasesToUsers(); //don't forget to block role check in UserServiceImpl.create()
-		//generateAdmins(); //don't forget to block role check in UserServiceImpl.create()
+		// generateCertificatesWithTags();
+		// generateUsers();
+		// addPurchasesToUsers(); //don't forget to block role check in UserServiceImpl
+		// create() method
+		// UserServiceImpl.create()
+		// generateAdmins(); //don't forget to block role check in UserServiceImpl
+		// create() method
+		// UserServiceImpl.create()
 	}
 
 	private void generateCertificatesWithTags() {
@@ -73,7 +77,6 @@ public class EntityGeneratorImpl implements EntityGenerator {
 		for (int i = 1; i <= 10; i++) {
 			generateOneUserEntity("Admin ", i, Role.ADMIN);
 		}
-
 	}
 
 	private void generateOneUserEntity(String namePrefix, int namePostfix, Role role) {
@@ -82,9 +85,6 @@ public class EntityGeneratorImpl implements EntityGenerator {
 		UserDto userDto = new UserDto(null, userName, rawPassword, role, null);
 		userService.create(userDto);
 	}
-
-
-
 
 	private void addPurchasesToUsers() {
 

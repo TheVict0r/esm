@@ -38,7 +38,7 @@ public interface TagService extends BaseService<TagDto> {
 	 * @return {@code true} if {@code Tag} presented in the datasource,
 	 *         {@code false} if not
 	 */
-    boolean isExist(Tag tag);
+	boolean isExist(Tag tag);
 
 	/**
 	 * Finds {@code Tag's} <b>ID</b> for {@code Tag} that does not contain <b>ID</b>

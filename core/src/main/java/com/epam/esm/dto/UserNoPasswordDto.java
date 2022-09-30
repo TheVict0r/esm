@@ -1,18 +1,17 @@
 package com.epam.esm.dto;
 
-import com.epam.esm.dao.entity.Role;
+import com.epam.esm.security.Role;
 import com.epam.esm.service.validation.BasicInfo;
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.hateoas.RepresentationModel;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.PositiveOrZero;
-import javax.validation.constraints.Size;
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 
 /** Secured DTO class for User entity - no password data */
 

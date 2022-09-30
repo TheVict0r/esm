@@ -3,10 +3,9 @@ package com.epam.esm.service;
 import com.epam.esm.dto.PurchaseDto;
 import com.epam.esm.dto.UserDto;
 import com.epam.esm.dto.UserNoPasswordDto;
-import org.springframework.security.core.userdetails.UserDetailsService;
-
 import java.util.List;
 import java.util.Set;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 /** Service operations with the {@code User}. */
 public interface UserService extends UserDetailsService {

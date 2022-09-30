@@ -46,7 +46,8 @@ public class UserController {
 	 */
 	@GetMapping(value = {"/{id}"})
 	@PreAuthorize("hasAuthority('ADMIN') or @accessChecker.checkUserId(authentication, #id)")
-	public UserNoPasswordDto getById(@Min(value = 1, message = "message.validation.id.min") @PathVariable("id") Long id) {
+	public UserNoPasswordDto getById(
+			@Min(value = 1, message = "message.validation.id.min") @PathVariable("id") Long id) {
 		log.info("Reading the User by ID - {}", id);
 		UserNoPasswordDto userNoPasswordDto = userService.getById(id);
 		userHateoasProvider.addLinksForSingleUser(userNoPasswordDto);
@@ -93,12 +94,13 @@ public class UserController {
 	/**
 	 * Creates a new User.
 	 *
-	 * @param userDto UserDto need to be created
+	 * @param userDto
+	 *            UserDto need to be created
 	 * @return created UserDto
 	 */
 	@PostMapping(value = {"/signup"})
 	@ResponseStatus(HttpStatus.CREATED)
-	public UserNoPasswordDto createUser(@RequestBody @Validated(BasicInfo.class) UserDto userDto){
+	public UserNoPasswordDto createUser(@RequestBody @Validated(BasicInfo.class) UserDto userDto) {
 		log.info("Creating user - {}", userDto.getName());
 		UserNoPasswordDto userNoPasswordDtoCreated = userService.create(userDto);
 		userHateoasProvider.addLinksForSingleUser(userNoPasswordDtoCreated);

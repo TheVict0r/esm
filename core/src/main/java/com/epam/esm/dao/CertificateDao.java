@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 /** Data access operations with the {@code Certificate}. */
 @Repository
-public interface CertificateDao extends BaseDao<Certificate> {
+public interface CertificateDao {
 
 	/**
 	 * Searches {@code Certificates} with tags (all params are optional and can be

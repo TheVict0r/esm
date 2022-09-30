@@ -254,7 +254,7 @@ class CertificateServiceImplTest {
 		when(tagDao.isExist(tagNew)).thenReturn(true);
 		when(tagDao.getId(tagNew)).thenReturn(tagId);
 		when(certificateDao.update(certificateForReplacement)).thenReturn(certificateAfterReplacement);
-		//when(certificateDao.getCertificatesByTagId(tagOld.getId())).thenReturn(emptyList);
+		// when(certificateDao.getCertificatesByTagId(tagOld.getId())).thenReturn(emptyList);
 		doNothing().when(tagDao).delete(tagOld);
 		when(certificateMapper.convertToDto(certificateAfterReplacement))
 				.thenReturn(certificateDtoAfterReplacementExpected);
@@ -268,7 +268,7 @@ class CertificateServiceImplTest {
 		verify(tagDao).isExist(tagNew);
 		verify(tagDao).getId(tagNew);
 		verify(certificateDao).update(certificateForReplacement);
-		//verify(certificateDao).getCertificatesByTagId(tagOld.getId());
+		// verify(certificateDao).getCertificatesByTagId(tagOld.getId());
 		verify(tagDao).delete(tagOld);
 		verify(certificateMapper).convertToDto(certificateAfterReplacement);
 		verifyNoMoreInteractions(validator);

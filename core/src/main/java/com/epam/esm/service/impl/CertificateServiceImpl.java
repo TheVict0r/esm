@@ -109,7 +109,7 @@ public class CertificateServiceImpl implements CertificateService {
 	private void deleteOrphanTags(Set<Tag> tagSet) {
 		log.debug("Deleting orphan tags - {}", tagSet);
 		tagSet.forEach(tag -> {
-			List<Certificate> certificateByTagId = certificateRepository.getCertificatesByTagId(tag.getId());
+			List<Certificate> certificateByTagId = certificateRepository.findCertificatesByTagId(tag.getId());
 			if (certificateByTagId.isEmpty()) {
 				tagRepository.delete(tag);
 			}

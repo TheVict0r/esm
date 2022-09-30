@@ -1,5 +1,6 @@
 package com.epam.esm.dao.entity;
 
+import com.epam.esm.security.Role;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -32,7 +33,7 @@ public class User implements Serializable {
 	@Column(name = "name")
 	private String name;
 
-	@Column(name="password")
+	@Column(name = "password")
 	private String password;
 
 	@Column(name = "role")
@@ -65,6 +66,6 @@ public class User implements Serializable {
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + " {id=" + id + ", name='" + name + '\'' + ", role='" + role +'\'' + '}';
+		return getClass().getSimpleName() + " {id=" + id + ", name='" + name + '\'' + ", role='" + role + '\'' + '}';
 	}
 }

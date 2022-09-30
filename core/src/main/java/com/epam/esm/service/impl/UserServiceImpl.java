@@ -1,6 +1,5 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.dao.entity.Role;
 import com.epam.esm.dao.entity.User;
 import com.epam.esm.dao.repositories.UserRepository;
 import com.epam.esm.dto.PurchaseDto;
@@ -10,8 +9,11 @@ import com.epam.esm.exception.InappropriateBodyContentException;
 import com.epam.esm.exception.ResourceNotFoundException;
 import com.epam.esm.mapper.impl.UserMapperImpl;
 import com.epam.esm.mapper.impl.UserNoPasswordMapperImpl;
+import com.epam.esm.security.Role;
 import com.epam.esm.security.SecurityUser;
 import com.epam.esm.service.UserService;
+import java.util.List;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
@@ -21,9 +23,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Set;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -86,7 +85,8 @@ public class UserServiceImpl implements UserService {
 	@Override
 	@Transactional
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = userRepository.findByName(username).orElseThrow(() -> new UsernameNotFoundException("User " + username + " not found"));
+		User user = userRepository.findByName(username)
+				.orElseThrow(() -> new UsernameNotFoundException("User " + username + " not found"));
 		return new SecurityUser(userMapper.convertToDto(user));
 	}
 

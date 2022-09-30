@@ -1,35 +1,21 @@
 package com.epam.esm.dao.impl;
 
-import com.epam.esm.dao.AbstractBaseDao;
 import com.epam.esm.dao.CertificateDao;
 import com.epam.esm.dao.entity.Certificate;
 import com.epam.esm.dao.provider.PaginationProvider;
 import com.epam.esm.dao.provider.SearchProvider;
 import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Repository
 @Log4j2
-public class CertificateDaoImpl extends AbstractBaseDao<Certificate> implements CertificateDao {
-
-	public static final String SELECT_CERTIFICATES_BY_TAG_ID = "SELECT c FROM Certificate c JOIN c.tags t  WHERE t.id = :id";
+@RequiredArgsConstructor
+public class CertificateDaoImpl implements CertificateDao {
 	private final SearchProvider searchProvider;
 	private final PaginationProvider paginationProvider;
-
-	@PersistenceContext
-	private EntityManager entityManager;
-
-	@Autowired
-	public CertificateDaoImpl(SearchProvider searchProvider, PaginationProvider paginationProvider) {
-		super(Certificate.class);
-		this.searchProvider = searchProvider;
-		this.paginationProvider = paginationProvider;
-	}
 
 	@Override
 	public List<Certificate> getCertificates(List<String> tagNames, String name, String description, String sort,
