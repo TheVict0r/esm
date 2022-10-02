@@ -19,7 +19,7 @@ import org.springframework.hateoas.RepresentationModel;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDto extends RepresentationModel<UserDto> implements Serializable {
+public class UserRequestDto extends RepresentationModel<UserRequestDto> implements Serializable {
 	@PositiveOrZero(message = "message.validation.user.id.positive_or_zero", groups = BasicInfo.class)
 	private Long id;
 	@NotBlank(message = "message.validation.user.name.not_blank", groups = BasicInfo.class)

@@ -1,7 +1,7 @@
 package com.epam.esm.service;
 
 import com.epam.esm.dto.PurchaseDto;
-import com.epam.esm.dto.UserDto;
+import com.epam.esm.dto.UserRequestDto;
 import com.epam.esm.dto.UserResponseDto;
 import java.util.List;
 import java.util.Set;
@@ -35,12 +35,12 @@ public interface UserService extends UserDetailsService {
 	/**
 	 * Creates a new User in the datasource.
 	 *
-	 * @param userDto
+	 * @param userRequestDto
 	 *            DTO of User with data for entity need to be created
 	 * @return DTO object of created User entity
 	 */
 
-	UserResponseDto create(UserDto userDto);
+	UserResponseDto create(UserRequestDto userRequestDto);
 
 	/**
 	 * Provides all purchases for User by its ID

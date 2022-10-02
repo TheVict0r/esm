@@ -1,6 +1,6 @@
 package com.epam.esm.security;
 
-import com.epam.esm.dto.UserDto;
+import com.epam.esm.dto.UserRequestDto;
 import java.util.Collection;
 import java.util.List;
 import org.springframework.security.core.GrantedAuthority;
@@ -10,39 +10,39 @@ import org.springframework.security.core.userdetails.UserDetails;
  * {@link org.springframework.security.core.userdetails.UserDetails}
  * implementation used for authentication and authorisation.
  *
- * Wrapper for the {@link com.epam.esm.dto.UserDto} object.
+ * Wrapper for the {@link UserRequestDto} object.
  *
  */
 public class SecurityUser implements UserDetails {
 	/**
-	 * Inner {@link com.epam.esm.dto.UserDto} key object.
+	 * Inner {@link UserRequestDto} key object.
 	 */
-	private final UserDto userDto;
+	private final UserRequestDto userRequestDto;
 	private boolean accountNonExpired = true;
 	private boolean accountNonLocked = true;
 	private boolean credentialsNonExpired = true;
 	private boolean enabled = true;
-	public SecurityUser(UserDto userDto) {
-		this.userDto = userDto;
+	public SecurityUser(UserRequestDto userRequestDto) {
+		this.userRequestDto = userRequestDto;
 	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return List.of(userDto.getRole());
+		return List.of(userRequestDto.getRole());
 	}
 
 	@Override
 	public String getPassword() {
-		return userDto.getPassword();
+		return userRequestDto.getPassword();
 	}
 
 	@Override
 	public String getUsername() {
-		return userDto.getName();
+		return userRequestDto.getName();
 	}
 
-	public UserDto getUserDto() {
-		return userDto;
+	public UserRequestDto getUserDto() {
+		return userRequestDto;
 	}
 
 	@Override

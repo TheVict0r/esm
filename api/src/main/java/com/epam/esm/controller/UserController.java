@@ -2,7 +2,7 @@ package com.epam.esm.controller;
 
 import com.epam.esm.controller.hateoas.UserHateoasProvider;
 import com.epam.esm.dto.PurchaseDto;
-import com.epam.esm.dto.UserDto;
+import com.epam.esm.dto.UserRequestDto;
 import com.epam.esm.dto.UserResponseDto;
 import com.epam.esm.service.PurchaseService;
 import com.epam.esm.service.UserService;
@@ -94,15 +94,15 @@ public class UserController {
 	/**
 	 * Creates a new User.
 	 *
-	 * @param userDto
+	 * @param userRequestDto
 	 *            UserDto need to be created
 	 * @return created UserDto
 	 */
 	@PostMapping(value = {"/signup"})
 	@ResponseStatus(HttpStatus.CREATED)
-	public UserResponseDto createUser(@RequestBody @Validated(BasicInfo.class) UserDto userDto) {
-		log.info("Creating user - {}", userDto.getName());
-		UserResponseDto userResponseDtoCreated = userService.create(userDto);
+	public UserResponseDto createUser(@RequestBody @Validated(BasicInfo.class) UserRequestDto userRequestDto) {
+		log.info("Creating user - {}", userRequestDto.getName());
+		UserResponseDto userResponseDtoCreated = userService.create(userRequestDto);
 		userHateoasProvider.addLinksForSingleUser(userResponseDtoCreated);
 		return userResponseDtoCreated;
 	}

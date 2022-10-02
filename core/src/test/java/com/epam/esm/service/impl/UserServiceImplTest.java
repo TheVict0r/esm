@@ -13,11 +13,11 @@ import com.epam.esm.dao.entity.User;
 import com.epam.esm.dao.repositories.UserRepository;
 import com.epam.esm.dto.CertificateDto;
 import com.epam.esm.dto.PurchaseDto;
-import com.epam.esm.dto.UserDto;
+import com.epam.esm.dto.UserRequestDto;
 import com.epam.esm.exception.AbstractLocalizedCustomException;
 import com.epam.esm.exception.InappropriateBodyContentException;
 import com.epam.esm.exception.ResourceNotFoundException;
-import com.epam.esm.mapper.impl.UserMapperImpl;
+import com.epam.esm.mapper.impl.UserRequestMapperImpl;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
@@ -34,7 +34,7 @@ class UserServiceImplTest {
 	@MockBean
 	private UserRepository userRepository;
 	@MockBean
-	private UserMapperImpl userMapper;
+	private UserRequestMapperImpl userMapper;
 	@Autowired
 	private UserServiceImpl userService;
 	private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
@@ -46,18 +46,18 @@ class UserServiceImplTest {
 		User user1 = new User(1L, "User 1", new HashSet<Purchase>());
 		User user2 = new User(2L, "User 2", new HashSet<Purchase>());
 		User user3 = new User(3L, "User 3", new HashSet<Purchase>());
-		UserDto userDto1 = new UserDto(1L, "User 1", new HashSet<PurchaseDto>());
-		UserDto userDto2 = new UserDto(2L, "User 2", new HashSet<PurchaseDto>());
-		UserDto userDto3 = new UserDto(3L, "User 3", new HashSet<PurchaseDto>());
+		UserRequestDto userRequestDto1 = new UserRequestDto(1L, "User 1", new HashSet<PurchaseDto>());
+		UserRequestDto userRequestDto2 = new UserRequestDto(2L, "User 2", new HashSet<PurchaseDto>());
+		UserRequestDto userRequestDto3 = new UserRequestDto(3L, "User 3", new HashSet<PurchaseDto>());
 		List<User> userList = List.of(user1, user2, user3);
-		List<UserDto> userDtoList = List.of(userDto1, userDto2, userDto3);
+		List<UserRequestDto> userRequestDtoList = List.of(userRequestDto1, userRequestDto2, userRequestDto3);
 
 		when(userRepository.getAll(page, size)).thenReturn(userList);
-		when(userMapper.convertToDto(user1)).thenReturn(userDto1);
-		when(userMapper.convertToDto(user2)).thenReturn(userDto2);
-		when(userMapper.convertToDto(user3)).thenReturn(userDto3);
+		when(userMapper.convertToDto(user1)).thenReturn(userRequestDto1);
+		when(userMapper.convertToDto(user2)).thenReturn(userRequestDto2);
+		when(userMapper.convertToDto(user3)).thenReturn(userRequestDto3);
 
-		assertEquals(userDtoList, userService.getAll(page, size));
+		assertEquals(userRequestDtoList, userService.getAll(page, size));
 
 		verify(userRepository).getAll(page, size);
 		verify(userMapper).convertToDto(user1);
@@ -71,12 +71,12 @@ class UserServiceImplTest {
 	void getByIdShouldReturnUserDto() {
 		Long userId = 1L;
 		User user = new User(1L, "User 1", new HashSet<Purchase>());
-		UserDto userDto = new UserDto(1L, "User 1", new HashSet<PurchaseDto>());
+		UserRequestDto userRequestDto = new UserRequestDto(1L, "User 1", new HashSet<PurchaseDto>());
 
 		when(userRepository.getById(userId)).thenReturn(Optional.of(user));
-		when(userMapper.convertToDto(user)).thenReturn(userDto);
+		when(userMapper.convertToDto(user)).thenReturn(userRequestDto);
 
-		assertEquals(userDto, userService.getById(userId));
+		assertEquals(userRequestDto, userService.getById(userId));
 
 		verify(userRepository).getById(userId);
 		verify(userMapper).convertToDto(user);
@@ -105,16 +105,16 @@ class UserServiceImplTest {
 	void createShouldReturnUserDto() {
 		User userNoId = new User(null, "User 1", new HashSet<Purchase>());
 		User userCreated = new User(1L, "User 1", new HashSet<Purchase>());
-		UserDto userDtoInput = new UserDto(null, "User 1", new HashSet<PurchaseDto>());
-		UserDto userDtoOutput = new UserDto(1L, "User 1", new HashSet<PurchaseDto>());
+		UserRequestDto userRequestDtoInput = new UserRequestDto(null, "User 1", new HashSet<PurchaseDto>());
+		UserRequestDto userRequestDtoOutput = new UserRequestDto(1L, "User 1", new HashSet<PurchaseDto>());
 
-		when(userMapper.convertToEntity(userDtoInput)).thenReturn(userNoId);
+		when(userMapper.convertToEntity(userRequestDtoInput)).thenReturn(userNoId);
 		when(userRepository.save(userNoId)).thenReturn(userCreated);
-		when(userMapper.convertToDto(userCreated)).thenReturn(userDtoOutput);
+		when(userMapper.convertToDto(userCreated)).thenReturn(userRequestDtoOutput);
 
-		assertEquals(userDtoOutput, userService.create(userDtoInput));
+		assertEquals(userRequestDtoOutput, userService.create(userRequestDtoInput));
 
-		verify(userMapper).convertToEntity(userDtoInput);
+		verify(userMapper).convertToEntity(userRequestDtoInput);
 		verify(userRepository).save(userNoId);
 		verify(userMapper).convertToDto(userCreated);
 		verifyNoMoreInteractions(userMapper);
@@ -123,12 +123,12 @@ class UserServiceImplTest {
 
 	@Test
 	void createShouldThrowInappropriateBodyContentException() {
-		UserDto userDtoInput = new UserDto(1L, "User 1", new HashSet<PurchaseDto>());
+		UserRequestDto userRequestDtoInput = new UserRequestDto(1L, "User 1", new HashSet<PurchaseDto>());
 		String messageKeyExpected = "message.inappropriate_body_content";
 		long paramExpected = 1L;
 
 		AbstractLocalizedCustomException exception = assertThrows(InappropriateBodyContentException.class,
-				() -> userService.create(userDtoInput));
+				() -> userService.create(userRequestDtoInput));
 		assertEquals(messageKeyExpected, exception.getMessageKey());
 		assertEquals(paramExpected, exception.getParams()[0]);
 	}
@@ -137,10 +137,10 @@ class UserServiceImplTest {
 	void isUserExistShouldReturnTrue() {
 		long userId = 1L;
 		User user = new User(1L, "User 1", new HashSet<Purchase>());
-		UserDto userDto = new UserDto(1L, "User 1", new HashSet<PurchaseDto>());
+		UserRequestDto userRequestDto = new UserRequestDto(1L, "User 1", new HashSet<PurchaseDto>());
 
 		when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-		when(userMapper.convertToDto(user)).thenReturn(userDto);
+		when(userMapper.convertToDto(user)).thenReturn(userRequestDto);
 
 		assertTrue(userService.isUserExist(userId));
 
@@ -166,11 +166,11 @@ class UserServiceImplTest {
 				Set.of(certificateDto));
 
 		User user = new User(1L, "User 1", Set.of(purchase));
-		UserDto userDto = new UserDto(1L, "User 1", Set.of(purchaseDto));
+		UserRequestDto userRequestDto = new UserRequestDto(1L, "User 1", Set.of(purchaseDto));
 		Set<PurchaseDto> purchaseDtoSetExpected = Set.of(purchaseDto);
 
 		when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-		when(userMapper.convertToDto(user)).thenReturn(userDto);
+		when(userMapper.convertToDto(user)).thenReturn(userRequestDto);
 
 		assertEquals(purchaseDtoSetExpected, userService.getAllPurchasesByUserId(userId));
 

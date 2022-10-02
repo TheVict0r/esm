@@ -3,7 +3,7 @@ package com.epam.esm.entitygenerator;
 import com.epam.esm.dto.CertificateDto;
 import com.epam.esm.dto.PurchaseDto;
 import com.epam.esm.dto.TagDto;
-import com.epam.esm.dto.UserDto;
+import com.epam.esm.dto.UserRequestDto;
 import com.epam.esm.security.Role;
 import com.epam.esm.service.CertificateService;
 import com.epam.esm.service.PurchaseService;
@@ -82,8 +82,8 @@ public class EntityGeneratorImpl implements EntityGenerator {
 	private void generateOneUserEntity(String namePrefix, int namePostfix, Role role) {
 		String userName = namePrefix + namePostfix;
 		String rawPassword = userName;
-		UserDto userDto = new UserDto(null, userName, rawPassword, role, null);
-		userService.create(userDto);
+		UserRequestDto userRequestDto = new UserRequestDto(null, userName, rawPassword, role, null);
+		userService.create(userRequestDto);
 	}
 
 	private void addPurchasesToUsers() {

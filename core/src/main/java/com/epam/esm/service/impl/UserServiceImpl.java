@@ -3,11 +3,11 @@ package com.epam.esm.service.impl;
 import com.epam.esm.dao.entity.User;
 import com.epam.esm.dao.repositories.UserRepository;
 import com.epam.esm.dto.PurchaseDto;
-import com.epam.esm.dto.UserDto;
+import com.epam.esm.dto.UserRequestDto;
 import com.epam.esm.dto.UserResponseDto;
 import com.epam.esm.exception.InappropriateBodyContentException;
 import com.epam.esm.exception.ResourceNotFoundException;
-import com.epam.esm.mapper.impl.UserMapperImpl;
+import com.epam.esm.mapper.impl.UserRequestMapperImpl;
 import com.epam.esm.mapper.impl.UserResponseMapperImpl;
 import com.epam.esm.security.Role;
 import com.epam.esm.security.SecurityUser;
@@ -29,7 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class UserServiceImpl implements UserService {
 	private final UserRepository userRepository;
-	private final UserMapperImpl userMapper;
+	private final UserRequestMapperImpl userRequestMapper;
 	private final UserResponseMapperImpl userResponseMapper;
 	private final PasswordEncoder passwordEncoder;
 
@@ -50,23 +50,23 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserResponseDto create(UserDto userDto) {
-		log.debug("Creating the User {}", userDto);
-		if (userDto.getId() != null) {
+	public UserResponseDto create(UserRequestDto userRequestDto) {
+		log.debug("Creating the User {}", userRequestDto);
+		if (userRequestDto.getId() != null) {
 			log.error("When creating a new User, you should not specify the ID. Current input data has"
-					+ " ID value '{}'.", userDto.getId());
-			throw new InappropriateBodyContentException(userDto.getId());
+					+ " ID value '{}'.", userRequestDto.getId());
+			throw new InappropriateBodyContentException(userRequestDto.getId());
 		}
 
-		if (userDto.getRole() != null) {
+		if (userRequestDto.getRole() != null) {
 			log.error("When creating a new User, you should not specify the role. Current input data has"
-					+ " role value '{}'.", userDto.getRole());
-			throw new InappropriateBodyContentException(userDto.getRole());
+					+ " role value '{}'.", userRequestDto.getRole());
+			throw new InappropriateBodyContentException(userRequestDto.getRole());
 		}
-		userDto.setRole(Role.USER);
-		String passwordEncoded = passwordEncoder.encode(userDto.getPassword());
-		userDto.setPassword(passwordEncoded);
-		User userCreated = userRepository.save(userMapper.convertToEntity(userDto));
+		userRequestDto.setRole(Role.USER);
+		String passwordEncoded = passwordEncoder.encode(userRequestDto.getPassword());
+		userRequestDto.setPassword(passwordEncoded);
+		User userCreated = userRepository.save(userRequestMapper.convertToEntity(userRequestDto));
 		return userResponseMapper.convertToDto(userCreated);
 	}
 
@@ -87,7 +87,7 @@ public class UserServiceImpl implements UserService {
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		User user = userRepository.findByName(username)
 				.orElseThrow(() -> new UsernameNotFoundException("User " + username + " not found"));
-		return new SecurityUser(userMapper.convertToDto(user));
+		return new SecurityUser(userRequestMapper.convertToDto(user));
 	}
 
 }

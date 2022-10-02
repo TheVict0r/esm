@@ -14,7 +14,7 @@ import com.epam.esm.dao.repositories.PurchaseRepository;
 import com.epam.esm.dto.CertificateDto;
 import com.epam.esm.dto.PurchaseDto;
 import com.epam.esm.dto.TagDto;
-import com.epam.esm.dto.UserDto;
+import com.epam.esm.dto.UserRequestDto;
 import com.epam.esm.exception.AbstractLocalizedCustomException;
 import com.epam.esm.exception.MismatchedUserAndPurchaseException;
 import com.epam.esm.mapper.impl.PurchaseMapperImpl;
@@ -55,9 +55,9 @@ class PurchaseServiceImplTest {
 				cost, null);
 		PurchaseDto purchaseDtoExpected = new PurchaseDto(purchaseId, userId,
 				LocalDateTime.parse("2022-04-23 23:14:03.635", formatter), cost, null);
-		UserDto userDto = new UserDto(userId, "User 1", Set.of(purchaseDtoExpected));
+		UserRequestDto userRequestDto = new UserRequestDto(userId, "User 1", Set.of(purchaseDtoExpected));
 
-		when(userService.getById(userId)).thenReturn(userDto);
+		when(userService.getById(userId)).thenReturn(userRequestDto);
 		when(purchaseRepository.getPurchaseForUser(userId, purchaseId)).thenReturn(Optional.of(purchase));
 		when(purchaseMapper.convertToDto(purchase)).thenReturn(purchaseDtoExpected);
 
@@ -75,10 +75,10 @@ class PurchaseServiceImplTest {
 	void getPurchaseForUserShouldThrowMismatchedUserAndPurchaseException() {
 		Long userId = 1L;
 		Long purchaseId = 99L;
-		UserDto userDto = new UserDto(userId, "User 1", Set.of());
+		UserRequestDto userRequestDto = new UserRequestDto(userId, "User 1", Set.of());
 		String errorMessageKey = "message.mismatched_user_and_purchase";
 
-		when(userService.getById(userId)).thenReturn(userDto);
+		when(userService.getById(userId)).thenReturn(userRequestDto);
 		when(purchaseRepository.getPurchaseForUser(userId, purchaseId)).thenReturn(Optional.empty());
 
 		AbstractLocalizedCustomException exception = assertThrows(MismatchedUserAndPurchaseException.class,
