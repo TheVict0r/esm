@@ -3,7 +3,8 @@ package com.epam.esm.entitygenerator;
 import com.epam.esm.dto.CertificateDto;
 import com.epam.esm.dto.PurchaseDto;
 import com.epam.esm.dto.TagDto;
-import com.epam.esm.dto.UserDto;
+import com.epam.esm.dto.UserRequestDto;
+import com.epam.esm.security.Role;
 import com.epam.esm.service.CertificateService;
 import com.epam.esm.service.PurchaseService;
 import com.epam.esm.service.UserService;
@@ -19,7 +20,7 @@ import org.springframework.stereotype.Service;
  * (should be linked with tags and users) All values should look like more
  * -or-less meaningful: random words, but not random letters
  *
- * For private use only :)
+ * Not for the code review - for private use only :)
  */
 @RequiredArgsConstructor
 @Service
@@ -34,11 +35,16 @@ public class EntityGeneratorImpl implements EntityGenerator {
 
 	@Override
 	public void generateEntities() {
-		/* use by 1 method only - OT GPEXA PODALSHE :) */
+		/* use by 1 method only - all calls are commented for safety reason */
 
 		// generateCertificatesWithTags();
 		// generateUsers();
-		// addPurchasesToUsers();
+		// addPurchasesToUsers(); //don't forget to block role check in UserServiceImpl
+		// create() method
+		// UserServiceImpl.create()
+		// generateAdmins(); //don't forget to block role check in UserServiceImpl
+		// create() method
+		// UserServiceImpl.create()
 	}
 
 	private void generateCertificatesWithTags() {
@@ -61,12 +67,23 @@ public class EntityGeneratorImpl implements EntityGenerator {
 	}
 
 	private void generateUsers() {
-
 		for (int i = 1; i <= 1000; i++) {
-			UserDto userDto = new UserDto(null, "User " + i, null);
-			userService.create(userDto);
+			generateOneUserEntity("User ", i, Role.USER);
 		}
 
+	}
+
+	private void generateAdmins() {
+		for (int i = 1; i <= 10; i++) {
+			generateOneUserEntity("Admin ", i, Role.ADMIN);
+		}
+	}
+
+	private void generateOneUserEntity(String namePrefix, int namePostfix, Role role) {
+		String userName = namePrefix + namePostfix;
+		String rawPassword = userName;
+		UserRequestDto userRequestDto = new UserRequestDto(null, userName, rawPassword, role, null);
+		userService.create(userRequestDto);
 	}
 
 	private void addPurchasesToUsers() {
@@ -78,7 +95,6 @@ public class EntityGeneratorImpl implements EntityGenerator {
 			long certificateId = random.nextLong(10_000) + 1;
 			CertificateDto certificateDto = CertificateDto.builder().id(certificateId).build();
 			purchaseDto.setCertificates(Set.of(certificateDto));
-
 			purchaseService.create(i, purchaseDto);
 		}
 

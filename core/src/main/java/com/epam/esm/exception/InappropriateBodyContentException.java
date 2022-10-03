@@ -8,7 +8,7 @@ public class InappropriateBodyContentException extends AbstractLocalizedCustomEx
 
 	public static final String MESSAGE_KEY = "message.inappropriate_body_content";
 
-	public InappropriateBodyContentException(long id) {
-		super(MESSAGE_KEY, new Object[]{id});
+	public InappropriateBodyContentException(Object inappropriateData) {
+		super(MESSAGE_KEY, new Object[]{inappropriateData});
 	}
 }

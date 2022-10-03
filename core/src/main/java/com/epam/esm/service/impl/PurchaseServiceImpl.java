@@ -1,7 +1,7 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.dao.PurchaseDao;
 import com.epam.esm.dao.entity.Purchase;
+import com.epam.esm.dao.repositories.PurchaseRepository;
 import com.epam.esm.dto.CertificateDto;
 import com.epam.esm.dto.PurchaseDto;
 import com.epam.esm.exception.MismatchedUserAndPurchaseException;
@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 public class PurchaseServiceImpl implements PurchaseService {
-	private final PurchaseDao purchaseDao;
+	private final PurchaseRepository purchaseRepository;
 	private final UserService userService;
 	private final CertificateService certificateService;
 	private final PurchaseMapperImpl purchaseMapper;
@@ -35,7 +35,7 @@ public class PurchaseServiceImpl implements PurchaseService {
 		/* user existence check */
 		userService.getById(userId);
 
-		Purchase purchase = purchaseDao.getPurchaseForUser(userId, purchaseId)
+		Purchase purchase = purchaseRepository.getPurchaseForUser(userId, purchaseId)
 				.orElseThrow(() -> new MismatchedUserAndPurchaseException(userId, purchaseId));
 		return purchaseMapper.convertToDto(purchase);
 	}
@@ -58,7 +58,7 @@ public class PurchaseServiceImpl implements PurchaseService {
 			}
 			purchaseDto.setCost(purchaseCost);
 			purchaseDto.setCertificates(certificatesFullData);
-			purchase = purchaseDao.create(purchaseMapper.convertToEntity(purchaseDto));
+			purchase = purchaseRepository.save(purchaseMapper.convertToEntity(purchaseDto));
 		} else {
 			throw new ResourceNotFoundException(userId);
 		}

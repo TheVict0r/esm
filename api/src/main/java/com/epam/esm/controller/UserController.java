@@ -2,7 +2,8 @@ package com.epam.esm.controller;
 
 import com.epam.esm.controller.hateoas.UserHateoasProvider;
 import com.epam.esm.dto.PurchaseDto;
-import com.epam.esm.dto.UserDto;
+import com.epam.esm.dto.UserRequestDto;
+import com.epam.esm.dto.UserResponseDto;
 import com.epam.esm.service.PurchaseService;
 import com.epam.esm.service.UserService;
 import com.epam.esm.service.validation.BasicInfo;
@@ -13,6 +14,7 @@ import javax.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,11 +45,13 @@ public class UserController {
 	 * @return UserDto retrieved from the datasource
 	 */
 	@GetMapping(value = {"/{id}"})
-	public UserDto getById(@Min(value = 1, message = "message.validation.id.min") @PathVariable("id") Long id) {
+	@PreAuthorize("hasAuthority('ADMIN') or @accessChecker.checkUserId(authentication, #id)")
+	public UserResponseDto getById(
+			@Min(value = 1, message = "message.validation.id.min") @PathVariable("id") Long id) {
 		log.info("Reading the User by ID - {}", id);
-		UserDto userDto = userService.getById(id);
-		userHateoasProvider.addLinksForSingleUser(userDto);
-		return userDto;
+		UserResponseDto userResponseDto = userService.getById(id);
+		userHateoasProvider.addLinksForSingleUser(userResponseDto);
+		return userResponseDto;
 	}
 
 	/**
@@ -58,6 +62,7 @@ public class UserController {
 	 * @return list containing all purchases for User
 	 */
 	@GetMapping(value = {"/{userId}/purchases"})
+	@PreAuthorize("hasAuthority('ADMIN') or @accessChecker.checkUserId(authentication, #userId)")
 	public Set<PurchaseDto> getUserAllPurchases(
 			@Min(value = 1, message = "message.validation.id.min") @PathVariable("userId") Long userId) {
 		log.info("Reading Purchases for the User with ID - {}", userId);
@@ -76,6 +81,7 @@ public class UserController {
 	 * @return requested PurchaseDto
 	 */
 	@GetMapping(value = {"/{userId}/purchases/{purchaseId}"})
+	@PreAuthorize("hasAuthority('ADMIN') or @accessChecker.checkUserId(authentication, #userId)")
 	public PurchaseDto getPurchaseForUser(
 			@Min(value = 1, message = "message.validation.id.min") @PathVariable("userId") Long userId,
 			@Min(value = 1, message = "message.validation.id.min") @PathVariable("purchaseId") Long purchaseId) {
@@ -83,6 +89,22 @@ public class UserController {
 		PurchaseDto purchaseDto = purchaseService.getPurchaseForUser(userId, purchaseId);
 		userHateoasProvider.addLinksForSinglePurchase(purchaseDto);
 		return purchaseDto;
+	}
+
+	/**
+	 * Creates a new User.
+	 *
+	 * @param userRequestDto
+	 *            UserDto need to be created
+	 * @return created UserDto
+	 */
+	@PostMapping(value = {"/signup"})
+	@ResponseStatus(HttpStatus.CREATED)
+	public UserResponseDto createUser(@RequestBody @Validated(BasicInfo.class) UserRequestDto userRequestDto) {
+		log.info("Creating user - {}", userRequestDto.getName());
+		UserResponseDto userResponseDtoCreated = userService.create(userRequestDto);
+		userHateoasProvider.addLinksForSingleUser(userResponseDtoCreated);
+		return userResponseDtoCreated;
 	}
 
 	/**
@@ -96,6 +118,7 @@ public class UserController {
 	 */
 	@PostMapping(value = {"/{userId}/purchases/"})
 	@ResponseStatus(HttpStatus.CREATED)
+	@PreAuthorize("hasAuthority('ADMIN') or @accessChecker.checkUserId(authentication, #userId)")
 	public PurchaseDto createPurchase(
 			@Min(value = 1, message = "message.validation.id.min") @PathVariable("userId") Long userId,
 			@RequestBody @Validated(BasicInfo.class) PurchaseDto purchaseDto) {
@@ -113,12 +136,13 @@ public class UserController {
 	 *         method.
 	 */
 	@GetMapping
-	public List<UserDto> getAll(
-			@Min(value = 1, message = "message.validation.page.min") @RequestParam(value = "page", defaultValue = "1") Integer page,
-			@Min(value = 1, message = "message.validation.page.size") @Max(value = 50, message = "message.validation.page.size") @RequestParam(value = "size", defaultValue = "10") Integer size) {
+	@PreAuthorize("hasAuthority('ADMIN')")
+	public List<UserResponseDto> getAll(
+			@Min(value = 0, message = "message.validation.page.min") @RequestParam(value = "page", defaultValue = "0") Integer page,
+			@Min(value = 0, message = "message.validation.page.size") @Max(value = 50, message = "message.validation.page.size") @RequestParam(value = "size", defaultValue = "10") Integer size) {
 		log.info("Reading all Users. Page № - {}, size - {}", page, size);
-		List<UserDto> userDtoList = userService.getAll(page, size);
-		userHateoasProvider.addLinksForGetAll(userDtoList);
-		return userDtoList;
+		List<UserResponseDto> userResponseDtoList = userService.getAll(page, size);
+		userHateoasProvider.addLinksForGetAll(userResponseDtoList);
+		return userResponseDtoList;
 	}
 }
