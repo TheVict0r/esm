@@ -16,22 +16,20 @@ PART 1
     - Get certificates with tags (all params are optional and can be used in conjunction):
         - by tag name (ONE tag)
         - search by part of name/description (can be implemented, using DB function call)
-        - sort by date or by name ASC/DESC (extra task: implement ability to apply both sort type at the same time)..
-PART 2
-The system should be extended to expose the following REST APIs: 
-1. Change single field of gift certificate (e.g. implement the possibility to change only duration of a certificate or only price). 
-2. Add new entity User.
+        - sort by date or by name ASC/DESC (extra task: implement ability to apply both sort type at the same time).
+3. Change single field of gift certificate (e.g. implement the possibility to change only duration of a certificate or only price). 
+4. Add new entity User.
    * implement only get operations for user entity.
-3. Make an order on gift certificate for a user (user should have an ability to buy a certificate).
-4. Get information about user’s orders. 
-5. Get information about user’s order: cost and timestamp of a purchase.
+5. Make an order on gift certificate for a user (user should have an ability to buy a certificate).
+6. Get information about user’s orders. 
+7. Get information about user’s order: cost and timestamp of a purchase.
    * The order cost should not be changed if the price of the gift certificate is changed.
-6. Get the most widely used tag of a user with the highest cost of all orders.
+8. Get the most widely used tag of a user with the highest cost of all orders.
    * Create separate endpoint for this query.
    * Demonstrate SQL execution plan for this query (explain).
-7. Search for gift certificates by several tags (“and” condition).
-8. Pagination should be implemented for all GET endpoints. Please, create a flexible and non-erroneous solution. Handle all exceptional cases. 
-9. Support HATEOAS on REST endpoints.
+9. Search for gift certificates by several tags (“and” condition).
+10. Pagination should be implemented for all GET endpoints. Please, create a flexible and non-erroneous solution. Handle all exceptional cases. 
+11. Support HATEOAS on REST endpoints.
 
 ##### Application requirements
 
