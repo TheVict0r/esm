@@ -16,7 +16,7 @@ PART 1
     - Get certificates with tags (all params are optional and can be used in conjunction):
         - by tag name (ONE tag)
         - search by part of name/description (can be implemented, using DB function call)
-        - sort by date or by name ASC/DESC (extra task: implement ability to apply both sort type at the same time).
+        - sort by date or by name ASC/DESC (extra task: implement ability to apply both sort type at the same time)..
 PART 2
 The system should be extended to expose the following REST APIs: 
 1. Change single field of gift certificate (e.g. implement the possibility to change only duration of a certificate or only price). 
