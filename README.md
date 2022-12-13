@@ -6,7 +6,7 @@ REST API Project for EPAM Laboratory
 
 
 ##### Business requirements
-PART 1
+
 1. Develop web service for Gift Certificates system with the following entities (many-to-many):
     - *CreateDate*, *LastUpdateDate* - format *ISO 8601* . Example: 2018-08-29T06:12:15.156.  
     - *Duration* - in days (expiration period)
